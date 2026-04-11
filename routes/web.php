@@ -17,13 +17,48 @@ use App\Http\Controllers\Admin\CourseMcqController;
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('client.index');
+})->name('home');
+
+Route::get('/about', function () {
+    return view('client.about');
+})->name('about');
+
+Route::get('/courses', function () {
+    return view('client.courses');
+})->name('courses');
+
+Route::get('/contact', function () {
+    return view('client.contact');
+})->name('contact');
+
+Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+use App\Http\Controllers\Auth\StudentAuthController;
+use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
+
+Route::prefix('student')->name('student.')->group(function () {
+    Route::get('/register', [StudentAuthController::class, 'registerForm'])->name('register');
+    Route::post('/register', [StudentAuthController::class, 'register'])->name('register.submit');
+    Route::get('/login', [StudentAuthController::class, 'loginForm'])->name('login');
+    Route::post('/login', [StudentAuthController::class, 'login'])->name('login.submit');
+    Route::post('/logout', [StudentAuthController::class, 'logout'])->name('logout');
+    
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/my-courses', [StudentDashboardController::class, 'courses'])->name('my-courses');
+        Route::get('/profile', [StudentDashboardController::class, 'profile'])->name('profile');
+        Route::get('/my-courses/{course_id}', [StudentDashboardController::class, 'learning'])->name('learning');
+        Route::get('/exams', [StudentDashboardController::class, 'exams'])->name('exams');
+        Route::get('/fee-history', [StudentDashboardController::class, 'financials'])->name('financials');
+    });
 });
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AuthController::class, 'loginForm'])->name('signIn');
     Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
-    Route::get('/register', [AuthController::class, 'register']); // Temporary route to seed admin
+    Route::get('/register', [AuthController::class, 'register'])->name('register'); // Temporary route to seed admin
     //----------------- Admin Authentication -----------------//
     Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
