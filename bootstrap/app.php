@@ -12,8 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectTo(
-            guests: '/admin/login',
-            users: '/admin/dashboard'
+            guests: fn (\Illuminate\Http\Request $request) => $request->is('student*') ? '/student/login' : '/admin/login',
+            users: fn (\Illuminate\Http\Request $request) => auth()->check() && auth()->user()->role === 'student' ? '/student/dashboard' : '/admin/dashboard'
         );
     })
     ->withExceptions(function (Exceptions $exceptions): void {

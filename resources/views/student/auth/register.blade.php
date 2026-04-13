@@ -42,50 +42,53 @@
             </div>
             <form action="{{ route('student.register.submit') }}" method="POST" class="space-y-4">
                 @csrf
+
+                @if($errors->any())
+                    <div class="px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm font-medium">
+                        {{ $errors->first() }}
+                    </div>
+                @endif
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="text-sm font-bold text-slate-700 block mb-2">Full Name</label>
-                        <input type="text" name="name" required
+                        <input type="text" name="name" value="{{ old('name') }}" required
                             class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
-                            placeholder="John Doe">
+                            placeholder="Enter Full Name">
                     </div>
                     <div>
                         <label class="text-sm font-bold text-slate-700 block mb-2">Mother Name</label>
-                        <input type="text" name="mother_name" required
+                        <input type="text" name="mother_name" value="{{ old('mother_name') }}" required
                             class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
-                            placeholder="Jane Doe">
+                            placeholder="Enter Mother Name">
                     </div>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="text-sm font-bold text-slate-700 block mb-2">Email Address</label>
-                        <input type="email" name="email" required
+                        <input type="email" name="email" value="{{ old('email') }}" required
                             class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
                             placeholder="name@example.com">
                     </div>
                     <div>
                         <label class="text-sm font-bold text-slate-700 block mb-2">Contact No</label>
-                        <input type="tel" name="phone" required
+                        <input type="tel" name="phone" value="{{ old('phone') }}" required
                             class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
-                            placeholder="+1 234 567 8900">
+                            placeholder="Enter 10 digit Number" maxlength="10">
                     </div>
                 </div>
-
                 <div>
                     <label class="text-sm font-bold text-slate-700 block mb-2">Address</label>
                     <textarea name="address" required rows="2"
                         class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
-                        placeholder="Your full address"></textarea>
+                        placeholder="Your Full address">{{ old('address') }}</textarea>
                 </div>
-
                 <div>
                     <label class="text-sm font-bold text-slate-700 block mb-2">Branch</label>
                     <select name="branch_id" required
                         class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition bg-white">
                         <option value="">Select Branch</option>
                         @foreach($branches as $branch)
-                        <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
+                        <option value="{{ $branch->id }}" {{ old('branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->branch_name }}</option>
                         @endforeach
                     </select>
                 </div>
