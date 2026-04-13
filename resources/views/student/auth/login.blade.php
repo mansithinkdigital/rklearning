@@ -17,13 +17,11 @@
             <h2 class="text-3xl font-bold text-slate-800">Student Login</h2>
             <p class="text-slate-500 mt-2">Welcome back! Please enter your details.</p>
         </div>
-
         @if($errors->any())
             <div class="mb-6 px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm font-medium">
                 {{ $errors->first() }}
             </div>
         @endif
-
         <form action="{{ route('student.login.submit') }}" method="POST" class="space-y-6">
             @csrf
             <div>

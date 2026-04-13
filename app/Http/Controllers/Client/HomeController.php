@@ -16,7 +16,7 @@ class HomeController extends Controller
     {
         return view('client.about');
     }
-    public function course()
+    public function courses()
     {
         return view('client.courses');
     }

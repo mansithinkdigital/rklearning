@@ -25,7 +25,7 @@ Route::get('/courses', [HomeController::class, 'courses'])->name('courses');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
 
-Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
+Route::get('/login', [StudentAuthController::class, 'loginForm'])->name('login');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::prefix('student')->name('student.')->group(function () {
     Route::get('/register', [StudentAuthController::class, 'registerForm'])->name('register');
@@ -37,6 +37,7 @@ Route::prefix('student')->name('student.')->group(function () {
         Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
         Route::get('/my-courses', [StudentDashboardController::class, 'courses'])->name('my-courses');
         Route::get('/profile', [StudentDashboardController::class, 'profile'])->name('profile');
+        Route::post('/profile', [StudentDashboardController::class, 'updateProfile'])->name('profile.update');
         Route::get('/my-courses/{course_id}', [StudentDashboardController::class, 'learning'])->name('learning');
         Route::get('/exams', [StudentDashboardController::class, 'exams'])->name('exams');
         Route::get('/fee-history', [StudentDashboardController::class, 'financials'])->name('financials');

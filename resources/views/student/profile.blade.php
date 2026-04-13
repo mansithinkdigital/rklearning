@@ -1,7 +1,5 @@
 @extends('layouts.student')
-
 @section('title', 'My Profile')
-
 @section('content')
 <div class="max-w-4xl">
     <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
@@ -11,12 +9,16 @@
                 <div class="relative group">
                     <div class="w-32 h-32 rounded-3xl bg-white p-2 shadow-xl">
                         <div class="w-full h-full bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 overflow-hidden">
+                            @if(auth()->user()->image)
+                            <img src="{{ asset(auth()->user()->image) }}" alt="Profile" class="w-full h-full object-cover">
+                            @else
                             <i data-lucide="user" class="w-12 h-12"></i>
+                            @endif
                         </div>
                     </div>
-                    <button class="absolute bottom-2 right-2 w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center shadow-lg hover:bg-blue-700 transition">
+                    <label for="profileImageInput" class="absolute bottom-2 right-2 w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center shadow-lg hover:bg-blue-700 transition cursor-pointer">
                         <i data-lucide="camera" class="w-4 h-4"></i>
-                    </button>
+                    </label>
                 </div>
             </div>
         </div>
@@ -32,13 +34,16 @@
                     Account Active
                 </div>
             </div>
-
-            <form action="#" method="POST" class="space-y-8">
+            <div id="successAlert" class="mb-6 px-4 py-3 rounded-xl bg-green-50 text-green-600 text-sm font-medium">
+                {{ session('success') }}
+            </div>
+            <form action="{{ route('student.profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
                 @csrf
+                <input type="file" name="image" id="profileImageInput" accept="image/*" class="hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
                         <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block px-1">Full Name</label>
-                        <input type="text" value="{{ auth()->user()->name }}" class="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition shadow-sm font-medium" placeholder="Full Name">
+                        <input type="text" name="name" value="{{ auth()->user()->name }}" class="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition shadow-sm font-medium" placeholder="Full Name">
                     </div>
                     <div>
                         <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block px-1">Email Address</label>
@@ -46,19 +51,17 @@
                     </div>
                     <div>
                         <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block px-1">Phone Number</label>
-                        <input type="tel" value="{{ auth()->user()->phone ?? '+1 234 567 8900' }}" class="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition shadow-sm font-medium">
+                        <input type="tel" name="phone" value="{{ auth()->user()->phone ?? '+1 234 567 8900' }}" class="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition shadow-sm font-medium">
                     </div>
                     <div>
                         <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block px-1">Branch</label>
-                        <input type="text" value="Main Center, NY" disabled class="w-full px-5 py-3 rounded-2xl border border-slate-100 bg-slate-50 text-slate-400 cursor-not-allowed font-medium">
+                        <input type="text" value="{{ auth()->user()->branch->branch_name ?? 'N/A' }}" disabled class="w-full px-5 py-3 rounded-2xl border border-slate-100 bg-slate-50 text-slate-400 cursor-not-allowed font-medium">
                     </div>
                 </div>
-
                 <div>
                     <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block px-1">Address</label>
-                    <textarea rows="3" class="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition shadow-sm font-medium">{{ auth()->user()->address ?? '123 Learning Lane, Knowledge City, EDU 456' }}</textarea>
+                    <textarea name="address" rows="3" class="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition shadow-sm font-medium">{{ auth()->user()->address ?? '123 Learning Lane, Knowledge City, EDU 456' }}</textarea>
                 </div>
-
                 <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <p class="text-xs text-slate-400 font-medium italic">Required for your photo-verified certification.</p>
                     <div class="flex space-x-3 w-full sm:w-auto">
@@ -70,4 +73,14 @@
         </div>
     </div>
 </div>
+<script>
+    setTimeout(function() {
+        let alert = document.getElementById('successAlert');
+        if (alert) {
+            alert.style.transition = "opacity 0.5s ease";
+            alert.style.opacity = "0";
+            setTimeout(() => alert.remove(), 500); // remove after fade
+        }
+    }, 2000); // 3 seconds
+</script>
 @endsection

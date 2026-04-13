@@ -40,7 +40,7 @@
                 <h3 class="text-2xl font-bold text-slate-800">Create Account</h3>
                 <p class="text-slate-500">Sign up for your free student account.</p>
             </div>
-            <form action="{{ route('student.register.submit') }}" method="POST" class="space-y-4">
+            <form action="{{ route('student.register.submit') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                 @csrf
 
                 @if($errors->any())
@@ -92,6 +92,10 @@
                         @endforeach
                     </select>
                 </div>
+                <div>
+                    <label class="text-sm font-bold text-slate-700 block mb-2">Profile Image</label>
+                    <input type="file" name="image" accept="image/*" required class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition bg-white">
+                </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="text-sm font-bold text-slate-700 block mb-2">Password</label>
@@ -112,12 +116,10 @@
                     <label class="ml-2 text-sm text-slate-500">I agree to the <a href="#"
                             class="text-blue-600 font-bold hover:underline">Terms & Conditions</a></label>
                 </div>
-
                 <button type="submit"
                     class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200">Register
                     as Student</button>
             </form>
-
             <div class="mt-8 pt-8 border-t text-center">
                 <p class="text-sm text-slate-500">Already have an account? <a href="{{ route('student.login') }}"
                         class="text-blue-600 font-bold hover:underline">Login here</a></p>

@@ -35,9 +35,34 @@ class DashboardController extends Controller
         return view('student.profile', compact('user'));
     }
 
-    /**
-     * Display the course learning player.
-     */
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:15',
+            'address' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048'
+        ]);
+
+        $imagePath = $user->image;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . uniqid() . '.' . $image->extension();
+            $image->move(public_path('student/uploads/registerimg'), $imageName);
+            $imagePath = 'student/uploads/registerimg/' . $imageName;
+        }
+
+        $user->update([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'image' => $imagePath,
+        ]);
+
+        return back()->with('success', 'Profile updated successfully.');
+    }
+
     public function learning($course_id)
     {
         $user = Auth::user();
@@ -45,9 +70,6 @@ class DashboardController extends Controller
         return view('student.learning.player', compact('user', 'course_id'));
     }
 
-    /**
-     * Display the exam portal.
-     */
     public function exams()
     {
         $user = Auth::user();
