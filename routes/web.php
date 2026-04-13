@@ -13,10 +13,12 @@ use App\Http\Controllers\Admin\FreeVideoController;
 use App\Http\Controllers\Admin\PaidVideoController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\VacancyController;
-use App\Http\Controllers\Admin\CourseMcqController;
 use App\Http\Controllers\Auth\StudentAuthController;
 use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\Admin\CourseMcqController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
+use \App\Http\Controllers\Admin\CourseSubjectController;
+use \App\Http\Controllers\Admin\SubjectMcqController;
 
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
@@ -72,17 +74,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // ------------------VACANCY----------------------------------//
         Route::resource('vacancy', VacancyController::class);
         // ------------------COURSE SUBJECT & MCQ------------------------//
-        Route::resource('course-subject', \App\Http\Controllers\Admin\CourseSubjectController::class);
-        Route::get('/get-subjects/{course_id}', [\App\Http\Controllers\Admin\CourseSubjectController::class, 'getSubjects'])->name('course-subject.get-subjects');
-
-        Route::get('course-subject/{courseSubject}/mcqs', [\App\Http\Controllers\Admin\CourseMcqController::class, 'index'])->name('course-subject.mcqs.manage');
-        Route::post('course-subject/{courseSubject}/mcqs', [\App\Http\Controllers\Admin\CourseMcqController::class, 'store'])->name('course-subject.mcqs.store');
-        Route::put('course-mcq/{courseMcq}', [\App\Http\Controllers\Admin\CourseMcqController::class, 'update'])->name('course-mcq.update');
-        Route::delete('course-mcq/{courseMcq}', [\App\Http\Controllers\Admin\CourseMcqController::class, 'destroy'])->name('course-mcq.destroy');
-
+        Route::resource('course-subject', CourseSubjectController::class);
+        Route::get('/get-subjects/{course_id}', [CourseSubjectController::class, 'getSubjects'])->name('course-subject.get-subjects');
+        Route::get('course-subject/{courseSubject}/mcqs', [CourseMcqController::class, 'index'])->name('course-subject.mcqs.manage');
+        Route::post('course-subject/{courseSubject}/mcqs', [CourseMcqController::class, 'store'])->name('course-subject.mcqs.store');
+        Route::put('course-mcq/{courseMcq}', [CourseMcqController::class, 'update'])->name('course-mcq.update');
+        Route::delete('course-mcq/{courseMcq}', [CourseMcqController::class, 'destroy'])->name('course-mcq.destroy');
         // ------------------SUBJECT MCQ----------------------------------//
-        Route::get('subject/{subject}/mcqs', [\App\Http\Controllers\Admin\SubjectMcqController::class, 'index'])->name('subject.mcqs.manage');
-        Route::post('subject/{subject}/mcqs', [\App\Http\Controllers\Admin\SubjectMcqController::class, 'storeMultiple'])->name('subject.mcqs.storeMultiple');
+        Route::get('subject/{subject}/mcqs', [SubjectMcqController::class, 'index'])->name('subject.mcqs.manage');
+        Route::post('subject/{subject}/mcqs', [SubjectMcqController::class, 'storeMultiple'])->name('subject.mcqs.storeMultiple');
         // -------------------------------------------------------------//
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     });

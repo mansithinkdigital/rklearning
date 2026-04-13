@@ -150,12 +150,10 @@
             </a>
 
             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-8 mb-4 px-2">Account</p>
-
             <a href="{{ route('student.profile') }}" class="sidebar-link {{ request()->routeIs('student.profile') ? 'active' : '' }}">
                 <i data-lucide="user"></i>
                 <span>Profile Settings</span>
             </a>
-
             <div class="mt-9 border-t border-slate-100 pt-3">
                 <form action="{{ route('student.logout') }}" method="POST">
                     @csrf
@@ -167,7 +165,6 @@
             </div>
         </nav>
     </aside>
-
     <!-- Main Content -->
     <main class="main-content">
         <!-- Header -->
@@ -176,7 +173,6 @@
                 <h2 class="text-xl font-bold text-slate-800">@yield('title')</h2>
                 <p class="text-sm text-slate-500">Welcome back, {{ auth()->user()->name }}!</p>
             </div>
-
             <div class="flex items-center space-x-4">
                 <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition">
                     <i data-lucide="bell" class="w-5 h-5"></i>
@@ -192,13 +188,11 @@
                 </div>
             </div>
         </header>
-
         <!-- Content Area -->
         <div class="p-10">
             @yield('content')
         </div>
     </main>
-
     <script>
         lucide.createIcons();
     </script>
