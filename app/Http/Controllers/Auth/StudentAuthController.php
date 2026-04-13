@@ -32,8 +32,17 @@ class StudentAuthController extends Controller
             'phone' => 'required|string|max:15',
             'address' => 'required|string',
             'branch_id' => 'required|exists:branches,id',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'password' => 'required|string|min:6|confirmed',
         ]);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . uniqid() . '.' . $image->extension();
+            $image->move(public_path('student/uploads/registerimg'), $imageName);
+            $imagePath = 'student/uploads/registerimg/' . $imageName;
+        }
 
         $user = User::create([
             'name' => $request->name,
@@ -42,6 +51,7 @@ class StudentAuthController extends Controller
             'phone' => $request->phone,
             'address' => $request->address,
             'branch_id' => $request->branch_id,
+            'image' => $imagePath,
             'password' => Hash::make($request->password),
             'role' => 'student'
         ]);

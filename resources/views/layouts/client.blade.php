@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Rk Learning Hub - Transform Your Future')</title>
-    
+
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('assets/images/logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('admin/asset/favicons/favicon.png') }}">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,7 +45,12 @@
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4, h5, h6 {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             font-family: 'Outfit', sans-serif;
             font-weight: 700;
         }
@@ -129,8 +135,15 @@
 
         /* Animations */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .animate-fade-in {
@@ -140,15 +153,15 @@
         @yield('styles')
     </style>
 </head>
+
 <body class="antialiased">
     <!-- Navbar -->
     <nav class="navbar sticky top-0 z-50 py-4">
         <div class="container mx-auto px-6 flex items-center justify-between">
             <a href="/" class="flex items-center space-x-2">
-                <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="h-10 w-auto">
-                <span class="text-xl font-bold text-slate-900 Outfit">Rk Learning Hub</span>
+                <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}" alt="Logo" class="h-10 w-auto">
+                <!-- <span class="text-xl font-bold text-slate-900 Outfit">Rk Learning Hub</span> -->
             </a>
-
             <div class="hidden md:flex items-center space-x-8">
                 <a href="{{ route('home') }}" class="nav-link">Home</a>
                 <a href="{{ route('about') }}" class="nav-link">About Us</a>
@@ -157,13 +170,12 @@
                 <a href="#" class="nav-link">Blogs</a>
                 <a href="{{ route('contact') }}" class="nav-link">Contact Us</a>
             </div>
-
             <div class="flex items-center space-x-4">
                 @auth
-                    <a href="{{ url('/dashboard') }}" class="btn-primary">Dashboard</a>
+                <a href="{{ url('/dashboard') }}" class="btn-primary">Dashboard</a>
                 @else
-                    <a href="{{ route('login') }}" class="text-slate-600 font-medium hover:text-primary transition">Login</a>
-                    <a href="{{ route('student.register') }}" class="btn-primary">Get Started</a>
+                <a href="{{ route('login') }}" class="text-slate-600 font-medium hover:text-primary transition">Login</a>
+                <a href="{{ route('student.register') }}" class="btn-primary">Get Started</a>
                 @endauth
             </div>
         </div>
@@ -243,4 +255,5 @@
 
     @yield('scripts')
 </body>
+
 </html>
