@@ -33,6 +33,7 @@ class AuthController extends Controller
             echo "something went wrong";
         }
     }
+
     // Handle Admin Login
     public function login(Request $request)
     {

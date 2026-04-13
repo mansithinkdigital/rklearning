@@ -37,7 +37,6 @@
             Add New Subject
         </button>
     </div>
-
     <div class="overflow-x-auto">
         <table class="w-full text-left">
             <thead>
@@ -64,9 +63,9 @@
                     </td>
                     <td class="px-10 py-8 text-right">
                         <div class="flex items-center justify-end gap-2">
-                            <a href="{{ route('admin.subject.mcqs.manage', $subject->id) }}" class="px-3 h-10 flex items-center justify-center bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl transition-all border border-blue-200 dark:border-blue-800 text-[11px] font-black uppercase tracking-widest gap-2">
+                            <!-- <a href="{{ route('admin.subject.mcqs.manage', $subject->id) }}" class="px-3 h-10 flex items-center justify-center bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl transition-all border border-blue-200 dark:border-blue-800 text-[11px] font-black uppercase tracking-widest gap-2">
                                 <i data-lucide="plus-circle" class="w-4 h-4"></i> Add MCQ
-                            </a>
+                            </a> -->
                             <button onclick="editSubject({{ $subject->id }})" class="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-800 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all border border-slate-200 dark:border-slate-700">
                                 <i data-lucide="edit-3" class="w-4 h-4"></i>
                             </button>
