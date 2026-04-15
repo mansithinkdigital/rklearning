@@ -28,10 +28,6 @@
                 <label class="text-sm font-bold text-slate-700 block mb-2 px-1">Email Address</label>
                 <input type="email" name="email" required class="w-full px-6 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all" placeholder="name@example.com">
             </div>
-<<<<<<< HEAD
-
-=======
->>>>>>> 8c5dbd7a9ba4f423361af4cf1d17a4c05ca57307
             <div>
                 <div class="flex items-center justify-between mb-2 px-1">
                     <label class="text-sm font-bold text-slate-700">Password</label>
@@ -42,10 +38,6 @@
 
             <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 mt-4">Sign In</button>
         </form>
-<<<<<<< HEAD
-
-=======
->>>>>>> 8c5dbd7a9ba4f423361af4cf1d17a4c05ca57307
         <div class="mt-10 text-center">
             <p class="text-sm text-slate-500">Don't have an account? <a href="{{ route('student.register') }}" class="text-blue-600 font-bold hover:underline">Sign up for free</a></p>
         </div>

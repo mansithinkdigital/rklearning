@@ -24,6 +24,7 @@ use  \App\Http\Controllers\Admin\TestimonialController;
 Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/courses', [HomeController::class, 'courses'])->name('courses');
+Route::get('/courses/{course}', [HomeController::class, 'courseDetail'])->name('courses.show');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
 
@@ -38,11 +39,13 @@ Route::prefix('student')->name('student.')->group(function () {
     Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
         Route::get('/my-courses', [StudentDashboardController::class, 'courses'])->name('my-courses');
+        Route::post('/courses/{course}/purchase', [StudentDashboardController::class, 'purchaseCourse'])->name('courses.purchase');
         Route::get('/profile', [StudentDashboardController::class, 'profile'])->name('profile');
         Route::post('/profile', [StudentDashboardController::class, 'updateProfile'])->name('profile.update');
         Route::get('/my-courses/{course_id}', [StudentDashboardController::class, 'learning'])->name('learning');
         Route::get('/exams', [StudentDashboardController::class, 'exams'])->name('exams');
         Route::get('/fee-history', [StudentDashboardController::class, 'financials'])->name('financials');
+        Route::get('/receipt/{reference}', [StudentDashboardController::class, 'downloadReceipt'])->name('receipt.download');
     });
 });
 
