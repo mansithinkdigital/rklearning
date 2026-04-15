@@ -19,6 +19,8 @@ use App\Http\Controllers\Admin\CourseMcqController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use \App\Http\Controllers\Admin\CourseSubjectController;
 use \App\Http\Controllers\Admin\SubjectMcqController;
+use \App\Http\Controllers\Admin\StudentController;
+use  \App\Http\Controllers\Admin\TestimonialController;
 
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
@@ -71,8 +73,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('paid-video', PaidVideoController::class);
         // ------------------GALLERY----------------------------------//
         Route::resource('gallery', GalleryController::class);
+        // ------------------STUDENT----------------------------------//
+        Route::resource('student', StudentController::class);
         // ------------------VACANCY----------------------------------//
         Route::resource('vacancy', VacancyController::class);
+        // ------------------TESTIMONIAL------------------------------//
+        Route::resource('testimonial', TestimonialController::class);
         // ------------------COURSE SUBJECT & MCQ------------------------//
         Route::resource('course-subject', CourseSubjectController::class);
         Route::get('/get-subjects/{course_id}', [CourseSubjectController::class, 'getSubjects'])->name('course-subject.get-subjects');

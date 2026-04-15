@@ -33,6 +33,12 @@
                         <i data-lucide="map-pin" class="w-[18px] h-[18px]"></i>
                         <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Branch</span>
                     </a>
+                    <a href="{{ route('admin.student.index') }}"
+                        class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
+                        {{ request()->is('admin/student*') ? 'bg-[#0062ff] text-white shadow-lg shadow-blue-500/20' : 'text-[#64748b] dark:text-[#94a3b8] hover:bg-slate-50 dark:hover:bg-slate-800' }}">
+                        <i data-lucide="users" class="w-[18px] h-[18px]"></i>
+                        <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Students Register</span>
+                    </a>
                 </div>
             </div>
 
@@ -89,7 +95,7 @@
             <div>
                 <p class="text-[10px] font-extrabold text-[#94a3b8] dark:text-[#475569] uppercase tracking-widest mb-4 px-2 group-[.sidebar-collapsed]:hidden">Paid Content</p>
                 <div class="space-y-1">
-                    <a href="{{ route('admin.paid-video.index') }}" 
+                    <a href="{{ route('admin.paid-video.index') }}"
                         class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
                         {{ request()->is('admin/paid-video*') ? 'bg-[#0062ff] text-white shadow-lg shadow-blue-500/20' : 'text-[#64748b] dark:text-[#94a3b8] hover:bg-slate-50 dark:hover:bg-slate-800' }}">
                         <i data-lucide="video" class="w-[18px] h-[18px]"></i>
@@ -121,6 +127,14 @@
                         <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Gallery</span>
                     </a>
                 </div>
+                 <div class="space-y-1">
+                    <a href="{{ route('admin.testimonial.index') }}"
+                        class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
+                        {{ request()->is('admin/testimonial*') ? 'bg-[#0062ff] text-white shadow-lg shadow-blue-500/20' : 'text-[#64748b] dark:text-[#94a3b8] hover:bg-slate-50 dark:hover:bg-slate-800' }}">
+                        <i data-lucide="image" class="w-[18px] h-[18px]"></i>
+                        <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Testimonial</span>
+                    </a>
+                </div>
             </div>
 
             <!-- System -->
@@ -137,6 +151,7 @@
                         <i data-lucide="settings" class="w-[18px] h-[18px]"></i>
                         <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Site Settings</span>
                     </a>
+
                 </div>
             </div>
         </nav>
