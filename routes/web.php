@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\BranchController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\SubjectController;
-use App\Http\Controllers\Admin\PackageController;
-use App\Http\Controllers\Admin\CoursePackageController;
 use App\Http\Controllers\Admin\FreePdfController;
 use App\Http\Controllers\Admin\FreeVideoController;
 use App\Http\Controllers\Admin\PaidVideoController;
@@ -61,10 +59,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('course', CourseController::class);
         // ------------------SUBJECT-----------------------------------//
         Route::resource('subject', SubjectController::class);
-        // ------------------PACKAGE-----------------------------------//
-        Route::resource('package', PackageController::class);
-        // ------------------COURSE PACKAGE-------------------------//
-        Route::resource('course-package', CoursePackageController::class);
         // ------------------FREE PDF-----------------------------------//
         Route::resource('free-pdf', FreePdfController::class);
         // ------------------FREE VIDEO----------------------------------//

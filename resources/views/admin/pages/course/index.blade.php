@@ -45,6 +45,7 @@
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">ID</th>
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Course Image</th>
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Course Identity</th>
+                    <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Price</th>
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">Status</th>
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-right">Actions</th>
                 </tr>
@@ -65,6 +66,11 @@
                             <p class="text-[13px] font-black text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors mb-0.5">{{ $course->name }}</p>
                             <p class="text-[11px] font-bold text-slate-400 line-clamp-1 max-w-[300px]">{{ $course->description }}</p>
                         </div>
+                    </td>
+                    <td class="px-10 py-8">
+                        <span class="text-sm font-black text-green-600">
+                            ₹{{ number_format($course->price, 2) }}
+                        </span>
                     </td>
                     <td class="px-10 py-8 text-center">
                         <span class="text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest 
@@ -102,7 +108,7 @@
 <div id="courseModal" class="hidden fixed inset-0 z-[100] overflow-y-auto">
     <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"></div>
     <div class="relative min-h-screen flex items-center justify-center p-4">
-        <div class="relative bg-white dark:bg-[#0b1120] w-full max-w-xl rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden transform transition-all">
+        <div class="relative bg-white dark:bg-[#0b1120] w-full max-w-4xl rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden transform transition-all">
             <div class="p-8 lg:p-10 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div>
                     <h3 id="modalTitle" class="text-xl font-black text-slate-900 dark:text-white tracking-tight">Add New Course</h3>
@@ -116,9 +122,9 @@
             <form id="courseForm" class="p-8 lg:p-10" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" id="course_id_pk" name="id">
-                <div class="grid grid-cols-1 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Course Image Preview & Input -->
-                    <div class="col-span-1">
+                    <div class="col-span-3">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Course Thumbnail</label>
                         <div class="relative group">
                             <div id="imagePreview" class="w-full h-40 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center overflow-hidden transition-all group-hover:border-blue-500">
@@ -130,13 +136,20 @@
                     </div>
 
                     <!-- Course Name -->
-                    <div class="col-span-1">
+                    <div class="col-span-2">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Course Title</label>
                         <input type="text" name="name" id="course_name" required
                             class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-blue-600 transition-all"
                             placeholder="e.g. Tally Prime Professional">
                     </div>
-
+                    <div class="col-span-1">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">
+                            Course Price (₹)
+                        </label>
+                        <input type="number" name="price" id="course_price" required step="0.01"
+                            class="w-full bg-slate-50 dark:bg-slate-800/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600"
+                            placeholder="e.g. 4999">
+                    </div>
                     <!-- Description -->
                     <div class="col-span-full">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Course Description</label>
@@ -144,9 +157,14 @@
                             class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-blue-600 transition-all resize-none"
                             placeholder="Enter course curriculum or details..."></textarea>
                     </div>
-
+                    <div class="col-span-full">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">
+                            Full Course Details
+                        </label>
+                        <textarea name="long_description" id="long_description"></textarea>
+                    </div>
                     <!-- Status -->
-                    <div class="col-span-1">
+                    <div class="col-span-3">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Live Status</label>
                         <select name="status" id="course_status" required
                             class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600 transition-all appearance-none cursor-pointer">
@@ -180,18 +198,15 @@
     const submitBtn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
     const imagePreview = document.getElementById('imagePreview');
-
     function showAlert(type, message) {
         const container = document.getElementById('alertContainer');
         const box = document.getElementById('alertBox');
         const title = document.getElementById('alertTitle');
         const msg = document.getElementById('alertMessage');
         const iconDiv = document.getElementById('alertIcon');
-
         container.classList.remove('hidden');
         title.innerText = type === 'success' ? 'Success Operation' : 'Action Required';
         msg.innerText = message;
-
         if (type === 'success') {
             box.className = 'p-5 rounded-[1.5rem] flex items-center justify-between border bg-emerald-50 border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-800/30 text-emerald-700 dark:text-emerald-400';
             iconDiv.className = 'w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-100 dark:bg-emerald-900/20';
@@ -199,9 +214,8 @@
             box.className = 'p-5 rounded-[1.5rem] flex items-center justify-between border bg-red-50 border-red-100 dark:bg-red-900/10 dark:border-red-800/30 text-red-700 dark:text-red-400';
             iconDiv.className = 'w-10 h-10 rounded-xl flex items-center justify-center bg-red-100 dark:bg-red-900/20';
         }
-
         // Auto hide after 5 seconds
-        setTimeout(hideAlert, 5000);
+        setTimeout(hideAlert, 3000);
     }
 
     function hideAlert() {
@@ -221,6 +235,14 @@
     function openCourseModal(isEdit = false) {
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
+        setTimeout(() => {
+            if (!$('#long_description').next().hasClass('note-editor')) {
+                $('#long_description').summernote({
+                    height: 200,
+                    placeholder: 'Write full course details...',
+                });
+            }
+        }, 200);
         if (!isEdit) {
             form.reset();
             document.getElementById('course_id_pk').value = '';
@@ -228,6 +250,8 @@
             btnText.innerText = 'Publish Course';
             imagePreview.innerHTML = `<i data-lucide="image" class="w-8 h-8 text-slate-300 mb-2"></i><p class="text-[11px] font-bold text-slate-400">Click to upload file</p>`;
             lucide.createIcons();
+            $('#long_description').summernote('code', '');
+            document.getElementById('course_price').value = '';
             document.getElementById('imageInput').required = true;
         }
     }
@@ -242,7 +266,6 @@
         modalTitle.innerText = 'Edit Course';
         btnText.innerText = 'Update Changes';
         document.getElementById('imageInput').required = false;
-
         fetch(`/admin/course/${id}/edit`)
             .then(response => response.json())
             .then(data => {
@@ -250,6 +273,8 @@
                 document.getElementById('course_name').value = data.name;
                 document.getElementById('course_description').value = data.description;
                 document.getElementById('course_status').value = data.status;
+                document.getElementById('course_price').value = data.price;
+                $('#long_description').summernote('code', data.long_description);
                 imagePreview.innerHTML = `<img src="/admin/uploads/courseimg/${data.image}" class="w-full h-full object-cover">`;
             });
     }
@@ -258,15 +283,12 @@
         e.preventDefault();
         const id = document.getElementById('course_id_pk').value;
         const url = id ? `/admin/course/${id}` : '/admin/course';
-        
         const formData = new FormData(form);
         if (id) {
             formData.append('_method', 'PUT');
         }
-
         submitBtn.disabled = true;
         btnText.innerText = 'Processing...';
-
         try {
             const response = await fetch(url, {
                 method: 'POST', // Always POST when using FormData, _method handles PUT
@@ -275,9 +297,7 @@
                 },
                 body: formData
             });
-
             const result = await response.json();
-
             if (result.status === 'success') {
                 showAlert('success', result.message);
                 closeCourseModal();
@@ -293,24 +313,52 @@
     };
 
     function deleteCourse(id) {
-        if(confirm('Are you absolutely sure you want to delete this course? This action cannot be undone.')) {
+        if (confirm('Are you absolutely sure you want to delete this course? This action cannot be undone.')) {
             fetch(`/admin/course/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    showAlert('success', data.message);
-                    setTimeout(() => window.location.reload(), 1500);
-                } else {
-                    showAlert('error', 'Failed to delete course.');
-                }
-            });
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showAlert('success', data.message);
+                        setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        showAlert('error', 'Failed to delete course.');
+                    }
+                });
         }
     }
+    $('#long_description').summernote({
+        height: 250,
+        placeholder: 'Write full course details...',
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+            ['fontname', ['fontname']], // ✅ font family
+            ['fontsize', ['fontsize']], // ✅ font size
+            ['color', ['color']], // ✅ text color
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview']]
+        ],
+        fontNames: [
+            'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New',
+            'Helvetica', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana'
+        ],
+        fontSizes: ['10', '12', '14', '16', '18', '24', '36'],
+        callbacks: {
+            onPaste: function(e) {
+                e.preventDefault();
+                let text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                // ✅ paste only plain text (removes all fonts/styles)
+                document.execCommand('insertText', false, text);
+            }
+        }
+    });
 </script>
 @endsection

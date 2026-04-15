@@ -68,10 +68,6 @@
                     <i data-lucide="book-open"></i>
                     <span>Student Marks</span>
                 </a>
-                <a href="#" class="sidebar-link">
-                    <i data-lucide="book-open"></i>
-                    <span>Packages</span>
-                </a>
                 
                 <hr class="my-4 border-gray-100">
                 

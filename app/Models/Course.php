@@ -10,6 +10,8 @@ class Course extends Model
         'name',
         'image',
         'description',
+        'long_description', // ✅ added
+        'price',            // ✅ added
         'status',
     ];
     public function subjects()

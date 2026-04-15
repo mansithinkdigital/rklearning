@@ -58,18 +58,6 @@
                         <i data-lucide="layers" class="w-[18px] h-[18px]"></i>
                         <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Course Subjects</span>
                     </a>
-                    <a href="{{ route('admin.package.index') }}"
-                        class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
-                        {{ request()->is('admin/package*') ? 'bg-[#0062ff] text-white shadow-lg shadow-blue-500/20' : 'text-[#64748b] dark:text-[#94a3b8] hover:bg-slate-50 dark:hover:bg-slate-800' }}">
-                        <i data-lucide="package" class="w-[18px] h-[18px]"></i>
-                        <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Packages</span>
-                    </a>
-                    <a href="{{ route('admin.course-package.index') }}"
-                        class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
-                        {{ request()->is('admin/course-package*') ? 'bg-[#0062ff] text-white shadow-lg shadow-blue-500/20' : 'text-[#64748b] dark:text-[#94a3b8] hover:bg-slate-50 dark:hover:bg-slate-800' }}">
-                        <i data-lucide="archive" class="w-[18px] h-[18px]"></i>
-                        <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Course Package</span>
-                    </a>
                     <a href="{{ route('admin.free-pdf.index') }}"
                         class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
                         {{ request()->is('admin/free-pdf*') ? 'bg-[#0062ff] text-white shadow-lg shadow-blue-500/20' : 'text-[#64748b] dark:text-[#94a3b8] hover:bg-slate-50 dark:hover:bg-slate-800' }}">

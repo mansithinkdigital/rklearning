@@ -20,8 +20,10 @@ class CourseController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'price' => 'required|numeric|min:0',
+            'image' => $request->id ? 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10048' : 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10048',
             'description' => 'required|string',
+            'long_description' => 'required|string',
             'status' => 'required|string|in:Active,Inactive',
         ]);
         if ($validator->fails()) {
@@ -32,11 +34,11 @@ class CourseController extends Controller
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $path = public_path('admin/uploads/courseimg/');
-            
+
             if (!File::isDirectory($path)) {
                 File::makeDirectory($path, 0777, true, true);
             }
-            
+
             $image->move($path, $imageName);
             $data['image'] = $imageName;
         }
@@ -61,8 +63,10 @@ class CourseController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'price' => 'required|numeric|min:0',
+            'image' => $request->id ? 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10048' : 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10048',
             'description' => 'required|string',
+            'long_description' => 'required|string',
             'status' => 'required|string|in:Active,Inactive',
         ]);
 
@@ -82,11 +86,11 @@ class CourseController extends Controller
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $path = public_path('admin/uploads/courseimg/');
-            
+
             if (!File::isDirectory($path)) {
                 File::makeDirectory($path, 0777, true, true);
             }
-            
+
             $image->move($path, $imageName);
             $data['image'] = $imageName;
         } else {
@@ -105,7 +109,7 @@ class CourseController extends Controller
     {
         try {
             $course = Course::findOrFail($id);
-            
+
             // Delete image
             $imagePath = public_path('admin/uploads/courseimg/') . $course->image;
             if (File::exists($imagePath)) {

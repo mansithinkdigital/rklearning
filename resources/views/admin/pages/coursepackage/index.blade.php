@@ -4,8 +4,8 @@
 
 @section('content')
 <div class="mb-12">
-    <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-none mb-2">COURSE PACKAGES</h1>
-    <p class="text-sm font-bold text-slate-400 dark:text-slate-500">Manage course-package bundles and their pricing</p>
+    <h1 class="text-2xl font-black text-slate-900 dark:text-white leading-none mb-2">COURSE PACKAGES</h1>
+    <p class="text-sm font-bold text-slate-400 dark:text-slate-500">Manage Course-Package Bundles and their Pricing</p>
 </div>
 
 <!-- Custom Alert Container -->
@@ -133,7 +133,7 @@
                                 class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600 transition-all appearance-none cursor-pointer">
                                 <option value="">Choose Course</option>
                                 @foreach($courses as $course)
-                                    <option value="{{ $course->id }}">{{ $course->name }}</option>
+                                <option value="{{ $course->id }}">{{ $course->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -145,7 +145,7 @@
                                 class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600 transition-all appearance-none cursor-pointer">
                                 <option value="">Choose Package</option>
                                 @foreach($packages as $package)
-                                    <option value="{{ $package->id }}">{{ $package->package_name }} ({{ $package->package_type }})</option>
+                                <option value="{{ $package->id }}">{{ $package->package_name }} ({{ $package->package_type }})</option>
                                 @endforeach
                             </select>
                         </div>
@@ -261,7 +261,7 @@
         e.preventDefault();
         const id = document.getElementById('cp_id_pk').value;
         const url = id ? `/admin/course-package/${id}` : '/admin/course-package';
-        
+
         const formData = new FormData(form);
         if (id) {
             formData.append('_method', 'PUT');
@@ -296,23 +296,23 @@
     };
 
     function deleteCoursePackage(id) {
-        if(confirm('Are you sure you want to delete this course package bundle?')) {
+        if (confirm('Are you sure you want to delete this course package bundle?')) {
             fetch(`/admin/course-package/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    showAlert('success', data.message);
-                    setTimeout(() => window.location.reload(), 1500);
-                } else {
-                    showAlert('error', 'Failed to delete bundle.');
-                }
-            });
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showAlert('success', data.message);
+                        setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        showAlert('error', 'Failed to delete bundle.');
+                    }
+                });
         }
     }
 </script>
