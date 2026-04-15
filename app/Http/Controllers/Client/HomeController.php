@@ -11,7 +11,23 @@ class HomeController extends Controller
 {
     public function home()
     {
-        return view('client.index');
+        $courses = Course::where('status', 'Active')
+            ->withCount(['subjects', 'students'])
+            ->latest()
+            ->take(8)
+            ->get();
+
+        $totalCourses = Course::where('status', 'Active')->count();
+        $totalStudents = Course::where('status', 'Active')
+            ->withCount('students')
+            ->get()
+            ->sum('students_count');
+        $totalLessons = Course::where('status', 'Active')
+            ->withCount('subjects')
+            ->get()
+            ->sum('subjects_count');
+
+        return view('client.index', compact('courses', 'totalCourses', 'totalStudents', 'totalLessons'));
     }
 
     public function about()
@@ -27,6 +43,7 @@ class HomeController extends Controller
 
     public function courseDetail(Course $course)
     {
+        $course->load('paidVideos');
         $user = Auth::user();
         $hasPurchased = $user ? $user->courses()->where('course_id', $course->id)->exists() : false;
 

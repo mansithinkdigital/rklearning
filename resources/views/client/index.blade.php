@@ -394,6 +394,28 @@
         </div>
     </section>
 
+    <section class="py-12 bg-slate-50">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="rounded-3xl bg-white p-8 shadow-sm text-center">
+                    <span class="text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Available Courses</span>
+                    <h3 class="text-4xl font-black text-slate-900 mt-5">{{ $totalCourses }}</h3>
+                    <p class="text-sm text-slate-500 mt-2">Active courses open for enrollment</p>
+                </div>
+                <div class="rounded-3xl bg-white p-8 shadow-sm text-center">
+                    <span class="text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Total Students</span>
+                    <h3 class="text-4xl font-black text-slate-900 mt-5">{{ $totalStudents }}</h3>
+                    <p class="text-sm text-slate-500 mt-2">Learners currently enrolled</p>
+                </div>
+                <div class="rounded-3xl bg-white p-8 shadow-sm text-center">
+                    <span class="text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Total Lessons</span>
+                    <h3 class="text-4xl font-black text-slate-900 mt-5">{{ $totalLessons }}</h3>
+                    <p class="text-sm text-slate-500 mt-2">Lessons available across all courses</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Courses Section -->
     <section class="py-24 bg-slate-50">
         <div class="container mx-auto px-6">
@@ -413,26 +435,13 @@
 
             <!-- Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                @php
-                    $courses = [
-                        ['id' => 1, 'title' => 'The Complete Web Developer Course', 'category' => 'Web Dev', 'price' => '$45.00', 'students' => '2.5k', 'lectures' => 12, 'resources' => 5, 'img' => 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2072&auto=format&fit=crop'],
-                        ['id' => 2, 'title' => 'UI/UX Design Masterclass 2024', 'category' => 'Design', 'price' => '$39.00', 'students' => '1.8k', 'lectures' => 8, 'resources' => 3, 'img' => 'https://images.unsplash.com/photo-1586717791821-3f44a563cc4c?q=80&w=2070&auto=format&fit=crop'],
-                        ['id' => 3, 'title' => 'Marketing Advanced Bootcamp', 'category' => 'Marketing', 'price' => '$29.00', 'students' => '3.1k', 'lectures' => 10, 'resources' => 4, 'img' => 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop'],
-                        ['id' => 4, 'title' => 'Data Science for Beginners', 'category' => 'Data', 'price' => '$59.00', 'students' => '1.2k', 'lectures' => 15, 'resources' => 6, 'img' => 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop'],
-                        ['id' => 5, 'title' => 'Python Programming Deep Dive', 'category' => 'Coding', 'price' => '$35.00', 'students' => '5.2k', 'lectures' => 20, 'resources' => 8, 'img' => 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=2069&auto=format&fit=crop'],
-                        ['id' => 6, 'title' => 'Graphic Design Fundamentals', 'category' => 'Design', 'price' => '$40.00', 'students' => '2.1k', 'lectures' => 9, 'resources' => 4, 'img' => 'https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1964&auto=format&fit=crop'],
-                        ['id' => 7, 'title' => 'Business Strategy 101', 'category' => 'Business', 'price' => '$49.00', 'students' => '900', 'lectures' => 7, 'resources' => 2, 'img' => 'https://images.unsplash.com/photo-1454165833767-131f72a1a7c1?q=80&w=2070&auto=format&fit=crop'],
-                        ['id' => 8, 'title' => 'Digital Photography Master', 'category' => 'Art', 'price' => '$25.00', 'students' => '1.5k', 'lectures' => 11, 'resources' => 5, 'img' => 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=2070&auto=format&fit=crop'],
-                    ];
-                @endphp
-
                 @foreach($courses as $course)
                     <div
                         class="group bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-xl transition duration-300">
 
                         <!-- Image -->
                         <div class="relative overflow-hidden">
-                            <img src="{{ $course['img'] }}" alt="{{ $course['title'] }}"
+                            <img src="{{ $course->image }}" alt="{{ $course->name }}"
                                 class="w-full h-52 object-cover group-hover:scale-105 transition duration-300">
 
                         </div>
@@ -443,37 +452,37 @@
                             <!-- Title -->
                             <h3
                                 class="font-semibold text-slate-900 mb-4 line-clamp-2 min-h-[48px] group-hover:text-zilom-blue transition">
-                                {{ $course['title'] }}
+                                {{ $course->name }}
                             </h3>
 
                             <!-- Free Content Info -->
                             <div class="flex items-center justify-between text-sm text-slate-600 mb-4">
                                 <div class="flex items-center gap-1">
                                     <i class="fa fa-play-circle text-zilom-blue"></i>
-                                    <span><strong>{{ $course['lectures'] }}</strong> free lectures</span>
+                                    <span><strong>{{ $course->subjects_count ?? $course->subjects->count() }}</strong> lectures</span>
                                 </div>
                                 <div class="flex items-center gap-1">
                                     <i class="fa fa-file-alt text-zilom-blue"></i>
-                                    <span><strong>{{ $course['resources'] }}</strong> resources</span>
+                                    <span><strong>5</strong> resources</span>
                                 </div>
                             </div>
 
                             <!-- Footer -->
                             <div class="flex items-center justify-between pt-4 border-t border-slate-100">
                                 <span class="text-zilom-blue font-bold text-lg">
-                                    {{ $course['price'] }}
+                                    {{ $course->price > 0 ? '$'.number_format($course->price, 2) : 'Free' }}
                                 </span>
 
                                 <div class="flex items-center text-xs text-slate-500">
                                     <i class="fa fa-users mr-1"></i>
-                                    {{ $course['students'] }}
+                                    {{ $course->students_count ?? $course->students->count() }}
                                 </div>
                             </div>
 
                             <!-- CTA -->
-                            <a href="{{ route('courses.show', ['course' => $course['id']]) }}"
+                            <a href="{{ route('courses.show', $course->id) }}"
                                 class="block text-center mt-4 bg-slate-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-zilom-blue transition">
-                                View details
+                                View Details
                             </a>
                         </div>
                     </div>

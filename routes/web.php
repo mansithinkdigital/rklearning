@@ -47,6 +47,7 @@ Route::prefix('student')->name('student.')->group(function () {
         Route::get('/my-courses/{course_id}', [StudentDashboardController::class, 'learning'])->name('learning');
         Route::get('/exams', [StudentDashboardController::class, 'exams'])->name('exams');
         Route::get('/fee-history', [StudentDashboardController::class, 'financials'])->name('financials');
+        Route::get('/receipt/{reference}', [StudentDashboardController::class, 'downloadReceipt'])->name('receipt.download');
     });
 });
 

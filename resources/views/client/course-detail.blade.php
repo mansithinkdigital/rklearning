@@ -13,24 +13,45 @@
                 </div>
 
                 <div class="bg-white rounded-[2rem] p-10 shadow-lg">
-                    <h2 class="text-3xl font-black text-slate-900 mb-8">Course Curriculum & Overview</h2>
+                    <h2 class="text-3xl font-black text-slate-900 mb-8">Course Curriculum & Resources</h2>
                     
-                    <div class="prose prose-slate max-w-none prose-headings:font-bold prose-p:leading-relaxed">
-                        {{-- Replace the dummy text with {!! $course->content !!} when ready --}}
-                        <h3>Introduction to the Course</h3>
-                        <p>Welcome to <strong>{{ $course->name }}</strong>. In this comprehensive program, we dive deep into industry-standard practices. This section is rendered to support <em>rich text formatting</em> directly from your editor.</p>
-                        
-                        <ul>
-                            <li>Advanced methodology and workflow optimization.</li>
-                            <li>Integration with modern toolsets and frameworks.</li>
-                            <li>Real-world case studies and problem-solving scenarios.</li>
-                        </ul>
+                    <div class="space-y-6">
+                        @forelse($course->paidVideos as $index => $video)
+                            <div class="flex items-center justify-between p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-200 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-blue-600/10 flex items-center justify-center text-blue-600 font-bold">
+                                        {{ $index + 1 }}
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-800">{{ $video->title }}</h4>
+                                        <p class="text-xs text-slate-400">Unit: {{ $video->unit }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    @if($hasPurchased)
+                                        @if($video->pdf)
+                                            <a href="{{ asset($video->pdf) }}" download class="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500 text-white text-xs font-bold hover:bg-emerald-600 transition">
+                                                <i class="fa fa-download"></i> PDF
+                                            </a>
+                                        @endif
+                                        <a href="{{ route('student.learning', $course->id) }}" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition">
+                                            <i class="fa fa-play"></i> Watch
+                                        </a>
+                                    @else
+                                        <span class="text-slate-400 text-xs font-medium italic"><i class="fa fa-lock mr-1"></i> Locked</span>
+                                    @endif
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-center py-10">
+                                <p class="text-slate-400 italic">Curriculum will be updated soon.</p>
+                            </div>
+                        @endforelse
+                    </div>
 
-                        <blockquote>
-                            "The best way to predict the future is to create it." - Learn by doing through our interactive modules.
-                        </blockquote>
-
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <div class="mt-12 prose prose-slate max-w-none prose-headings:font-bold prose-p:leading-relaxed">
+                        <h3 class="text-2xl font-bold mb-4">Course Description</h3>
+                        {!! $course->description !!}
                     </div>
                 </div>
             </div>

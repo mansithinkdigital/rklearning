@@ -45,7 +45,14 @@
                     <div class="bg-blue-600 h-1.5 rounded-full w-[35%]"></div>
                 </div>
                 <div class="mt-6 flex items-center justify-between border-t border-slate-50 pt-4">
-                    <a href="{{ route('student.learning', $course->id) }}" class="text-xs font-bold text-slate-500 hover:text-blue-600">Continue &rarr;</a>
+                    <a href="{{ route('student.learning', $course->id) }}" class="text-xs font-bold text-blue-600 hover:underline">Start Learning &rarr;</a>
+                    
+                    @php $hasPdf = $course->paidVideos->whereNotNull('pdf')->first(); @endphp
+                    @if($hasPdf)
+                        <a href="{{ asset($hasPdf->pdf) }}" download class="text-[10px] bg-emerald-50 text-emerald-600 px-2 py-1 rounded font-bold hover:bg-emerald-100 transition flex items-center gap-1">
+                            <i data-lucide="download" class="w-3 h-3"></i> PDF
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>

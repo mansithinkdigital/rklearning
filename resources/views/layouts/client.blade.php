@@ -105,7 +105,7 @@
                 <span class="text-slate-300">|</span>
                 <div class="flex items-center space-x-2">
                     <i class="fa fa-envelope text-primary"></i>
-                    <span>info@zilom.com</span>
+                    <span>rklearninghub2023@gmail.com</span>
                 </div>
             </div>
             <div class="flex items-center space-x-6">

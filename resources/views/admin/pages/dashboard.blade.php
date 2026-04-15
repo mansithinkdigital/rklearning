@@ -25,10 +25,10 @@
             <div class="w-12 h-12 rounded-2xl bg-[#eff6ff] text-[#0062ff] flex items-center justify-center">
                 <i data-lucide="building-2" class="w-6 h-6"></i>
             </div>
-            <span class="text-[9px] font-black bg-[#eff6ff] text-[#0062ff] px-2.5 py-1.5 rounded-full">+1 NEW</span>
+            <span class="text-[9px] font-black bg-[#eff6ff] text-[#0062ff] px-2.5 py-1.5 rounded-full">DEPARTMENTS</span>
         </div>
         <p class="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.15em] mb-1">DEPARTMENTS</p>
-        <h3 class="text-[42px] font-black text-[#111827] leading-none">11</h3>
+        <h3 class="text-[42px] font-black text-[#111827] leading-none">{{ $departmentsCount }}</h3>
     </div>
 
     <!-- Faculty -->
@@ -37,42 +37,34 @@
             <div class="w-12 h-12 rounded-2xl bg-[#f0fdf4] text-[#22c55e] flex items-center justify-center">
                 <i data-lucide="users" class="w-6 h-6"></i>
             </div>
-            <span class="text-[9px] font-black bg-[#f0fdf4] text-[#22c55e] px-2.5 py-1.5 rounded-full">+4 NEW</span>
+            <span class="text-[9px] font-black bg-[#f0fdf4] text-[#22c55e] px-2.5 py-1.5 rounded-full">FACULTY</span>
         </div>
         <p class="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.15em] mb-1">FACULTY MEMBERS</p>
-        <h3 class="text-[42px] font-black text-[#111827] leading-none">145</h3>
+        <h3 class="text-[42px] font-black text-[#111827] leading-none">{{ $facultyCount }}</h3>
     </div>
 
-    <!-- Placement -->
+    <!-- Courses -->
     <div class="bg-white p-8 rounded-[2rem] border border-[#f1f5f9] relative group">
         <div class="flex items-center justify-between mb-8">
             <div class="w-12 h-12 rounded-2xl bg-[#f5f3ff] text-[#6366f1] flex items-center justify-center">
                 <i data-lucide="trending-up" class="w-6 h-6"></i>
             </div>
-            <span class="text-[9px] font-black bg-[#f5f3ff] text-[#6366f1] px-2.5 py-1.5 rounded-full">+12% YOY</span>
+            <span class="text-[9px] font-black bg-[#f5f3ff] text-[#6366f1] px-2.5 py-1.5 rounded-full">ACTIVE</span>
         </div>
-        <p class="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.15em] mb-1">PLACEMENT RECORD</p>
-        <h3 class="text-[42px] font-black text-[#111827] leading-none">82%</h3>
+        <p class="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.15em] mb-1">ACTIVE COURSES</p>
+        <h3 class="text-[42px] font-black text-[#111827] leading-none">{{ $activeCoursesCount }}</h3>
     </div>
 
-    <!-- Notices -->
+    <!-- Students -->
     <div class="bg-white p-8 rounded-[2rem] border border-[#f1f5f9] relative group">
         <div class="flex items-center justify-between mb-8">
             <div class="w-12 h-12 rounded-2xl bg-[#fff7ed] text-[#f97316] flex items-center justify-center">
                 <i data-lucide="bell" class="w-6 h-6"></i>
             </div>
-            <span class="text-[9px] font-black bg-[#fff7ed] text-[#f97316] px-2.5 py-1.5 rounded-full uppercase">UPDATED 2H AGO</span>
+            <span class="text-[9px] font-black bg-[#fff7ed] text-[#f97316] px-2.5 py-1.5 rounded-full uppercase">STUDENTS</span>
         </div>
-        <p class="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.15em] mb-1">ACTIVE NOTICES</p>
-        <h3 class="text-[42px] font-black text-[#111827] leading-none">24</h3>
-    </div>
-</div>
-
-<div class="flex flex-col lg:flex-row gap-8">
-    <!-- Institutional Controls -->
-    <div class="flex-grow bg-white p-10 lg:p-12 rounded-[2.5rem] shadow-sm">
-        <div class="flex items-center gap-4 mb-12">
-            <div class="w-10 h-10 rounded-2xl bg-[#eff6ff] text-[#0062ff] flex items-center justify-center">
+        <p class="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.15em] mb-1">ACTIVE STUDENTS</p>
+        <h3 class="text-[42px] font-black text-[#111827] leading-none">{{ $studentsCount }}</h3>
                 <i data-lucide="zap" class="w-5 h-5 fill-[#0062ff]"></i>
             </div>
             <h2 class="text-2xl font-black text-[#111827] tracking-tight">Institutional Controls</h2>

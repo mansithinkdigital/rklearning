@@ -15,7 +15,73 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return view('student.dashboard', compact('user'));
+        $enrolledCourses = $user->courses()->withCount('subjects')->latest()->take(5)->get();
+        $activeCoursesCount = $enrolledCourses->count();
+        $certificatesCount = 0;
+        $attendancePercentage = 100;
+        $latestCourse = $enrolledCourses->first();
+
+        $announcements = [];
+        if ($enrolledCourses->isNotEmpty()) {
+            $announcements[] = [
+                'type' => 'exam',
+                'label' => 'Exam',
+                'title' => "Quiz Available for {$latestCourse->name}",
+                'description' => 'One of your enrolled courses has a new assessment ready. Stay ahead with the latest lesson.',
+                'date' => now()->addDays(3)->format('M d, Y'),
+                'link' => route('student.exams'),
+                'linkLabel' => 'Go to Quiz',
+            ];
+            $announcements[] = [
+                'type' => 'quiz',
+                'label' => 'Quiz',
+                'title' => "New Practice Material for {$latestCourse->name}",
+                'description' => 'A fresh practice quiz has been added for your current course. Sharpen your skills today.',
+                'date' => now()->addWeek()->format('M d, Y'),
+                'link' => route('student.exams'),
+                'linkLabel' => 'Start Quiz',
+            ];
+        } else {
+            $announcements[] = [
+                'type' => 'info',
+                'label' => 'Info',
+                'title' => 'Enroll in Your First Course',
+                'description' => 'Browse available courses and enroll to unlock study materials, quizzes, and certificates.',
+                'date' => now()->format('M d, Y'),
+                'link' => route('courses'),
+                'linkLabel' => 'Browse Courses',
+            ];
+            $announcements[] = [
+                'type' => 'survey',
+                'label' => 'Update',
+                'title' => 'Complete Your Profile',
+                'description' => 'A complete profile helps us recommend the best courses and certificates for you.',
+                'date' => now()->addDay()->format('M d, Y'),
+                'link' => route('student.profile'),
+                'linkLabel' => 'Update Profile',
+            ];
+        }
+
+        $recentPayments = $this->getPaymentHistory($enrolledCourses);
+        $totalCourseFee = 12000;
+        $totalPaid = collect($recentPayments)->sum('amount');
+        $remainingBalance = max(0, $totalCourseFee - $totalPaid);
+        $pendingFees = $remainingBalance;
+
+        return view('student.dashboard', compact(
+            'user',
+            'enrolledCourses',
+            'activeCoursesCount',
+            'certificatesCount',
+            'attendancePercentage',
+            'announcements',
+            'recentPayments',
+            'totalCourseFee',
+            'totalPaid',
+            'remainingBalance',
+            'pendingFees',
+            'latestCourse'
+        ));
     }
 
     /**
@@ -24,7 +90,7 @@ class DashboardController extends Controller
     public function courses()
     {
         $user = Auth::user();
-        $enrolledCourses = $user->courses()->withCount('subjects')->get();
+        $enrolledCourses = $user->courses()->withCount('subjects')->with('paidVideos')->get();
         $availableCourses = Course::where('status', 'Active')
             ->whereNotIn('id', $enrolledCourses->pluck('id')->toArray())
             ->latest()
@@ -102,6 +168,63 @@ class DashboardController extends Controller
     public function financials()
     {
         $user = Auth::user();
-        return view('student.financials.index', compact('user'));
+        $recentPayments = $this->getPaymentHistory();
+        $totalCourseFee = 12000;
+        $totalPaid = collect($recentPayments)->sum('amount');
+        $remainingBalance = $totalCourseFee - $totalPaid;
+
+        return view('student.financials.index', compact('user', 'recentPayments', 'totalCourseFee', 'totalPaid', 'remainingBalance'));
+    }
+
+    public function downloadReceipt($reference)
+    {
+        $payments = $this->getPaymentHistory();
+        $payment = collect($payments)->firstWhere('reference', $reference);
+
+        if (! $payment) {
+            abort(404);
+        }
+
+        $content = "Receipt Reference: {$payment['reference']}\n" .
+            "Description: {$payment['description']}\n" .
+            "Course: {$payment['course']}\n" .
+            "Payment Method: {$payment['method']}\n" .
+            "Date: {$payment['date']}\n" .
+            "Amount: INR {$payment['amount']}\n";
+
+        return response()->streamDownload(function () use ($content) {
+            echo $content;
+        }, "receipt-{$payment['reference']}.txt", [
+            'Content-Type' => 'text/plain',
+        ]);
+    }
+
+    private function getPaymentHistory($enrolledCourses = null)
+    {
+        $courseName = null;
+        if ($enrolledCourses && $enrolledCourses->isNotEmpty()) {
+            $courseName = $enrolledCourses->first()->name;
+        }
+
+        return [
+            [
+                'reference' => 'RK-PAY-45920',
+                'description' => 'Admission Fee + Term 1',
+                'course' => $courseName ?? 'Professional Tally Prime',
+                'method' => 'OFFLINE',
+                'date' => '12 Feb, 2026',
+                'amount' => 5500,
+                'status' => 'Paid',
+            ],
+            [
+                'reference' => 'RK-PAY-46812',
+                'description' => 'Monthly Installment - March',
+                'course' => $courseName ?? 'Professional Tally Prime',
+                'method' => 'ONLINE',
+                'date' => '05 Mar, 2026',
+                'amount' => 2500,
+                'status' => 'Paid',
+            ],
+        ];
     }
 }
