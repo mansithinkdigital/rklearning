@@ -87,48 +87,6 @@
             transform: translateY(-2px);
         }
 
-        footer {
-            background-color: #111827;
-            color: #94a3b8;
-            padding-top: 80px;
-            padding-bottom: 40px;
-        }
-
-        .footer-title {
-            color: white;
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 25px;
-        }
-
-        .footer-link {
-            transition: color 0.3s ease;
-            display: block;
-            margin-bottom: 12px;
-        }
-
-        .footer-link:hover {
-            color: white;
-            padding-left: 5px;
-        }
-
-        .social-btn {
-            width: 35px;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 5px;
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .social-btn:hover {
-            background: var(--primary);
-            transform: translateY(-3px);
-        }
-
         @yield('styles')
     </style>
 </head>
@@ -196,72 +154,103 @@
     </main>
 
     <!-- Footer -->
-    <footer>
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-                <div>
-                    <div class="flex items-center mb-6">
-                        <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}"
-                            class="h-10 w-auto mr-2 brightness-0 invert">
-                    </div>
-                    <p class="mb-8 text-sm leading-relaxed">
-                        There are many variations of passages of available but the majority have suffered alteration in
-                        some form.
-                    </p>
-                    <div class="flex space-x-3">
-                        <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
+<footer class="bg-white text-slate-600 border-t border-slate-100">
+    <div class="container mx-auto px-6 pt-20 pb-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
 
-                <div>
-                    <h4 class="footer-title">Quick Links</h4>
-                    <a href="#" class="footer-link">About Us</a>
-                    <a href="#" class="footer-link">Courses</a>
-                    <a href="#" class="footer-link">Instructors</a>
-                    <a href="#" class="footer-link">Latest News</a>
-                    <a href="#" class="footer-link">Contact Us</a>
+            <div class="lg:col-span-4">
+                <div class="flex items-center mb-6">
+                    <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}" 
+                         class="h-12 w-auto object-contain" alt="Rk Learning Hub Logo">
                 </div>
-
-                <div>
-                    <h4 class="footer-title">Support</h4>
-                    <a href="#" class="footer-link">Help Center</a>
-                    <a href="#" class="footer-link">Terms & Conditions</a>
-                    <a href="#" class="footer-link">Privacy Policy</a>
-                    <a href="#" class="footer-link">FAQs</a>
-                    <a href="#" class="footer-link">Community</a>
-                </div>
-
-                <div>
-                    <h4 class="footer-title">Contact Us</h4>
-                    <div class="space-y-4 text-sm">
-                        <div class="flex items-start space-x-3">
-                            <i class="fa fa-map-marker-alt mt-1 text-primary"></i>
-                            <span>25/B, Knowledge City, New York, USA</span>
-                        </div>
-                        <div class="flex items-center space-x-3">
-                            <i class="fa fa-phone-alt text-primary"></i>
-                            <span>+1 (234) 567 890</span>
-                        </div>
-                        <div class="flex items-center space-x-3">
-                            <i class="fa fa-envelope text-primary"></i>
-                            <span>info@zilom.com</span>
-                        </div>
-                    </div>
+                <p class="mb-8 text-base leading-relaxed text-slate-500 max-w-sm">
+                    Empowering learners worldwide through high-quality, project-based education. Join our community and start your journey today.
+                </p>
+                <div class="flex gap-3">
+                    <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
                 </div>
             </div>
 
-            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs">
-                <p>&copy; {{ date('Y') }} Zilom. All rights reserved.</p>
-                <div class="flex space-x-6 mt-4 md:mt-0">
-                    <a href="#" class="hover:text-white transition">Privacy Policy</a>
-                    <a href="#" class="hover:text-white transition">Terms of Use</a>
+            <div class="lg:col-span-2">
+                <h4 class="font-bold text-slate-900 mb-7 relative inline-block">
+                    Explore
+                    <span class="absolute -bottom-2 left-0 w-8 h-1 bg-indigo-600 rounded-full"></span>
+                </h4>
+                <ul class="space-y-4">
+                    <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">About Us</a></li>
+                    <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">All Courses</a></li>
+                    <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Instructors</a></li>
+                    <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Latest News</a></li>
+                </ul>
+            </div>
+
+            <div class="lg:col-span-2">
+                <h4 class="font-bold text-slate-900 mb-7 relative inline-block">
+                    Support
+                    <span class="absolute -bottom-2 left-0 w-8 h-1 bg-indigo-600 rounded-full"></span>
+                </h4>
+                <ul class="space-y-4">
+                    <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Help Center</a></li>
+                    <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Terms of Service</a></li>
+                    <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Community</a></li>
+                </ul>
+            </div>
+
+            <div class="lg:col-span-4">
+                <h4 class="font-bold text-slate-900 mb-7 relative inline-block">
+                    Get in Touch
+                    <span class="absolute -bottom-2 left-0 w-8 h-1 bg-indigo-600 rounded-full"></span>
+                </h4>
+                <div class="bg-slate-50 rounded-3xl p-6 space-y-5">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                            <i class="fa fa-map-marker-alt text-indigo-600"></i>
+                        </div>
+                        <span class="text-sm">25/B, Knowledge City, New York, USA</span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                            <i class="fa fa-phone-alt text-indigo-600"></i>
+                        </div>
+                        <span class="text-sm font-medium">+1 (234) 567 890</span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                            <i class="fa fa-envelope text-indigo-600"></i>
+                        </div>
+                        <span class="text-sm font-medium text-indigo-600">info@rklearning.com</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </footer>
+
+        <div class="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center text-sm font-medium">
+            <p class="text-slate-400">
+                &copy; {{ date('Y') }} <span class="text-slate-900">Rk Learning Hub</span>. All rights reserved.
+            </p>
+
+            <div class="mt-4 md:mt-0 px-6 py-2 bg-slate-50 rounded-full">
+                <span class="text-slate-400">Handcrafted by</span> 
+                <a href="https://thinkdigital.com" target="_blank"
+                   class="text-indigo-600 hover:text-indigo-800 transition ml-1">
+                    ThinkDigital
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
 
     @yield('scripts')
 </body>

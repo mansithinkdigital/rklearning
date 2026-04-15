@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,7 +24,26 @@ class DashboardController extends Controller
     public function courses()
     {
         $user = Auth::user();
-        return view('student.courses.index', compact('user'));
+        $enrolledCourses = $user->courses()->withCount('subjects')->get();
+        $availableCourses = Course::where('status', 'Active')
+            ->whereNotIn('id', $enrolledCourses->pluck('id')->toArray())
+            ->latest()
+            ->get();
+
+        return view('student.courses.index', compact('user', 'enrolledCourses', 'availableCourses'));
+    }
+
+    public function purchaseCourse(Course $course)
+    {
+        $user = Auth::user();
+
+        if ($user->courses()->where('course_id', $course->id)->exists()) {
+            return back()->with('info', 'You already enrolled in this course.');
+        }
+
+        $user->courses()->attach($course->id);
+
+        return back()->with('success', 'Course purchased successfully.');
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Course extends Model
 {
@@ -11,9 +12,16 @@ class Course extends Model
         'image',
         'description',
         'status',
+        'price',
     ];
+
     public function subjects()
     {
         return $this->hasMany(Subject::class);
+    }
+
+    public function students()
+    {
+        return $this->belongsToMany(User::class, 'course_user');
     }
 }

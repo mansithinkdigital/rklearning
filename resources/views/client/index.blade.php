@@ -415,14 +415,14 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 @php
                     $courses = [
-                        ['title' => 'The Complete Web Developer Course', 'category' => 'Web Dev', 'price' => '$45.00', 'students' => '2.5k', 'lectures' => 12, 'resources' => 5, 'img' => 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2072&auto=format&fit=crop'],
-                        ['title' => 'UI/UX Design Masterclass 2024', 'category' => 'Design', 'price' => '$39.00', 'students' => '1.8k', 'lectures' => 8, 'resources' => 3, 'img' => 'https://images.unsplash.com/photo-1586717791821-3f44a563cc4c?q=80&w=2070&auto=format&fit=crop'],
-                        ['title' => 'Marketing Advanced Bootcamp', 'category' => 'Marketing', 'price' => '$29.00', 'students' => '3.1k', 'lectures' => 10, 'resources' => 4, 'img' => 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop'],
-                        ['title' => 'Data Science for Beginners', 'category' => 'Data', 'price' => '$59.00', 'students' => '1.2k', 'lectures' => 15, 'resources' => 6, 'img' => 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop'],
-                        ['title' => 'Python Programming Deep Dive', 'category' => 'Coding', 'price' => '$35.00', 'students' => '5.2k', 'lectures' => 20, 'resources' => 8, 'img' => 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=2069&auto=format&fit=crop'],
-                        ['title' => 'Graphic Design Fundamentals', 'category' => 'Design', 'price' => '$40.00', 'students' => '2.1k', 'lectures' => 9, 'resources' => 4, 'img' => 'https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1964&auto=format&fit=crop'],
-                        ['title' => 'Business Strategy 101', 'category' => 'Business', 'price' => '$49.00', 'students' => '900', 'lectures' => 7, 'resources' => 2, 'img' => 'https://images.unsplash.com/photo-1454165833767-131f72a1a7c1?q=80&w=2070&auto=format&fit=crop'],
-                        ['title' => 'Digital Photography Master', 'category' => 'Art', 'price' => '$25.00', 'students' => '1.5k', 'lectures' => 11, 'resources' => 5, 'img' => 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=2070&auto=format&fit=crop'],
+                        ['id' => 1, 'title' => 'The Complete Web Developer Course', 'category' => 'Web Dev', 'price' => '$45.00', 'students' => '2.5k', 'lectures' => 12, 'resources' => 5, 'img' => 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2072&auto=format&fit=crop'],
+                        ['id' => 2, 'title' => 'UI/UX Design Masterclass 2024', 'category' => 'Design', 'price' => '$39.00', 'students' => '1.8k', 'lectures' => 8, 'resources' => 3, 'img' => 'https://images.unsplash.com/photo-1586717791821-3f44a563cc4c?q=80&w=2070&auto=format&fit=crop'],
+                        ['id' => 3, 'title' => 'Marketing Advanced Bootcamp', 'category' => 'Marketing', 'price' => '$29.00', 'students' => '3.1k', 'lectures' => 10, 'resources' => 4, 'img' => 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop'],
+                        ['id' => 4, 'title' => 'Data Science for Beginners', 'category' => 'Data', 'price' => '$59.00', 'students' => '1.2k', 'lectures' => 15, 'resources' => 6, 'img' => 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop'],
+                        ['id' => 5, 'title' => 'Python Programming Deep Dive', 'category' => 'Coding', 'price' => '$35.00', 'students' => '5.2k', 'lectures' => 20, 'resources' => 8, 'img' => 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=2069&auto=format&fit=crop'],
+                        ['id' => 6, 'title' => 'Graphic Design Fundamentals', 'category' => 'Design', 'price' => '$40.00', 'students' => '2.1k', 'lectures' => 9, 'resources' => 4, 'img' => 'https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1964&auto=format&fit=crop'],
+                        ['id' => 7, 'title' => 'Business Strategy 101', 'category' => 'Business', 'price' => '$49.00', 'students' => '900', 'lectures' => 7, 'resources' => 2, 'img' => 'https://images.unsplash.com/photo-1454165833767-131f72a1a7c1?q=80&w=2070&auto=format&fit=crop'],
+                        ['id' => 8, 'title' => 'Digital Photography Master', 'category' => 'Art', 'price' => '$25.00', 'students' => '1.5k', 'lectures' => 11, 'resources' => 5, 'img' => 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=2070&auto=format&fit=crop'],
                     ];
                 @endphp
 
@@ -471,9 +471,9 @@
                             </div>
 
                             <!-- CTA -->
-                            <a href="#"
+                            <a href="{{ route('courses.show', ['course' => $course['id']]) }}"
                                 class="block text-center mt-4 bg-slate-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-zilom-blue transition">
-                                Purchase Course
+                                View details
                             </a>
                         </div>
                     </div>
