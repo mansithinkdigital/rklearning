@@ -59,14 +59,9 @@
                         <p class="text-[13px] font-black text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">{{ $pdf->pdf_name }}</p>
                     </td>
                     <td class="px-10 py-8">
-                        <div class="flex flex-col gap-1">
-                            <span class="text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-widest bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 w-fit">
-                                {{ $pdf->course->name }}
-                            </span>
-                            <span class="text-[9px] font-bold text-slate-400">
-                                Package: {{ $pdf->package->package_name }}
-                            </span>
-                        </div>
+                        <span class="text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-widest bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 w-fit">
+                            {{ $pdf->course->name }}
+                        </span>
                     </td>
                     <td class="px-10 py-8">
                         <a href="{{ asset('admin/uploads/freepdf/' . $pdf->pdf_file) }}" target="_blank" class="w-10 h-10 flex items-center justify-center bg-red-50 dark:bg-red-900/10 text-red-600 rounded-xl hover:scale-110 transition-all border border-red-100 dark:border-red-800/20">
@@ -130,9 +125,8 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <!-- Course Select -->
-                        <div>
+                        <div class="col-span-1">
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Linked Course <span class="text-red-600">*</span></label>
                             <select name="course_id" id="course_id" required
                                 class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600 transition-all appearance-none cursor-pointer">
@@ -142,19 +136,6 @@
                                 @endforeach
                             </select>
                         </div>
-
-                        <!-- Package Select -->
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Linked Package <span class="text-red-600">*</span></label>
-                            <select name="package_id" id="package_id" required
-                                class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600 transition-all appearance-none cursor-pointer">
-                                <option value="">Choose Package</option>
-                                @foreach($packages as $package)
-                                <option value="{{ $package->id }}">{{ $package->package_name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
 
                     <!-- PDF Name -->
                     <div class="col-span-1">
@@ -255,7 +236,6 @@
             .then(data => {
                 document.getElementById('pdf_id_pk').value = data.id;
                 document.getElementById('course_id').value = data.course_id;
-                document.getElementById('package_id').value = data.package_id;
                 document.getElementById('pdf_name').value = data.pdf_name;
                 fileNameDisplay.innerText = `Current File: ${data.pdf_file}`;
             });

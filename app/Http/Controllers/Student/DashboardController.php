@@ -135,7 +135,13 @@ class DashboardController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . uniqid() . '.' . $image->extension();
-            $image->move(public_path('student/uploads/registerimg'), $imageName);
+            $path = public_path('student/uploads/registerimg');
+            
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+            
+            $image->move($path, $imageName);
             $imagePath = 'student/uploads/registerimg/' . $imageName;
         }
 

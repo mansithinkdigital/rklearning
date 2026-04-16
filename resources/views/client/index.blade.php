@@ -441,20 +441,16 @@
 
                         <!-- Image -->
                         <div class="relative overflow-hidden">
-                            <img src="{{ $course->image }}" alt="{{ $course->name }}"
+                            <img src="{{ asset('admin/uploads/courseimg/'.$course->image)     }}" alt="{{ $course->name }}"
                                 class="w-full h-52 object-cover group-hover:scale-105 transition duration-300">
-
                         </div>
-
                         <!-- Content -->
                         <div class="p-5">
-
                             <!-- Title -->
                             <h3
                                 class="font-semibold text-slate-900 mb-4 line-clamp-2 min-h-[48px] group-hover:text-zilom-blue transition">
                                 {{ $course->name }}
                             </h3>
-
                             <!-- Free Content Info -->
                             <div class="flex items-center justify-between text-sm text-slate-600 mb-4">
                                 <div class="flex items-center gap-1">
@@ -466,7 +462,6 @@
                                     <span><strong>5</strong> resources</span>
                                 </div>
                             </div>
-
                             <!-- Footer -->
                             <div class="flex items-center justify-between pt-4 border-t border-slate-100">
                                 <span class="text-zilom-blue font-bold text-lg">
@@ -478,7 +473,6 @@
                                     {{ $course->students_count ?? $course->students->count() }}
                                 </div>
                             </div>
-
                             <!-- CTA -->
                             <a href="{{ route('courses.show', $course->id) }}"
                                 class="block text-center mt-4 bg-slate-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-zilom-blue transition">

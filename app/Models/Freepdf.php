@@ -9,7 +9,6 @@ class Freepdf extends Model
     protected $table = 'free_pdfs';
     protected $fillable = [
         'course_id',
-        'package_id',
         'pdf_name',
         'pdf_file',
     ];
@@ -17,10 +16,5 @@ class Freepdf extends Model
     public function course()
     {
         return $this->belongsTo(Course::class);
-    }
-
-    public function package()
-    {
-        return $this->belongsTo(Package::class);
     }
 }

@@ -15,12 +15,10 @@ return new class extends Migration
             $table->id();
             // Foreign Keys
             $table->unsignedBigInteger('course_id');
-            $table->unsignedBigInteger('package_id');
             $table->string('pdf_name');
             $table->string('pdf_file');
             // Foreign Key Constraints
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
-            $table->foreign('package_id')->references('id')->on('packages')->onDelete('cascade');
             $table->timestamps();
         });
     }

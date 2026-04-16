@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Freepdf;
 use App\Models\Course;
-use App\Models\Package;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 
@@ -14,17 +13,15 @@ class FreePdfController extends Controller
 {
     public function index()
     {
-        $freePdfs = Freepdf::with(['course', 'package'])->latest()->get();
+        $freePdfs = Freepdf::with(['course'])->latest()->get();
         $courses = Course::where('status', 'Active')->get();
-        $packages = Package::all();
-        return view('admin.pages.freepdf.index', compact('freePdfs', 'courses', 'packages'));
+        return view('admin.pages.freepdf.index', compact('freePdfs', 'courses'));
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'course_id' => 'required|exists:courses,id',
-            'package_id' => 'required|exists:packages,id',
             'pdf_name' => 'required|string|max:255',
             'pdf_file' => 'required|mimes:pdf|max:10240', // Max 10MB
         ]);
@@ -68,7 +65,6 @@ class FreePdfController extends Controller
 
         $validator = Validator::make($request->all(), [
             'course_id' => 'required|exists:courses,id',
-            'package_id' => 'required|exists:packages,id',
             'pdf_name' => 'required|string|max:255',
             'pdf_file' => 'nullable|mimes:pdf|max:10240',
         ]);

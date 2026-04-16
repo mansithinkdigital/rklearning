@@ -61,6 +61,23 @@
                 /* 20 * 4px */
             }
         }
+
+        /* Summernote List Fix */
+        .note-editable ul {
+            list-style-type: disc !important;
+            padding-left: 20px !important;
+            margin: 10px 0 !important;
+        }
+
+        .note-editable ol {
+            list-style-type: decimal !important;
+            padding-left: 20px !important;
+            margin: 10px 0 !important;
+        }
+
+        .note-editable li {
+            display: list-item !important;
+        }
     </style>
     @stack('styles')
 </head>

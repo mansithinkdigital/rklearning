@@ -198,6 +198,7 @@
     const submitBtn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
     const imagePreview = document.getElementById('imagePreview');
+
     function showAlert(type, message) {
         const container = document.getElementById('alertContainer');
         const box = document.getElementById('alertBox');
@@ -232,17 +233,41 @@
         }
     }
 
+    function initSummernote() {
+        $('#long_description').summernote({
+            height: 250,
+            placeholder: 'Write full course details...',
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                ['fontname', ['fontname']], // ✅ font family
+                ['fontsize', ['fontsize']], // ✅ font size
+                ['color', ['color']], // ✅ text color
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview']]
+            ],
+            fontNames: [
+                'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New',
+                'Helvetica', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana'
+            ],
+            fontSizes: ['10', '12', '14', '16', '18', '24', '36'],
+        });
+    }
+
+    // Call on page load
+    initSummernote();
+
     function openCourseModal(isEdit = false) {
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
-        setTimeout(() => {
-            if (!$('#long_description').next().hasClass('note-editor')) {
-                $('#long_description').summernote({
-                    height: 200,
-                    placeholder: 'Write full course details...',
-                });
-            }
-        }, 200);
+        
+        // Ensure Summernote is initialized with full config
+        if (!$('#long_description').next().hasClass('note-editor')) {
+            initSummernote();
+        }
+
         if (!isEdit) {
             form.reset();
             document.getElementById('course_id_pk').value = '';
@@ -332,33 +357,5 @@
                 });
         }
     }
-    $('#long_description').summernote({
-        height: 250,
-        placeholder: 'Write full course details...',
-        toolbar: [
-            ['style', ['style']],
-            ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
-            ['fontname', ['fontname']], // ✅ font family
-            ['fontsize', ['fontsize']], // ✅ font size
-            ['color', ['color']], // ✅ text color
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['height', ['height']],
-            ['insert', ['link', 'picture', 'video']],
-            ['view', ['fullscreen', 'codeview']]
-        ],
-        fontNames: [
-            'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New',
-            'Helvetica', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana'
-        ],
-        fontSizes: ['10', '12', '14', '16', '18', '24', '36'],
-        callbacks: {
-            onPaste: function(e) {
-                e.preventDefault();
-                let text = (e.originalEvent || e).clipboardData.getData('text/plain');
-                // ✅ paste only plain text (removes all fonts/styles)
-                document.execCommand('insertText', false, text);
-            }
-        }
-    });
 </script>
 @endsection
