@@ -31,7 +31,7 @@
             @forelse($courses as $course)
             <div class="course-card">
                 <div class="relative">
-                    <img src="{{ $course->image }}" alt="{{ $course->name }}" class="course-img">
+                    <img src="{{ asset($course->image) }}" alt="{{ $course->name }}" class="course-img">
                 </div>
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-4">

@@ -34,7 +34,7 @@
             <thead>
                 <tr class="border-b border-slate-50 dark:border-slate-800">
                     <th class="px-8 py-6 text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.2em]">Course & Title</th>
-                    <th class="px-8 py-6 text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.2em]">Unit</th>
+                    <th class="px-8 py-6 text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.2em]">Subject & Unit</th>
                     <th class="px-8 py-6 text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.2em]">Material (PDF)</th>
                     <th class="px-8 py-6 text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.2em]">
                         Video Link
@@ -51,9 +51,13 @@
                             <span class="text-sm font-bold text-slate-700 dark:text-slate-200">{{ $video->title }}</span>
                         </div>
                     </td>
-                    <td class="px-8 py-6 text-sm font-bold text-slate-500 dark:text-slate-400">
-                        {{ $video->unit }}
+                    <td class="px-8 py-6">
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">{{ $video->unit->subject->name ?? 'N/A' }}</span>
+                            <span class="text-sm font-bold text-slate-500 dark:text-slate-400">{{ $video->unit->name ?? 'N/A' }}</span>
+                        </div>
                     </td>
+                    <td class="px-8 py-6 text-sm font-bold text-slate-500 dark:text-slate-400">
                     <td class="px-8 py-6">
                         @if($video->pdf)
                         <a href="{{ asset($video->pdf) }}" target="_blank" class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-500 rounded-lg text-xs font-bold hover:bg-red-100 transition-colors">
@@ -114,20 +118,28 @@
             @csrf
             <div class="col-span-2">
                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Select Course</label>
-                <select name="course_id" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 transition-all">
+                <select name="course_id" id="create_course_id" required onchange="loadSubjects(this.value, 'create_subject_id')" class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 transition-all">
                     <option value="">Choose Course</option>
                     @foreach($courses as $course)
                     <option value="{{ $course->id }}">{{ $course->name }}</option>
                     @endforeach
                 </select>
             </div>
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Select Subject</label>
+                <select id="create_subject_id" required onchange="loadUnits(this.value, 'create_unit_id')" class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 transition-all">
+                    <option value="">First Choose Course</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Select Unit</label>
+                <select name="unit_id" id="create_unit_id" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 transition-all">
+                    <option value="">First Choose Subject</option>
+                </select>
+            </div>
             <div class="col-span-2">
                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Title</label>
                 <input type="text" name="title" required placeholder="Video Title" class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 transition-all">
-            </div>
-            <div>
-                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Unit</label>
-                <input type="text" name="unit" required placeholder="e.g. Unit 1" class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 transition-all">
             </div>
             <div>
                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">PDF Material</label>
@@ -160,19 +172,30 @@
             @method('PUT')
             <div class="col-span-2">
                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Select Course</label>
-                <select name="course_id" id="edit-course_id" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 transition-all">
+                <select name="course_id" id="edit-course_id" required onchange="loadSubjects(this.value, 'edit-subject_id')" class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 transition-all">
                     @foreach($courses as $course)
                     <option value="{{ $course->id }}">{{ $course->name }}</option>
                     @endforeach
                 </select>
             </div>
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Select Subject</label>
+                <select id="edit-subject_id" required onchange="loadUnits(this.value, 'edit-unit_id')" class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 transition-all">
+                    <option value="">Choose Subject</option>
+                    @foreach($subjects as $subject)
+                    <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Select Unit</label>
+                <select name="unit_id" id="edit-unit_id" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 transition-all">
+                    <option value="">Choose Unit</option>
+                </select>
+            </div>
             <div class="col-span-2">
                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Title</label>
                 <input type="text" name="title" id="edit-title" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 transition-all">
-            </div>
-            <div>
-                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Unit</label>
-                <input type="text" name="unit" id="edit-unit" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 transition-all">
             </div>
             <div>
                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">
@@ -216,14 +239,60 @@
         document.body.style.overflow = 'auto';
     }
 
-    function editPaidVideo(video) {
+    async function loadSubjects(courseId, targetId, selectedId = null) {
+        const target = document.getElementById(targetId);
+        target.innerHTML = '<option value="">Loading...</option>';
+        try {
+            const response = await fetch(`/admin/get-subjects/${courseId}`);
+            const subjects = await response.json();
+            target.innerHTML = '<option value="">Choose Subject</option>';
+            subjects.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.id;
+                opt.textContent = s.name;
+                if (selectedId && s.id == selectedId) opt.selected = true;
+                target.appendChild(opt);
+            });
+            if (selectedId) loadUnits(selectedId, targetId.replace('subject', 'unit'));
+        } catch (e) {
+            target.innerHTML = '<option value="">Error loading</option>';
+        }
+    }
+
+    async function loadUnits(subjectId, targetId, selectedId = null) {
+        const target = document.getElementById(targetId);
+        target.innerHTML = '<option value="">Loading...</option>';
+        try {
+            const response = await fetch(`/admin/get-units-by-subject/${subjectId}`);
+            const units = await response.json();
+            target.innerHTML = '<option value="">Choose Unit</option>';
+            units.forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = u.id;
+                opt.textContent = u.name;
+                if (selectedId && u.id == selectedId) opt.selected = true;
+                target.appendChild(opt);
+            });
+        } catch (e) {
+            target.innerHTML = '<option value="">Error loading</option>';
+        }
+    }
+
+    async function editPaidVideo(video) {
         const form = document.getElementById('edit-paid-video-form');
         form.action = `/admin/paid-video/${video.id}`;
 
         document.getElementById('edit-course_id').value = video.course_id;
         document.getElementById('edit-title').value = video.title;
-        document.getElementById('edit-unit').value = video.unit;
         document.getElementById('edit-video_url').value = video.video_url;
+
+        // Load subjects and units
+        if (video.unit && video.unit.subject_id) {
+            await loadSubjects(video.course_id, 'edit-subject_id', video.unit.subject_id);
+            await loadUnits(video.unit.subject_id, 'edit-unit_id', video.unit_id);
+        } else {
+            loadSubjects(video.course_id, 'edit-subject_id');
+        }
 
         // ✅ Handle existing PDF
         const pdfDiv = document.getElementById('current-pdf');
@@ -258,3 +327,4 @@
     });
 </script>
 @endsection
+on

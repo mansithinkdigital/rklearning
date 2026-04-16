@@ -158,14 +158,25 @@ class DashboardController extends Controller
     public function learning($course_id)
     {
         $user = Auth::user();
-        // In real app, fetch course and current progress here
-        return view('student.learning.player', compact('user', 'course_id'));
+        $course = Course::with([
+            'subjects.units.topics',
+            'subjects.units.paidVideos',
+            'subjects.units.freePdfs'
+        ])->findOrFail($course_id);
+        
+        return view('student.learning.player', compact('user', 'course'));
     }
 
     public function exams()
     {
         $user = Auth::user();
-        return view('student.exams.index', compact('user'));
+        $enrolledCourses = $user->courses()->get();
+        
+        $courseSubjects = \App\Models\CourseSubject::whereIn('course_id', $enrolledCourses->pluck('id'))
+            ->with(['subject', 'course', 'mcqs'])
+            ->get();
+
+        return view('student.exams.index', compact('user', 'courseSubjects'));
     }
 
     /**

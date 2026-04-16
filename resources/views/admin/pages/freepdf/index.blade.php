@@ -44,7 +44,7 @@
                 <tr class="bg-slate-50/50 dark:bg-slate-800/20 border-b border-slate-100 dark:border-slate-800">
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">ID</th>
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Document Name</th>
-                    <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Linked To</th>
+                    <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Hierarchy Links</th>
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">PDF</th>
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-right">Actions</th>
                 </tr>
@@ -59,9 +59,23 @@
                         <p class="text-[13px] font-black text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">{{ $pdf->pdf_name }}</p>
                     </td>
                     <td class="px-10 py-8">
+<<<<<<< Updated upstream
                         <span class="text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-widest bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 w-fit">
                             {{ $pdf->course->name }}
                         </span>
+=======
+                        <div class="flex flex-col gap-1">
+                            <span class="text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-widest bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 w-fit">
+                                {{ $pdf->course->name }}
+                            </span>
+                            <span class="text-[9px] font-bold text-slate-500 uppercase tracking-tighter">
+                                {{ $pdf->unit->subject->name ?? 'No Subject' }} > {{ $pdf->unit->name ?? 'No Unit' }}
+                            </span>
+                            <span class="text-[9px] font-bold text-slate-400">
+                                Package: {{ $pdf->package->package_name }}
+                            </span>
+                        </div>
+>>>>>>> Stashed changes
                     </td>
                     <td class="px-10 py-8">
                         <a href="{{ asset('admin/uploads/freepdf/' . $pdf->pdf_file) }}" target="_blank" class="w-10 h-10 flex items-center justify-center bg-red-50 dark:bg-red-900/10 text-red-600 rounded-xl hover:scale-110 transition-all border border-red-100 dark:border-red-800/20">
@@ -70,7 +84,7 @@
                     </td>
                     <td class="px-10 py-8 text-right">
                         <div class="flex items-center justify-end gap-2">
-                            <button onclick="editFreePdf({{ $pdf->id }})" class="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-800 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all border border-slate-200 dark:border-slate-700">
+                            <button onclick='editFreePdf(@json($pdf))' class="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-800 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all border border-slate-200 dark:border-slate-700">
                                 <i data-lucide="edit-3" class="w-4 h-4"></i>
                             </button>
                             <button onclick="deleteFreePdf({{ $pdf->id }})" class="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-800 text-slate-500 hover:text-red-600 dark:hover:text-red-400 rounded-xl transition-all border border-slate-200 dark:border-slate-700">
@@ -128,7 +142,7 @@
                         <!-- Course Select -->
                         <div class="col-span-1">
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Linked Course <span class="text-red-600">*</span></label>
-                            <select name="course_id" id="course_id" required
+                            <select name="course_id" id="course_id" required onchange="loadSubjects(this.value, 'subject_id')"
                                 class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600 transition-all appearance-none cursor-pointer">
                                 <option value="">Choose Course</option>
                                 @foreach($courses as $course)
@@ -137,6 +151,40 @@
                             </select>
                         </div>
 
+<<<<<<< Updated upstream
+=======
+                        <!-- Package Select -->
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Linked Package <span class="text-red-600">*</span></label>
+                            <select name="package_id" id="package_id" required
+                                class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600 transition-all appearance-none cursor-pointer">
+                                <option value="">Choose Package</option>
+                                @foreach($packages as $package)
+                                <option value="{{ $package->id }}">{{ $package->package_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Subject Select -->
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Linked Subject <span class="text-red-600">*</span></label>
+                            <select id="subject_id" required onchange="loadUnits(this.value, 'unit_id')"
+                                class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600 transition-all appearance-none cursor-pointer">
+                                <option value="">First Choose Course</option>
+                            </select>
+                        </div>
+
+                        <!-- Unit Select -->
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Linked Unit <span class="text-red-600">*</span></label>
+                            <select name="unit_id" id="unit_id" required
+                                class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600 transition-all appearance-none cursor-pointer">
+                                <option value="">First Choose Subject</option>
+                            </select>
+                        </div>
+                    </div>
+
+>>>>>>> Stashed changes
                     <!-- PDF Name -->
                     <div class="col-span-1">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Document Display Title <span class="text-red-600">*</span></label>
@@ -220,17 +268,52 @@
         }
     }
 
-    function closeFreePdfModal() {
-        modal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
+    async function loadSubjects(courseId, targetId, selectedId = null) {
+        const target = document.getElementById(targetId);
+        target.innerHTML = '<option value="">Loading...</option>';
+        try {
+            const response = await fetch(`/admin/get-subjects/${courseId}`);
+            const subjects = await response.json();
+            target.innerHTML = '<option value="">Choose Subject</option>';
+            subjects.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.id;
+                opt.textContent = s.name;
+                if (selectedId && s.id == selectedId) opt.selected = true;
+                target.appendChild(opt);
+            });
+            if (selectedId) loadUnits(selectedId, targetId.replace('subject', 'unit'));
+        } catch (e) {
+            target.innerHTML = '<option value="">Error loading</option>';
+        }
     }
 
-    function editFreePdf(id) {
+    async function loadUnits(subjectId, targetId, selectedId = null) {
+        const target = document.getElementById(targetId);
+        target.innerHTML = '<option value="">Loading...</option>';
+        try {
+            const response = await fetch(`/admin/get-units-by-subject/${subjectId}`);
+            const units = await response.json();
+            target.innerHTML = '<option value="">Choose Unit</option>';
+            units.forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = u.id;
+                opt.textContent = u.name;
+                if (selectedId && u.id == selectedId) opt.selected = true;
+                target.appendChild(opt);
+            });
+        } catch (e) {
+            target.innerHTML = '<option value="">Error loading</option>';
+        }
+    }
+
+    async function editFreePdf(pdf) {
         openFreePdfModal(true);
         modalTitle.innerText = 'Update Document';
         btnText.innerText = 'Update Changes';
         document.getElementById('pdfFileInput').required = false;
 
+<<<<<<< Updated upstream
         fetch(`/admin/free-pdf/${id}/edit`)
             .then(response => response.json())
             .then(data => {
@@ -239,6 +322,21 @@
                 document.getElementById('pdf_name').value = data.pdf_name;
                 fileNameDisplay.innerText = `Current File: ${data.pdf_file}`;
             });
+=======
+        document.getElementById('pdf_id_pk').value = pdf.id;
+        document.getElementById('course_id').value = pdf.course_id;
+        document.getElementById('package_id').value = pdf.package_id;
+        document.getElementById('pdf_name').value = pdf.pdf_name;
+        fileNameDisplay.innerText = `Current File: ${pdf.pdf_file}`;
+
+        // Load subjects and units
+        if (pdf.unit && pdf.unit.subject_id) {
+            await loadSubjects(pdf.course_id, 'subject_id', pdf.unit.subject_id);
+            await loadUnits(pdf.unit.subject_id, 'unit_id', pdf.unit_id);
+        } else {
+            loadSubjects(pdf.course_id, 'subject_id');
+        }
+>>>>>>> Stashed changes
     }
 
     form.onsubmit = async (e) => {

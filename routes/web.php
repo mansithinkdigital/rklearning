@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\VacancyController;
 use App\Http\Controllers\Auth\StudentAuthController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Admin\CourseMcqController;
+use App\Http\Controllers\Admin\UnitController;
+use App\Http\Controllers\Admin\TopicController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use \App\Http\Controllers\Admin\CourseSubjectController;
 use \App\Http\Controllers\Admin\SubjectMcqController;
@@ -62,6 +64,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('course', CourseController::class);
         // ------------------SUBJECT-----------------------------------//
         Route::resource('subject', SubjectController::class);
+<<<<<<< Updated upstream
+=======
+        // ------------------UNIT-----------------------------------//
+        Route::resource('unit', UnitController::class);
+        Route::get('subject/{subject}/units', [UnitController::class, 'index'])->name('subject.units.index');
+        // ------------------TOPIC-----------------------------------//
+        Route::resource('topic', TopicController::class);
+        Route::get('unit/{unit}/topics', [TopicController::class, 'index'])->name('unit.topics.index');
+        // ------------------PACKAGE-----------------------------------//
+        Route::resource('package', PackageController::class);
+        // ------------------COURSE PACKAGE-------------------------//
+        Route::resource('course-package', CoursePackageController::class);
+>>>>>>> Stashed changes
         // ------------------FREE PDF-----------------------------------//
         Route::resource('free-pdf', FreePdfController::class);
         // ------------------FREE VIDEO----------------------------------//
@@ -79,6 +94,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // ------------------COURSE SUBJECT & MCQ------------------------//
         Route::resource('course-subject', CourseSubjectController::class);
         Route::get('/get-subjects/{course_id}', [CourseSubjectController::class, 'getSubjects'])->name('course-subject.get-subjects');
+        Route::get('/get-units-by-subject/{subject_id}', [PaidVideoController::class, 'getUnits'])->name('get-units-by-subject');
         Route::get('course-subject/{courseSubject}/mcqs', [CourseMcqController::class, 'index'])->name('course-subject.mcqs.manage');
         Route::post('course-subject/{courseSubject}/mcqs', [CourseMcqController::class, 'store'])->name('course-subject.mcqs.store');
         Route::put('course-mcq/{courseMcq}', [CourseMcqController::class, 'update'])->name('course-mcq.update');

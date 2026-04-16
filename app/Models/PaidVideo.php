@@ -8,14 +8,19 @@ class PaidVideo extends Model
 {
     protected $fillable = [
         'course_id',
+        'unit_id',
         'title',
         'video_url',
-        'unit',
         'pdf',
     ];
 
     public function course()
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
     }
 }

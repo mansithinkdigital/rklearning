@@ -13,15 +13,29 @@ class FreePdfController extends Controller
 {
     public function index()
     {
+<<<<<<< Updated upstream
         $freePdfs = Freepdf::with(['course'])->latest()->get();
         $courses = Course::where('status', 'Active')->get();
         return view('admin.pages.freepdf.index', compact('freePdfs', 'courses'));
+=======
+        $freePdfs = Freepdf::with(['course', 'package', 'unit'])->latest()->get();
+        $courses = Course::where('status', 'Active')->get();
+        $packages = Package::all();
+        $units = \App\Models\Unit::all();
+        $subjects = \App\Models\Subject::all();
+        return view('admin.pages.freepdf.index', compact('freePdfs', 'courses', 'packages', 'units', 'subjects'));
+>>>>>>> Stashed changes
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'course_id' => 'required|exists:courses,id',
+<<<<<<< Updated upstream
+=======
+            'unit_id' => 'required|exists:units,id',
+            'package_id' => 'required|exists:packages,id',
+>>>>>>> Stashed changes
             'pdf_name' => 'required|string|max:255',
             'pdf_file' => 'required|mimes:pdf|max:10240', // Max 10MB
         ]);
@@ -65,6 +79,11 @@ class FreePdfController extends Controller
 
         $validator = Validator::make($request->all(), [
             'course_id' => 'required|exists:courses,id',
+<<<<<<< Updated upstream
+=======
+            'unit_id' => 'required|exists:units,id',
+            'package_id' => 'required|exists:packages,id',
+>>>>>>> Stashed changes
             'pdf_name' => 'required|string|max:255',
             'pdf_file' => 'nullable|mimes:pdf|max:10240',
         ]);

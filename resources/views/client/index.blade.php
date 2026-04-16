@@ -441,7 +441,11 @@
 
                         <!-- Image -->
                         <div class="relative overflow-hidden">
+<<<<<<< Updated upstream
                             <img src="{{ asset('admin/uploads/courseimg/'.$course->image)     }}" alt="{{ $course->name }}"
+=======
+                            <img src="{{ asset('admin/uploads/courseimg/'. $course->image) }}" alt="{{ $course->name }}"
+>>>>>>> Stashed changes
                                 class="w-full h-52 object-cover group-hover:scale-105 transition duration-300">
                         </div>
                         <!-- Content -->

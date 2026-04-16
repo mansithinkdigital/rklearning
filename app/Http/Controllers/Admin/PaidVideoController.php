@@ -5,25 +5,30 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Models\Unit;
+use App\Models\Subject;
+
 class PaidVideoController extends Controller
 {
     public function index()
     {
-        $videos = \App\Models\PaidVideo::with('course')->latest()->get();
+        $videos = \App\Models\PaidVideo::with(['course', 'unit'])->latest()->get();
         $courses = \App\Models\Course::all();
-        return view('admin.pages.paidvideo.index', compact('videos', 'courses'));
+        $subjects = Subject::all();
+        $units = Unit::all();
+        return view('admin.pages.paidvideo.index', compact('videos', 'courses', 'subjects', 'units'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'course_id' => 'required|exists:courses,id',
+            'unit_id' => 'required|exists:units,id',
             'title' => 'required|string|max:255',
             'video_url' => 'required|url',
-            'unit' => 'required|string|max:255',
             'pdf' => 'required|file|mimes:pdf|max:10240',
         ]);
-        $data = $request->all();
+        $data = $request->except(['unit']);
         if ($request->hasFile('pdf')) {
             $file = $request->file('pdf');
             $filename = time() . '_' . $file->getClientOriginalName();
@@ -38,13 +43,13 @@ class PaidVideoController extends Controller
     {
         $request->validate([
             'course_id' => 'required|exists:courses,id',
+            'unit_id' => 'required|exists:units,id',
             'title' => 'required|string|max:255',
             'video_url' => 'required|url',
-            'unit' => 'required|string|max:255',
             'pdf' => 'nullable|file|mimes:pdf|max:10240',
         ]);
         $video = \App\Models\PaidVideo::findOrFail($id);
-        $data = $request->all();
+        $data = $request->except(['unit']);
         if ($request->hasFile('pdf')) {
             // Delete old file if exists
             if ($video->pdf && file_exists(public_path($video->pdf))) {
@@ -54,8 +59,6 @@ class PaidVideoController extends Controller
             $filename = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('admin/uploads/paidpdf'), $filename);
             $data['pdf'] = 'admin/uploads/paidpdf/' . $filename;
-        } else {
-            $data['pdf'] = $video->pdf;
         }
         $video->update($data);
         return redirect()->back()->with('success', 'Paid video updated successfully.');
@@ -70,5 +73,11 @@ class PaidVideoController extends Controller
         }
         $video->delete();
         return redirect()->back()->with('success', 'Paid video deleted successfully.');
+    }
+
+    public function getUnits($subject_id)
+    {
+        $units = Unit::where('subject_id', $subject_id)->get();
+        return response()->json($units);
     }
 }

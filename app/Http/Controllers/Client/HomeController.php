@@ -43,7 +43,7 @@ class HomeController extends Controller
 
     public function courseDetail(Course $course)
     {
-        $course->load('paidVideos');
+        $course->load(['subjects.units.topics', 'subjects.units.paidVideos', 'subjects.units.freePdfs']);
         $user = Auth::user();
         $hasPurchased = $user ? $user->courses()->where('course_id', $course->id)->exists() : false;
 
