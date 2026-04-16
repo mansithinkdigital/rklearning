@@ -1,7 +1,6 @@
 @extends('layouts.client')
 
 @section('title', 'Browse Courses - Rk Learning Hub')
-
 @section('content')
 <!-- Search & Filter -->
 <section class="py-12 bg-white border-b">
@@ -26,7 +25,6 @@
         @php
             $enrolledCourseIds = Auth::check() ? auth()->user()->courses->modelKeys() : [];
         @endphp
-
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             @forelse($courses as $course)
             <div class="course-card">
@@ -52,7 +50,6 @@
                     </div>
                     <div class="border-t pt-4 space-y-3">
                         <a href="{{ route('courses.show', $course->id) }}" class="block text-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">View Details</a>
-
                         @auth
                             @if(in_array($course->id, $enrolledCourseIds))
                                 <a href="{{ route('student.learning', $course->id) }}" class="btn-primary w-full text-center block py-2 text-sm">Go to Course</a>
@@ -74,7 +71,6 @@
             </div>
             @endforelse
         </div>
-
         <div class="mt-16 flex justify-center space-x-2">
             <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white border text-slate-600 hover:bg-primary hover:text-white transition">1</a>
             <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-white">2</a>
