@@ -92,10 +92,7 @@
                             <span class="text-slate-700">{{ $course->price > 0 ? '₹'.number_format($course->price, 2) : 'Free' }}</span>
                             <span class="text-slate-400">{{ $course->students->count() }} enrolled</span>
                         </div>
-                        <form action="{{ route('student.courses.purchase', $course->id) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn-primary w-full text-center block py-2 text-sm">Purchase Course</button>
-                        </form>
+                        <a href="{{ route('student.courses.checkout', $course->id) }}" class="btn-primary w-full text-center block py-2 text-sm">Enroll Now</a>
                     </div>
                 </div>
             </div>

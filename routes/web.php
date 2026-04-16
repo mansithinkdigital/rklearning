@@ -43,6 +43,7 @@ Route::prefix('student')->name('student.')->group(function () {
     Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
         Route::get('/my-courses', [StudentDashboardController::class, 'courses'])->name('my-courses');
+        Route::get('/courses/{course}/checkout', [StudentDashboardController::class, 'checkout'])->name('courses.checkout');
         Route::post('/courses/{course}/purchase', [StudentDashboardController::class, 'purchaseCourse'])->name('courses.purchase');
         Route::get('/profile', [StudentDashboardController::class, 'profile'])->name('profile');
         Route::post('/profile', [StudentDashboardController::class, 'updateProfile'])->name('profile.update');

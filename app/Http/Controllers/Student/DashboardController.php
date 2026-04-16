@@ -99,6 +99,16 @@ class DashboardController extends Controller
         return view('student.courses.index', compact('user', 'enrolledCourses', 'availableCourses'));
     }
 
+    public function checkout(Course $course)
+    {
+        $user = Auth::user();
+        if ($user->courses()->where('course_id', $course->id)->exists()) {
+            return redirect()->route('student.learning', $course->id)->with('info', 'You already enrolled in this course.');
+        }
+
+        return view('client.checkout', compact('user', 'course'));
+    }
+
     public function purchaseCourse(Course $course)
     {
         $user = Auth::user();
