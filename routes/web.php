@@ -21,6 +21,8 @@ use \App\Http\Controllers\Admin\CourseSubjectController;
 use \App\Http\Controllers\Admin\SubjectMcqController;
 use \App\Http\Controllers\Admin\StudentController;
 use  \App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\CourseContentController;
+
 
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
@@ -62,21 +64,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('branch', BranchController::class);
         // ------------------COURSE-----------------------------------//
         Route::resource('course', CourseController::class);
+        Route::get('course/{course}/manage', [CourseContentController::class, 'manage'])->name('course.manage');
+
         // ------------------SUBJECT-----------------------------------//
         Route::resource('subject', SubjectController::class);
-<<<<<<< Updated upstream
-=======
         // ------------------UNIT-----------------------------------//
         Route::resource('unit', UnitController::class);
         Route::get('subject/{subject}/units', [UnitController::class, 'index'])->name('subject.units.index');
         // ------------------TOPIC-----------------------------------//
         Route::resource('topic', TopicController::class);
         Route::get('unit/{unit}/topics', [TopicController::class, 'index'])->name('unit.topics.index');
-        // ------------------PACKAGE-----------------------------------//
-        Route::resource('package', PackageController::class);
-        // ------------------COURSE PACKAGE-------------------------//
-        Route::resource('course-package', CoursePackageController::class);
->>>>>>> Stashed changes
         // ------------------FREE PDF-----------------------------------//
         Route::resource('free-pdf', FreePdfController::class);
         // ------------------FREE VIDEO----------------------------------//

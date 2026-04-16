@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Validator;
 
 class TopicController extends Controller
 {
-    public function index($unitId = null)
+    public function index(Request $request, $unitId = null)
     {
+        $unitId = $unitId ?? $request->unit_id;
+        
         if ($unitId) {
             $unit = Unit::with('subject.course')->findOrFail($unitId);
             $topics = Topic::where('unit_id', $unitId)->orderBy('order')->get();
@@ -28,6 +30,8 @@ class TopicController extends Controller
         $validator = Validator::make($request->all(), [
             'unit_id' => 'required|exists:units,id',
             'name' => 'required|string|max:255',
+            'video_url' => 'nullable|url',
+            'study_material' => 'nullable|file|mimes:pdf,doc,docx,zip|max:20480',
             'content' => 'nullable|string',
             'order' => 'nullable|integer',
         ]);
@@ -37,16 +41,31 @@ class TopicController extends Controller
         }
 
         try {
-            Topic::create($request->all());
+            $data = $request->except(['study_material', 'video_url']);
+            
+            if ($request->video_url) {
+                $data['video_id'] = $this->extractYouTubeVideoId($request->video_url);
+            }
+
+            if ($request->hasFile('study_material')) {
+                $file = $request->file('study_material');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('admin/uploads/material/'), $filename);
+                $data['study_material'] = $filename;
+            }
+
+            Topic::create($data);
             return response()->json(['status' => 'success', 'message' => 'Topic added successfully!']);
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => 'Something went wrong.'], 500);
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
 
     public function edit(string $id)
     {
         $topic = Topic::findOrFail($id);
+        // Transform video_id back to a full URL for the editor if needed, 
+        // or just let the editor handle the ID.
         return response()->json($topic);
     }
 
@@ -57,6 +76,8 @@ class TopicController extends Controller
         $validator = Validator::make($request->all(), [
             'unit_id' => 'required|exists:units,id',
             'name' => 'required|string|max:255',
+            'video_url' => 'nullable|url',
+            'study_material' => 'nullable|file|mimes:pdf,doc,docx,zip|max:20480',
             'content' => 'nullable|string',
             'order' => 'nullable|integer',
         ]);
@@ -66,10 +87,28 @@ class TopicController extends Controller
         }
 
         try {
-            $topic->update($request->all());
+            $data = $request->except(['study_material', 'video_url']);
+
+            if ($request->has('video_url')) {
+                $data['video_id'] = $this->extractYouTubeVideoId($request->video_url);
+            }
+
+            if ($request->hasFile('study_material')) {
+                // Delete old file if exists
+                if ($topic->study_material && file_exists(public_path('admin/uploads/material/' . $topic->study_material))) {
+                    unlink(public_path('admin/uploads/material/' . $topic->study_material));
+                }
+                
+                $file = $request->file('study_material');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('admin/uploads/material/'), $filename);
+                $data['study_material'] = $filename;
+            }
+
+            $topic->update($data);
             return response()->json(['status' => 'success', 'message' => 'Topic updated successfully!']);
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => 'Something went wrong.'], 500);
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -82,5 +121,17 @@ class TopicController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Something went wrong.'], 500);
         }
+    }
+
+    private function extractYouTubeVideoId($url)
+    {
+        if (!$url) return null;
+        
+        $pattern = '/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i';
+        if (preg_match($pattern, $url, $match)) {
+            return $match[1];
+        }
+        
+        return null;
     }
 }

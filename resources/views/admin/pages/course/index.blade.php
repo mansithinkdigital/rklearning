@@ -80,6 +80,14 @@
                     </td>
                     <td class="px-10 py-8 text-right">
                         <div class="flex items-center justify-end gap-2">
+                            <a href="{{ route('admin.course.manage', $course->id) }}" class="px-4 py-2 bg-blue-600 text-[10px] font-black uppercase tracking-widest text-white hover:bg-blue-700 rounded-xl transition-all shadow-lg shadow-blue-500/20 flex items-center gap-2">
+                                <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                                Manage Content
+                            </a>
+                            <a href="{{ route('admin.subject.index', ['course_id' => $course->id]) }}" class="px-4 py-2 bg-slate-50 dark:bg-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all border border-slate-200 dark:border-slate-700 flex items-center gap-2">
+                                <i data-lucide="list" class="w-3.5 h-3.5"></i>
+                                Subjects
+                            </a>
                             <button onclick="editCourse({{ $course->id }})" class="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-800 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all border border-slate-200 dark:border-slate-700">
                                 <i data-lucide="edit-3" class="w-4 h-4"></i>
                             </button>

@@ -10,11 +10,16 @@ use Illuminate\Support\Facades\Validator;
 
 class SubjectController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $subjects = Subject::with('course')->latest()->get();
+        $query = Subject::with('course');
+        if ($request->has('course_id')) {
+            $query->where('course_id', $request->course_id);
+        }
+        $subjects = $query->latest()->get();
         $courses = Course::where('status', 'Active')->get();
-        return view('admin.pages.subject.index', compact('subjects', 'courses'));
+        $selectedCourse = $request->course_id ? Course::find($request->course_id) : null;
+        return view('admin.pages.subject.index', compact('subjects', 'courses', 'selectedCourse'));
     }
 
     public function store(Request $request)

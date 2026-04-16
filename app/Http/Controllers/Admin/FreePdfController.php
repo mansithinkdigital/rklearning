@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Freepdf;
 use App\Models\Course;
+use App\Models\Unit;
+use App\Models\Subject;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 
@@ -13,29 +15,18 @@ class FreePdfController extends Controller
 {
     public function index()
     {
-<<<<<<< Updated upstream
-        $freePdfs = Freepdf::with(['course'])->latest()->get();
+        $freePdfs = Freepdf::with(['course', 'unit'])->latest()->get();
         $courses = Course::where('status', 'Active')->get();
-        return view('admin.pages.freepdf.index', compact('freePdfs', 'courses'));
-=======
-        $freePdfs = Freepdf::with(['course', 'package', 'unit'])->latest()->get();
-        $courses = Course::where('status', 'Active')->get();
-        $packages = Package::all();
-        $units = \App\Models\Unit::all();
-        $subjects = \App\Models\Subject::all();
-        return view('admin.pages.freepdf.index', compact('freePdfs', 'courses', 'packages', 'units', 'subjects'));
->>>>>>> Stashed changes
+        $units = Unit::all();
+        $subjects = Subject::all();
+        return view('admin.pages.freepdf.index', compact('freePdfs', 'courses', 'units', 'subjects'));
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'course_id' => 'required|exists:courses,id',
-<<<<<<< Updated upstream
-=======
             'unit_id' => 'required|exists:units,id',
-            'package_id' => 'required|exists:packages,id',
->>>>>>> Stashed changes
             'pdf_name' => 'required|string|max:255',
             'pdf_file' => 'required|mimes:pdf|max:10240', // Max 10MB
         ]);
@@ -69,7 +60,7 @@ class FreePdfController extends Controller
 
     public function edit(string $id)
     {
-        $freePdf = Freepdf::findOrFail($id);
+        $freePdf = Freepdf::with(['unit'])->findOrFail($id);
         return response()->json($freePdf);
     }
 
@@ -79,11 +70,7 @@ class FreePdfController extends Controller
 
         $validator = Validator::make($request->all(), [
             'course_id' => 'required|exists:courses,id',
-<<<<<<< Updated upstream
-=======
             'unit_id' => 'required|exists:units,id',
-            'package_id' => 'required|exists:packages,id',
->>>>>>> Stashed changes
             'pdf_name' => 'required|string|max:255',
             'pdf_file' => 'nullable|mimes:pdf|max:10240',
         ]);

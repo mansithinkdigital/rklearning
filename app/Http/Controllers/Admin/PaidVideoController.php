@@ -28,7 +28,10 @@ class PaidVideoController extends Controller
             'video_url' => 'required|url',
             'pdf' => 'required|file|mimes:pdf|max:10240',
         ]);
-        $data = $request->except(['unit']);
+        $data = $request->except(['unit', 'video_url']);
+        
+        $data['video_id'] = $this->extractYouTubeVideoId($request->video_url);
+
         if ($request->hasFile('pdf')) {
             $file = $request->file('pdf');
             $filename = time() . '_' . $file->getClientOriginalName();
@@ -49,7 +52,12 @@ class PaidVideoController extends Controller
             'pdf' => 'nullable|file|mimes:pdf|max:10240',
         ]);
         $video = \App\Models\PaidVideo::findOrFail($id);
-        $data = $request->except(['unit']);
+        $data = $request->except(['unit', 'video_url']);
+
+        if ($request->has('video_url')) {
+            $data['video_id'] = $this->extractYouTubeVideoId($request->video_url);
+        }
+
         if ($request->hasFile('pdf')) {
             // Delete old file if exists
             if ($video->pdf && file_exists(public_path($video->pdf))) {
@@ -62,6 +70,16 @@ class PaidVideoController extends Controller
         }
         $video->update($data);
         return redirect()->back()->with('success', 'Paid video updated successfully.');
+    }
+
+    private function extractYouTubeVideoId($url)
+    {
+        if (!$url) return null;
+        $pattern = '/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i';
+        if (preg_match($pattern, $url, $match)) {
+            return $match[1];
+        }
+        return null;
     }
 
     public function destroy(string $id)

@@ -3,9 +3,29 @@
 @section('title', 'Subject Management')
 
 @section('content')
-<div class="mb-12">
-    <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-none mb-2">SUBJECTS REPOSITORY</h1>
-    <p class="text-sm font-bold text-slate-400 dark:text-slate-500">Manage academic subjects and their parent courses</p>
+<div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div>
+        <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-none mb-2 uppercase">
+            @if($selectedCourse)
+                {{ $selectedCourse->name }} <span class="text-blue-600">Subjects</span>
+            @else
+                SUBJECTS REPOSITORY
+            @endif
+        </h1>
+        <p class="text-sm font-bold text-slate-400 dark:text-slate-500">
+            @if($selectedCourse)
+                Managing academic modules for the selected course
+            @else
+                Manage academic subjects and their parent courses
+            @endif
+        </p>
+    </div>
+    @if($selectedCourse)
+    <a href="{{ route('admin.course.index') }}" class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-colors">
+        <i data-lucide="arrow-left" class="w-3 h-3"></i>
+        Back to Courses
+    </a>
+    @endif
 </div>
 
 <!-- Custom Alert Container -->
@@ -30,12 +50,25 @@
     <div class="p-8 lg:p-10 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
         <div class="flex items-center gap-3">
             <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
-            <h2 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">Academic Subjects</h2>
+            <h2 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">
+                @if($selectedCourse)
+                    Course Modules
+                @else
+                    Academic Subjects
+                @endif
+            </h2>
         </div>
-        <button onclick="openSubjectModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-blue-200 dark:shadow-none flex items-center gap-3">
-            <i data-lucide="plus" class="w-5 h-5"></i>
-            Add New Subject
-        </button>
+        <div class="flex items-center gap-4">
+            @if($selectedCourse)
+            <a href="{{ route('admin.subject.index') }}" class="px-6 py-4 rounded-2xl border border-slate-100 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:bg-slate-50 transition-all">
+                Show All Subjects
+            </a>
+            @endif
+            <button onclick="openSubjectModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-blue-200 dark:shadow-none flex items-center gap-3">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+                Add New Subject
+            </button>
+        </div>
     </div>
     <div class="overflow-x-auto">
         <table class="w-full text-left">

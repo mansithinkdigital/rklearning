@@ -3,14 +3,38 @@
 @section('title', 'Unit Management')
 
 @section('content')
-<div class="mb-12">
-    <div class="flex items-center gap-4 mb-2">
-        <a href="{{ route('admin.subject.index') }}" class="text-slate-400 hover:text-blue-600 transition-colors">
-            <i data-lucide="arrow-left" class="w-6 h-6"></i>
-        </a>
-        <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-none">UNITS REPOSITORY</h1>
+<div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div>
+        <div class="flex items-center gap-2 mb-2">
+            @if(isset($subject))
+            <a href="{{ route('admin.subject.index', ['course_id' => $subject->course_id]) }}" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-colors">
+                {{ $subject->course->name }}
+            </a>
+            <i data-lucide="chevron-right" class="w-3 h-3 text-slate-300"></i>
+            <span class="text-[10px] font-black uppercase tracking-widest text-blue-600">{{ $subject->name }}</span>
+            @endif
+        </div>
+        <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-none mb-2 uppercase">
+            @if(isset($subject))
+                {{ $subject->name }} <span class="text-emerald-600">Units</span>
+            @else
+                UNITS REPOSITORY
+            @endif
+        </h1>
+        <p class="text-sm font-bold text-slate-400 dark:text-slate-500">
+            @if(isset($subject))
+                Structure your subject curriculum into manageable units
+            @else
+                Manage academic units and their parent subjects
+            @endif
+        </p>
     </div>
-    <p class="text-sm font-bold text-slate-400 dark:text-slate-500">Manage academic units for {{ isset($subject) ? $subject->name : 'all subjects' }}</p>
+    @if(isset($subject))
+    <a href="{{ route('admin.subject.index', ['course_id' => $subject->course_id]) }}" class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-colors">
+        <i data-lucide="arrow-left" class="w-3 h-3"></i>
+        Subject Modules
+    </a>
+    @endif
 </div>
 
 <!-- Custom Alert Container -->
@@ -34,13 +58,26 @@
 <div class="bg-white dark:bg-[#0b1120] rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
     <div class="p-8 lg:p-10 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
         <div class="flex items-center gap-3">
-            <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
-            <h2 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">Academic Units</h2>
+            <div class="w-1.5 h-8 bg-emerald-600 rounded-full"></div>
+            <h2 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">
+                @if(isset($subject))
+                    Subject Units
+                @else
+                    Academic Units
+                @endif
+            </h2>
         </div>
-        <button onclick="openUnitModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-blue-200 dark:shadow-none flex items-center gap-3">
-            <i data-lucide="plus" class="w-5 h-5"></i>
-            Add New Unit
-        </button>
+        <div class="flex items-center gap-4">
+            @if(isset($subject))
+            <a href="{{ route('admin.unit.index') }}" class="px-6 py-4 rounded-2xl border border-slate-100 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:bg-slate-50 transition-all">
+                Show All Units
+            </a>
+            @endif
+            <button onclick="openUnitModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-emerald-200 dark:shadow-none flex items-center gap-3">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+                Add New Unit
+            </button>
+        </div>
     </div>
     <div class="overflow-x-auto">
         <table class="w-full text-left">

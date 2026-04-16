@@ -75,11 +75,11 @@
                         </div>
                         <h4 class="font-bold text-slate-800 mb-2 truncate">{{ $course->name }}</h4>
                         <div class="flex items-center justify-between text-xs font-bold">
-                            <span class="text-blue-600">Progress</span>
-                            <span class="text-slate-400">{{ $course->subjects_count }} Lessons</span>
+                            <span class="text-blue-600">Modules</span>
+                            <span class="text-slate-400">{{ $course->subjects->sum(fn($s) => $s->units->count()) }} Units Total</span>
                         </div>
                         <div class="w-full bg-slate-200 h-1.5 rounded-full mt-2">
-                            <div class="bg-blue-600 h-1.5 rounded-full w-[10%]"></div>
+                            <div class="bg-blue-600 h-1.5 rounded-full w-[25%] transition-all duration-1000"></div>
                         </div>
                     </div>
                 @empty

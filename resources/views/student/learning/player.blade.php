@@ -3,155 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $course->name }} - Learning Player | RK Learning Hub</title>
+    <title>{{ $course->name }} - Academic Player | RK Learning Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Outfit', sans-serif; background-color: #0F172A; color: white; overflow: hidden; }
-        .sidebar { width: 400px; height: 100vh; overflow-y: auto; background: #111827; border-l: 1px solid #1f2937; }
-        .main-player { flex: 1; height: 100vh; overflow-y: auto; background: #0b0f1a; }
-        .subject-container { border-bottom: 1px solid #1f2937; }
-        .unit-container { background: #1e293b50; margin: 4px; border-radius: 12px; }
-        .topic-item { cursor: pointer; transition: all 0.2s; border-radius: 8px; margin: 2px 8px; }
-        .topic-item:hover { background: #334155; }
-        .topic-item.active { background: #2563eb; color: white; }
-        .material-item { cursor: pointer; transition: all 0.2s; border-radius: 8px; margin: 2px 8px; border: 1px dashed #334155; }
-        .material-item:hover { background: #1e293b; border-color: #60a5fa; }
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background-color: #f8fafc; 
+            color: #0f172a; 
+            overflow: hidden; 
+        }
+        .sidebar { 
+            width: 420px; 
+            height: 100vh; 
+            overflow-y: auto; 
+            background: #ffffff; 
+            border-left: 1px solid #e2e8f0; 
+            box-shadow: -10px 0 30px rgba(0,0,0,0.02);
+            z-index: 50;
+        }
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                right: -420px;
+                transition: right 0.3s ease;
+            }
+            .sidebar.active {
+                right: 0;
+            }
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.5);
+                backdrop-filter: blur(4px);
+                z-index: 40;
+            }
+            .sidebar-overlay.active {
+                display: block;
+            }
+        }
+        .main-player { 
+            flex: 1; 
+            height: 100vh; 
+            overflow-y: auto; 
+            background: #f8fafc; 
+        }
+        .subject-container { 
+            border-bottom: 1px solid #f1f5f9; 
+        }
+        .unit-card { 
+            background: #f8fafc; 
+            margin: 8px 12px; 
+            border-radius: 20px; 
+            border: 1px solid #f1f5f9;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .unit-card:hover {
+            border-color: #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        .topic-link { 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            border-radius: 12px; 
+            margin: 2px 8px; 
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.825rem;
+        }
+        .topic-link:hover { 
+            background: #f1f5f9; 
+            color: #0f172a;
+        }
+        .topic-link.active { 
+            background: #2563eb; 
+            color: white; 
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+        }
+        .material-link { 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            border-radius: 16px; 
+            margin: 4px 8px; 
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1.5px dashed #e2e8f0;
+        }
+        .material-link:hover { 
+            background: #ffffff; 
+            border-color: #2563eb; 
+            border-style: solid;
+            transform: translateY(-1px);
+        }
         
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0F172A; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #f1f5f9;
+        }
     </style>
 </head>
 <body class="flex flex-col md:flex-row h-screen">
     <!-- Main Content Player -->
-    <div class="main-player p-6 md:p-10 flex flex-col">
-        <div class="flex items-center justify-between mb-8">
-            <a href="{{ route('student.dashboard') }}" class="flex items-center space-x-2 text-slate-400 hover:text-white transition group">
-                <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform"></i>
-                <span class="font-bold text-sm">EXIT TO DASHBOARD</span>
-            </a>
-            <div id="material-header" class="hidden flex items-center gap-4">
-                <span class="px-3 py-1 bg-blue-600/20 text-blue-400 text-[10px] font-black uppercase tracking-widest rounded-full border border-blue-500/30">Now Viewing</span>
-            </div>
-        </div>
-
-        <!-- Media Display Area -->
-        <div id="player-container" class="aspect-video bg-slate-900 rounded-[2.5rem] overflow-hidden mb-10 shadow-2xl relative border border-slate-800">
-            <!-- Default Placeholder -->
-            <div id="placeholder-content" class="absolute inset-0 flex flex-col items-center justify-center text-center p-10">
-                <div class="w-24 h-24 bg-blue-600/10 rounded-full flex items-center justify-center mb-6 animate-pulse">
-                    <i data-lucide="play" class="w-12 h-12 text-blue-500 fill-current"></i>
+    <div class="main-player flex flex-col">
+        <!-- Header -->
+        <header class="glass-header px-6 md:px-10 py-5 flex items-center justify-between sticky top-0 z-20">
+            <div class="flex items-center gap-4 md:gap-6">
+                <a href="{{ route('student.dashboard') }}" class="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-all bg-slate-50 px-3 md:px-4 py-2.5 rounded-xl border border-slate-100">
+                    <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Dashboard</span>
+                </a>
+                <div class="h-4 w-px bg-slate-200 hidden sm:block"></div>
+                <div id="material-indicator" class="hidden flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-blue-600">Active Session</span>
                 </div>
-                <h2 class="text-2xl font-black mb-2 uppercase tracking-tight">Select a Topic to Start</h2>
-                <p class="text-slate-500 max-w-sm font-medium">Choose a subject and unit from the curriculum sidebar to begin your learning journey.</p>
             </div>
-
-            <!-- Video Player iframe (hidden initially) -->
-            <iframe id="video-frame" class="hidden w-full h-full border-none" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
             
-            <!-- PDF Viewer (hidden initially) -->
-            <object id="pdf-frame" class="hidden w-full h-full" data="" type="application/pdf">
-                <div class="flex flex-col items-center justify-center h-full p-10">
-                    <p class="text-slate-400 mb-4">PDF Preview not available</p>
-                    <a id="pdf-download-link" href="#" class="px-6 py-3 bg-blue-600 rounded-xl font-bold">Download PDF Instead</a>
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2.5 rounded-xl text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 p-0.5">
+                    <div class="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+                        <img src="{{ $user->image ? asset($user->image) : 'https://ui-avatars.com/api/?name='.urlencode($user->name) }}" class="w-full h-full object-cover">
+                    </div>
                 </div>
-            </object>
-        </div>
+            </div>
+        </header>
 
-        <!-- Content Details Area -->
-        <div id="content-details" class="max-w-5xl">
-            <div id="text-content" class="hidden">
-                <div class="flex items-center gap-3 mb-4">
-                    <span id="label-unit" class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-500">Unit 1</span>
-                    <span class="text-slate-600">•</span>
-                    <span id="label-subject" class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Subject Name</span>
+        <div class="p-6 md:p-10 flex-1">
+            <!-- Media Display Area -->
+            <div id="player-container" class="aspect-video bg-slate-900 rounded-2xl md:rounded-[3rem] overflow-hidden mb-8 md:mb-12 shadow-2xl relative ring-4 md:ring-8 ring-white">
+                <!-- Loader -->
+                <div id="player-loader" class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-900/90 backdrop-blur-sm">
+                    <div class="relative">
+                        <div class="w-16 h-16 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i data-lucide="play" class="w-6 h-6 text-blue-500 fill-blue-500 animate-pulse"></i>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-xs font-black uppercase tracking-[0.2em] text-blue-400 animate-pulse">Initializing Media...</p>
                 </div>
-                <h1 id="content-title" class="text-4xl font-black mb-6 tracking-tight">Select a lesson</h1>
-                <div id="content-body" class="text-slate-400 leading-relaxed text-lg space-y-4 font-medium">
-                    <!-- Dynamic Content -->
+
+                <!-- YouTube/Video State -->
+                <iframe 
+                    id="video-frame" 
+                    class="hidden w-full h-full border-none"
+                    src=""
+                    allow="autoplay; fullscreen"
+                    allowfullscreen
+                    referrerpolicy="strict-origin-when-cross-origin">
+                </iframe>                
+                
+                <!-- PDF State -->
+                <object id="pdf-frame" class="hidden w-full h-full" data="" type="application/pdf">
+                    <div class="flex flex-col items-center justify-center h-full p-20 text-center text-white">
+                        <div class="w-20 h-20 bg-slate-800 rounded-3xl flex items-center justify-center mb-6">
+                            <i data-lucide="file-warning" class="w-10 h-10 text-slate-500"></i>
+                        </div>
+                        <h4 class="font-black uppercase tracking-widest text-sm mb-4">PDF Preview Unavailable</h4>
+                        <a id="pdf-download-link" href="#" class="px-8 py-4 bg-blue-600 rounded-2xl text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-blue-500/20 hover:scale-105 transition-all">Download Reference</a>
+                    </div>
+                </object>
+
+                <!-- Welcome State -->
+                <div id="placeholder-content" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 md:p-20 bg-gradient-to-br from-slate-900 to-indigo-950">
+                    <div class="relative mb-6 md:mb-10">
+                        <div class="absolute inset-0 bg-blue-500 rounded-full blur-[80px] opacity-20 animate-pulse"></div>
+                        <div class="relative w-20 h-20 md:w-28 md:h-28 bg-white/5 rounded-full flex items-center justify-center border border-white/10 backdrop-blur-3xl">
+                            <i data-lucide="play" class="w-8 h-8 md:w-12 md:h-12 text-blue-400 fill-blue-400/20"></i>
+                        </div>
+                    </div>
+                    <h2 class="text-xl md:text-3xl font-black text-white mb-4 uppercase tracking-tighter">Ready to Learn?</h2>
+                    <p class="text-slate-400 max-w-sm font-bold text-[10px] md:text-[11px] uppercase tracking-[0.2em] leading-loose opacity-70">Pick a module from the curriculum catalog to launch the learning interface.</p>
+                </div>
+            </div>
+
+            <!-- Content Info Area -->
+            <div id="content-details" class="max-w-4xl mx-auto hidden animate-in slide-in-from-bottom-5 duration-700">
+                <div class="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+                    <div id="type-icon-box" class="w-12 h-12 rounded-2xl flex items-center justify-center text-white shrink-0">
+                        <i data-lucide="book-open" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1 flex-wrap">
+                            <span id="label-subject" class="text-[9px] font-black uppercase tracking-widest text-slate-400 tracking-[0.2em]">General Subject</span>
+                            <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                            <span id="label-unit" class="text-[9px] font-black uppercase tracking-widest text-blue-500 tracking-[0.2em]">Introductory Unit</span>
+                        </div>
+                        <h1 id="content-title" class="text-2xl md:text-4xl font-black text-slate-900 tracking-tight leading-tight uppercase">Lesson Header</h1>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-3xl md:rounded-[2.5rem] p-6 md:p-14 border border-slate-100 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-20"></div>
+                    <div id="content-body" class="prose prose-slate max-w-none text-slate-600 font-medium leading-relaxed prose-sm md:prose-base">
+                        <!-- Summernote content will render here -->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Hierarchy Sidebar -->
-    <aside class="sidebar flex flex-col shadow-2xl">
-        <div class="p-8 border-b border-slate-800 bg-[#111827]">
-            <h2 class="text-[11px] font-black text-blue-500 uppercase tracking-[0.2em] mb-2">Curriculum</h2>
-            <h3 class="text-xl font-black tracking-tight">{{ $course->name }}</h3>
-            <div class="mt-6 flex items-center justify-between text-[11px] font-black text-slate-500">
-                <span>0% COMPLETE</span>
-                <span>{{ $course->subjects->count() }} SUBJECTS</span>
+    <!-- Curriculum Sidebar -->
+    <aside class="sidebar flex flex-col">
+        <!-- Sidebar Branding -->
+        <div class="p-10 border-b border-slate-100">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
+                    <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                </div>
+                <span class="text-xs font-black uppercase tracking-[0.3em] text-slate-900">RK Learning Hub</span>
             </div>
-            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-2">
-                <div class="bg-blue-600 h-1.5 rounded-full w-[2%] shadow-[0_0_10px_rgba(37,99,235,0.5)]"></div>
+            
+            <h3 class="text-xl font-black tracking-tight text-slate-900 mb-6">{{ $course->name }}</h3>
+            
+            <div class="space-y-4">
+                <div class="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
+                    <span class="text-slate-400">Course Momentum</span>
+                    <span class="text-blue-600">Dynamic Curriculum</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 h-full rounded-full transition-all duration-1000" style="width: 5%"></div>
+                </div>
             </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto">
+        <!-- Catalog Items -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar pt-4">
             @foreach($course->subjects as $subject)
             <div class="subject-container">
-                <button onclick="toggleSubject({{ $subject->id }})" class="w-full px-8 py-6 flex items-center justify-between hover:bg-slate-800/30 transition-colors text-left group">
+                <button onclick="toggleSubject({{ $subject->id }}, this)" class="w-full px-10 py-6 flex items-center justify-between hover:bg-slate-50 transition-all text-left group">
                     <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 bg-slate-800 rounded-2xl flex items-center justify-center text-slate-500 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                            <i data-lucide="book" class="w-5 h-5"></i>
+                        <div class="w-12 h-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-slate-400 group-hover:scale-110 group-hover:bg-white group-hover:border-blue-200 group-hover:text-blue-600 transition-all shadow-sm">
+                            <i data-lucide="layers" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <p class="text-xs font-black text-slate-500 uppercase tracking-widest mb-0.5">Subject</p>
-                            <p class="text-sm font-black tracking-tight group-hover:text-blue-400 transition-colors uppercase">{{ $subject->name }}</p>
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Subject</p>
+                            <p class="text-[14px] font-black tracking-tight text-slate-700 leading-none uppercase">{{ $subject->name }}</p>
                         </div>
                     </div>
-                    <i data-lucide="chevron-down" id="icon-subject-{{ $subject->id }}" class="w-5 h-5 text-slate-600 transition-transform"></i>
+                    <i data-lucide="chevron-right" class="w-5 h-5 text-slate-300 transition-transform duration-300"></i>
                 </button>
 
-                <div id="subject-{{ $subject->id }}" class="hidden pb-2">
+                <div id="subject-{{ $subject->id }}" class="hidden overflow-hidden transition-all duration-500 bg-white">
                     @foreach($subject->units as $unit)
-                    <div class="unit-container">
+                    <div class="unit-card p-2">
                         <div class="px-6 py-4 flex items-center gap-3">
-                            <i data-lucide="layers" class="w-4 h-4 text-emerald-500"></i>
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ $unit->name }}</span>
+                            <div class="w-1.5 h-4 bg-emerald-500/20 rounded-full border border-emerald-500/50"></div>
+                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest tracking-[0.2em]">{{ $unit->name }}</span>
                         </div>
                         
-                        <!-- Topics in Unit -->
-                        <div class="space-y-1">
+                        <!-- List Content -->
+                        <div class="space-y-1 pb-4">
                             @foreach($unit->topics as $topic)
-                            <div onclick='playTopic(@json($topic), @json($unit), @json($subject))' class="topic-item px-6 py-3 flex items-center gap-4 text-slate-400 hover:text-white">
-                                <i data-lucide="file-text" class="w-4 h-4 opacity-50"></i>
-                                <span class="text-xs font-bold leading-tight">{{ $topic->name }}</span>
+                            <div onclick='playTopic(@json($topic), @json($unit), @json($subject)); closeSidebarMobile();' class="topic-link group">
+                                <i data-lucide="dot" class="w-4 h-4 mr-3 text-slate-300 group-hover:text-blue-500"></i>
+                                <span class="flex-1 truncate">{{ $topic->name }}</span>
                             </div>
                             @endforeach
-                        </div>
 
-                        <!-- Materials in Unit -->
-                        <div class="mt-4 p-2 space-y-2">
                             @foreach($unit->paidVideos as $video)
-                            <div onclick='playVideo(@json($video), @json($unit), @json($subject))' class="material-item px-4 py-3 bg-blue-600/5 hover:bg-blue-600/10 border-blue-500/20 flex items-center gap-3 text-blue-400 group">
-                                <div class="w-8 h-8 rounded-lg bg-blue-600/10 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all">
+                            <div onclick='playVideo(@json($video), @json($unit), @json($subject)); closeSidebarMobile();' class="material-link group bg-indigo-50/30 border-indigo-100 text-indigo-600 hover:bg-indigo-50">
+                                <div class="w-8 h-8 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-700 group-hover:scale-110 transition-all">
                                     <i data-lucide="play" class="w-4 h-4 fill-current"></i>
                                 </div>
-                                <div class="flex-1">
-                                    <p class="text-[9px] font-black uppercase tracking-widest opacity-70">Video Class</p>
-                                    <p class="text-[11px] font-black tracking-tight leading-none">{{ $video->title }}</p>
+                                <div class="flex-1 py-1">
+                                    <p class="text-[9px] font-black uppercase tracking-widest leading-none mb-1 opacity-70">Play Video</p>
+                                    <p class="text-[12px] font-black tracking-tight truncate">{{ $video->title }}</p>
                                 </div>
                             </div>
                             @endforeach
 
                             @foreach($unit->freePdfs as $pdf)
-                            <div onclick="playPdf('{{ asset('admin/uploads/freepdf/' . $pdf->pdf_file) }}', '{{ $pdf->pdf_name }}', @json($unit), @json($subject))" 
-                                class="material-item px-4 py-3 bg-red-600/5 hover:bg-red-600/10 border-red-500/20 flex items-center gap-3 text-red-400 group">
-                                <div class="w-8 h-8 rounded-lg bg-red-600/10 flex items-center justify-center group-hover:bg-red-600 group-hover:text-white transition-all">
+                            <div onclick="playPdf('{{ asset('admin/uploads/freepdf/' . $pdf->pdf_file) }}', '{{ $pdf->pdf_name }}', @json($unit), @json($subject)); closeSidebarMobile();" 
+                                class="material-link group bg-emerald-50/30 border-emerald-100 text-emerald-600 hover:bg-emerald-50">
+                                <div class="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-700 group-hover:scale-110 transition-all">
                                     <i data-lucide="file-text" class="w-4 h-4"></i>
                                 </div>
-                                <div class="flex-1">
-                                    <p class="text-[9px] font-black uppercase tracking-widest opacity-70">PDF Notes</p>
-                                    <p class="text-[11px] font-black tracking-tight leading-none">{{ $pdf->pdf_name }}</p>
+                                <div class="flex-1 py-1">
+                                    <p class="text-[9px] font-black uppercase tracking-widest leading-none mb-1 opacity-70">Read Notes</p>
+                                    <p class="text-[12px] font-black tracking-tight truncate">{{ $pdf->pdf_name }}</p>
                                 </div>
                             </div>
                             @endforeach
+                            
                         </div>
                     </div>
                     @endforeach
@@ -160,75 +310,152 @@
             @endforeach
         </div>
 
-        <div class="p-8 border-t border-slate-800 bg-[#0b0f1a]">
+        <!-- Footer -->
+        <div class="p-10 border-t border-slate-100 bg-slate-50/50">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-500">
+                <div class="w-12 h-12 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-600/20">
                     <i data-lucide="award" class="w-6 h-6"></i>
                 </div>
                 <div>
-                    <h5 class="text-sm font-black tracking-tight">Final Assessment</h5>
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Locked until 100% completion</p>
+                    <h5 class="text-sm font-black tracking-tight text-slate-800">Final Assessment</h5>
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Awaits Completion</p>
                 </div>
             </div>
         </div>
     </aside>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         lucide.createIcons();
 
-        function toggleSubject(id) {
+        function toggleSubject(id, btn) {
             const el = document.getElementById(`subject-${id}`);
-            const icon = document.getElementById(`icon-subject-${id}`);
+            const icon = btn.querySelector('i[data-lucide="chevron-right"]');
+            
+            // Toggle
             if (el.classList.contains('hidden')) {
                 el.classList.remove('hidden');
-                icon.style.transform = 'rotate(180deg)';
+                btn.classList.add('bg-blue-50/50');
+                if(icon) icon.style.transform = 'rotate(90deg)';
             } else {
                 el.classList.add('hidden');
-                icon.style.transform = 'rotate(0deg)';
+                btn.classList.remove('bg-blue-50/50');
+                if(icon) icon.style.transform = 'rotate(0deg)';
             }
         }
 
-        function resetPlayer() {
+        function resetPlayer(type = 'text') {
             document.getElementById('placeholder-content').classList.add('hidden');
             document.getElementById('video-frame').classList.add('hidden');
             document.getElementById('pdf-frame').classList.add('hidden');
-            document.getElementById('text-content').classList.remove('hidden');
+            document.getElementById('content-details').classList.remove('hidden');
+            document.getElementById('material-indicator').classList.remove('hidden');
             document.getElementById('video-frame').src = '';
+            
+            // Show loader for media types
+            if (type === 'video' || type === 'pdf') {
+                document.getElementById('player-loader').classList.remove('hidden');
+            } else {
+                document.getElementById('player-loader').classList.add('hidden');
+            }
+            
+            const typeIconBox = document.getElementById('type-icon-box');
+            if(type === 'video') {
+                typeIconBox.className = 'w-12 h-12 rounded-2xl flex items-center justify-center text-white bg-red-600 shadow-xl shadow-red-500/20';
+                typeIconBox.innerHTML = '<i data-lucide="youtube" class="w-6 h-6"></i>';
+            } else if(type === 'pdf') {
+                typeIconBox.className = 'w-12 h-12 rounded-2xl flex items-center justify-center text-white bg-emerald-600 shadow-xl shadow-emerald-500/20';
+                typeIconBox.innerHTML = '<i data-lucide="file-text" class="w-6 h-6"></i>';
+            } else {
+                typeIconBox.className = 'w-12 h-12 rounded-2xl flex items-center justify-center text-white bg-blue-600 shadow-xl shadow-blue-500/20';
+                typeIconBox.innerHTML = '<i data-lucide="book-open" class="w-6 h-6"></i>';
+            }
+            lucide.createIcons();
         }
 
+        // Hide loader when iframe/pdf is ready
+        document.getElementById('video-frame').onload = function() {
+            document.getElementById('player-loader').classList.add('hidden');
+            document.getElementById('video-frame').classList.remove('hidden');
+        };
+
+        const pdfFrame = document.getElementById('pdf-frame');
+        // Simple trick to detect PDF load - might vary by browser
+        pdfFrame.addEventListener('load', () => {
+             document.getElementById('player-loader').classList.add('hidden');
+        });
+
         function playTopic(topic, unit, subject) {
-            resetPlayer();
-            document.getElementById('label-unit').textContent = unit.name;
-            document.getElementById('label-subject').textContent = subject.name;
-            document.getElementById('content-title').textContent = topic.name;
-            document.getElementById('content-body').innerHTML = topic.content ? topic.content : '<p class="italic text-slate-500">No content provided for this topic.</p>';
+            // Auto-detect media - the DB property is now 'video_id'
+            if (topic.video_id) {
+                playVideo(topic, unit, subject);
+            } else if (topic.study_material) {
+                const materialPath = `{{ asset('admin/uploads/material/') }}/${topic.study_material}`;
+                playPdf(materialPath, `Notes: ${topic.name}`, unit, subject);
+            } else {
+                resetPlayer('text');
+                document.getElementById('label-unit').textContent = unit.name;
+                document.getElementById('label-subject').textContent = subject.name;
+                document.getElementById('content-title').textContent = topic.name;
+                document.getElementById('content-body').innerHTML = topic.content ? topic.content : '<div class="py-20 text-center"><p class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">No textual curriculum defined for this module.</p></div>';
+            }
             
             // Highlight active item
-            document.querySelectorAll('.topic-item').forEach(el => el.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            document.querySelectorAll('.topic-link').forEach(el => el.classList.remove('active'));
+            // Find the element that was clicked
+            if(window.event && window.event.currentTarget) {
+                window.event.currentTarget.classList.add('active');
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function playVideo(video, unit, subject) {
-            resetPlayer();
+            resetPlayer('video');
             document.getElementById('video-frame').classList.remove('hidden');
             
-            // Transform YouTube URL to embed if needed
-            let url = video.video_url;
-            if (url.includes('youtube.com/watch?v=')) {
-                url = url.replace('watch?v=', 'embed/');
-            } else if (url.includes('youtu.be/')) {
-                url = url.replace('youtu.be/', 'youtube.com/embed/');
-            }
+            // Ensure we get the ID from either property (database provides video_id now)
+            const input = video.video_id || video.video_url;
+            const videoId = extractYouTubeVideoId(input);
             
-            document.getElementById('video-frame').src = url;
+            if (videoId) {
+                const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+                document.getElementById('video-frame').src = embedUrl;
+            } else {
+                console.error("Invalid Video ID:", input);
+            }
+
             document.getElementById('label-unit').textContent = unit.name;
             document.getElementById('label-subject').textContent = subject.name;
-            document.getElementById('content-title').textContent = video.title;
-            document.getElementById('content-body').innerHTML = '<p>Video lecture for ' + video.title + '. Please refer to the attached PDF for notes.</p>';
+            document.getElementById('content-title').textContent = video.name || video.title;
+            document.getElementById('content-body').innerHTML = '<div class="py-10"><p class="text-slate-500 font-medium tracking-tight">Cinema-grade class in progress. Please focus on the media player for the full instructional session. All rights reserved.</p></div>';
         }
 
+        function extractYouTubeVideoId(url) {
+    if (!url) return null;
+
+    // If already ID
+    if (url.length === 11 && !url.includes('http')) return url;
+
+    try {
+        const parsed = new URL(url);
+
+        if (parsed.hostname.includes('youtube.com')) {
+            return parsed.searchParams.get('v');
+        }
+
+        if (parsed.hostname === 'youtu.be') {
+            return parsed.pathname.slice(1);
+        }
+    } catch (e) {
+        return null;
+    }
+
+    return null;
+}
+
         function playPdf(url, name, unit, subject) {
-            resetPlayer();
+            resetPlayer('pdf');
             document.getElementById('pdf-frame').classList.remove('hidden');
             document.getElementById('pdf-frame').data = url;
             document.getElementById('pdf-download-link').href = url;
@@ -236,8 +463,25 @@
             document.getElementById('label-unit').textContent = unit.name;
             document.getElementById('label-subject').textContent = subject.name;
             document.getElementById('content-title').textContent = name;
-            document.getElementById('content-body').innerHTML = '<p>Reading material for ' + name + '.</p>';
+            document.getElementById('content-body').innerHTML = '<div class="py-10"><p class="text-slate-500">Academic reference material active. If the PDF does not display above, please use the download button inside the player area.</p></div>';
+        }
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Close sidebar on item click (mobile)
+        function closeSidebarMobile() {
+            if (window.innerWidth < 1024) {
+                const sidebar = document.querySelector('.sidebar');
+                const overlay = document.querySelector('.sidebar-overlay');
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            }
         }
     </script>
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 </body>
 </html>

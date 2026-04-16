@@ -3,14 +3,42 @@
 @section('title', 'Topic Management')
 
 @section('content')
-<div class="mb-12">
-    <div class="flex items-center gap-4 mb-2">
-        <a href="{{ isset($unit) ? route('admin.subject.units.index', $unit->subject_id) : route('admin.unit.index') }}" class="text-slate-400 hover:text-blue-600 transition-colors">
-            <i data-lucide="arrow-left" class="w-6 h-6"></i>
-        </a>
-        <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-none">TOPICS REPOSITORY</h1>
+<div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div>
+        <div class="flex items-center gap-2 mb-2">
+            @if(isset($unit))
+            <a href="{{ route('admin.course.index') }}" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-colors">
+                {{ $unit->subject->course->name }}
+            </a>
+            <i data-lucide="chevron-right" class="w-3 h-3 text-slate-300"></i>
+            <a href="{{ route('admin.subject.index', ['course_id' => $unit->subject->course_id]) }}" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-colors">
+                {{ $unit->subject->name }}
+            </a>
+            <i data-lucide="chevron-right" class="w-3 h-3 text-slate-300"></i>
+            <span class="text-[10px] font-black uppercase tracking-widest text-blue-600">{{ $unit->name }}</span>
+            @endif
+        </div>
+        <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-none mb-2 uppercase">
+            @if(isset($unit))
+                {{ $unit->name }} <span class="text-indigo-600">Topics</span>
+            @else
+                TOPICS REPOSITORY
+            @endif
+        </h1>
+        <p class="text-sm font-bold text-slate-400 dark:text-slate-500">
+            @if(isset($unit))
+                Detail out your curriculum with specific lessons and topics
+            @else
+                Manage academic topics and their parent units
+            @endif
+        </p>
     </div>
-    <p class="text-sm font-bold text-slate-400 dark:text-slate-500">Manage topics for {{ isset($unit) ? $unit->name : 'all units' }}</p>
+    @if(isset($unit))
+    <a href="{{ route('admin.subject.units.index', $unit->subject_id) }}" class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-colors">
+        <i data-lucide="arrow-left" class="w-3 h-3"></i>
+        Unit Structure
+    </a>
+    @endif
 </div>
 
 <!-- Custom Alert Container -->
@@ -34,13 +62,26 @@
 <div class="bg-white dark:bg-[#0b1120] rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
     <div class="p-8 lg:p-10 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
         <div class="flex items-center gap-3">
-            <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
-            <h2 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">Curriculum Topics</h2>
+            <div class="w-1.5 h-8 bg-indigo-600 rounded-full"></div>
+            <h2 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">
+                @if(isset($unit))
+                    Unit Topics
+                @else
+                    Curriculum Topics
+                @endif
+            </h2>
         </div>
-        <button onclick="openTopicModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-blue-200 dark:shadow-none flex items-center gap-3">
-            <i data-lucide="plus" class="w-5 h-5"></i>
-            Add New Topic
-        </button>
+        <div class="flex items-center gap-4">
+            @if(isset($unit))
+            <a href="{{ route('admin.topic.index') }}" class="px-6 py-4 rounded-2xl border border-slate-100 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:bg-slate-50 transition-all">
+                Show All Topics
+            </a>
+            @endif
+            <button onclick="openTopicModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-indigo-200 dark:shadow-none flex items-center gap-3">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+                Add New Topic
+            </button>
+        </div>
     </div>
     <div class="overflow-x-auto">
         <table class="w-full text-left">
@@ -138,12 +179,48 @@
                             placeholder="e.g. 1.1 First Principles">
                     </div>
 
+                    <!-- YouTube Video Link -->
+                    <div class="col-span-1">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">YouTube Video Link</label>
+                        <div class="relative">
+                            <i data-lucide="youtube" class="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-red-500"></i>
+                            <input type="url" name="video_url" id="topic_video_url"
+                                class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl pl-14 pr-6 py-4 text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-blue-600 transition-all"
+                                placeholder="Paste YouTube link (Watch or Embed)">
+                        </div>
+                        
+                        <!-- Video Preview Card -->
+                        <div id="video_preview_container" class="mt-4 hidden animate-in fade-in slide-in-from-top-2 duration-500">
+                            <div class="relative rounded-2xl overflow-hidden aspect-video border-2 border-slate-100 group">
+                                <img id="video_thumbnail" src="" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-red-600 shadow-xl">
+                                        <i data-lucide="play" class="w-6 h-6 fill-current"></i>
+                                    </div>
+                                </div>
+                                <div class="absolute bottom-4 left-4 right-4">
+                                    <span class="px-2 py-1 bg-black/60 backdrop-blur-md text-[9px] font-black text-white uppercase tracking-widest rounded-lg">Live Preview</span>
+                                </div>
+                            </div>
+                            <p id="video_id_display" class="mt-2 text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Video ID: <span class="text-blue-600"></span></p>
+                        </div>
+                    </div>
+
+                    <!-- Study Material -->
+                    <div class="col-span-1">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Study Material (PDF/DOC)</label>
+                        <input type="file" name="study_material" id="topic_study_material"
+                            class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all">
+                        <div id="current_material" class="mt-2 hidden">
+                            <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Currently: <span id="material_filename"></span></p>
+                        </div>
+                    </div>
+
                     <!-- Content -->
                     <div class="col-span-1">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Topic Content (Optional)</label>
-                        <textarea name="content" id="topic_content" rows="4"
-                            class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-blue-600 transition-all"
-                            placeholder="Add lesson content or summary here..."></textarea>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Lesson Content (Optional)</label>
+                        <textarea name="content" id="topic_content"
+                            class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-blue-600 transition-all"></textarea>
                     </div>
 
                     <!-- Order -->
@@ -171,12 +248,28 @@
 @endsection
 
 @section('scripts')
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
 <script>
     const modal = document.getElementById('topicModal');
     const form = document.getElementById('topicForm');
     const modalTitle = document.getElementById('modalTitle');
     const submitBtn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
+
+    $(document).ready(function() {
+        $('#topic_content').summernote({
+            height: 200,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview']]
+            ]
+        });
+    });
 
     function showAlert(type, message) {
         const container = document.getElementById('alertContainer');
@@ -201,12 +294,53 @@
         document.getElementById('alertContainer').classList.add('hidden');
     }
 
+    function extractYouTubeVideoId(url) {
+        if (!url) return null;
+        let videoId = null;
+        try {
+            const urlObj = new URL(url);
+            if (urlObj.hostname.includes('youtube.com')) {
+                videoId = urlObj.searchParams.get('v');
+            } else if (urlObj.hostname === 'youtu.be') {
+                videoId = urlObj.pathname.slice(1);
+            }
+        } catch (e) {
+            // Fallback for non-URL strings
+            const pattern = /(?:v=|\/)([0-9A-Za-z_-]{11}).*/;
+            const match = url.match(pattern);
+            if (match) videoId = match[1];
+        }
+        return videoId;
+    }
+
+    function updateVideoPreview(url) {
+        const videoId = extractYouTubeVideoId(url);
+        const container = document.getElementById('video_preview_container');
+        const thumb = document.getElementById('video_thumbnail');
+        const idSpan = document.querySelector('#video_id_display span');
+
+        if (videoId) {
+            thumb.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+            idSpan.innerText = videoId;
+            container.classList.remove('hidden');
+        } else {
+            container.classList.add('hidden');
+        }
+    }
+
+    document.getElementById('topic_video_url').addEventListener('input', function(e) {
+        updateVideoPreview(e.target.value);
+    });
+
     function openTopicModal(isEdit = false) {
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
         if (!isEdit) {
             form.reset();
             document.getElementById('topic_id_pk').value = '';
+            $('#topic_content').summernote('code', '');
+            document.getElementById('current_material').classList.add('hidden');
+            document.getElementById('video_preview_container').classList.add('hidden');
             modalTitle.innerText = 'Add New Topic';
             btnText.innerText = 'Save Topic';
         }
@@ -229,7 +363,24 @@
                     document.getElementById('unit_id').value = data.unit_id;
                 }
                 document.getElementById('topic_name').value = data.name;
-                document.getElementById('topic_content').value = data.content;
+                
+                if (data.video_id) {
+                    const fullUrl = `https://www.youtube.com/watch?v=${data.video_id}`;
+                    document.getElementById('topic_video_url').value = fullUrl;
+                    updateVideoPreview(fullUrl);
+                } else {
+                    document.getElementById('topic_video_url').value = '';
+                    document.getElementById('video_preview_container').classList.add('hidden');
+                }
+                
+                if (data.study_material) {
+                    document.getElementById('current_material').classList.remove('hidden');
+                    document.getElementById('material_filename').innerText = data.study_material;
+                } else {
+                    document.getElementById('current_material').classList.add('hidden');
+                }
+
+                $('#topic_content').summernote('code', data.content || '');
                 document.getElementById('topic_order').value = data.order;
             });
     }
@@ -238,23 +389,21 @@
         e.preventDefault();
         const id = document.getElementById('topic_id_pk').value;
         const url = id ? `/admin/topic/${id}` : '/admin/topic';
-        const method = id ? 'PUT' : 'POST';
+        
         const formData = new FormData(form);
-        const data = {};
-        formData.forEach((value, key) => data[key] = value);        
         if(id) {
-            data['_method'] = 'PUT';
+            formData.append('_method', 'PUT');
         }
+        
         submitBtn.disabled = true;
         btnText.innerText = 'Processing...';
         try {
             const response = await fetch(url, {
-                method: 'POST',
+                method: 'POST', // Use POST with _method spoofing for file uploads
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
                 },
-                body: JSON.stringify(data)
+                body: formData
             });
             const result = await response.json();
             if (result.status === 'success') {

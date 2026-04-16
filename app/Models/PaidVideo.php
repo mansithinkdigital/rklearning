@@ -10,7 +10,7 @@ class PaidVideo extends Model
         'course_id',
         'unit_id',
         'title',
-        'video_url',
+        'video_id',
         'pdf',
     ];
 

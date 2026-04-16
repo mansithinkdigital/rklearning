@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Validator;
 
 class UnitController extends Controller
 {
-    public function index($subjectId = null)
+    public function index(Request $request, $subjectId = null)
     {
+        $subjectId = $subjectId ?? $request->subject_id;
+        
         if ($subjectId) {
             $subject = Subject::with('course')->findOrFail($subjectId);
             $units = Unit::where('subject_id', $subjectId)->orderBy('order')->get();
