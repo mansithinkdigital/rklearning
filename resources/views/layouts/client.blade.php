@@ -128,9 +128,8 @@
             <nav class="hidden lg:flex items-center space-x-10">
                 <a href="{{ route('home') }}" class="nav-link">Home</a>
                 <a href="{{ route('courses') }}" class="nav-link">Courses</a>
-                <a href="{{ route('about') }}" class="nav-link">Pages</a>
-                <a href="#" class="nav-link">Blog</a>
-                <a href="{{ route('contact') }}" class="nav-link">Contact Us</a>
+                <a href="{{ route('about') }}" class="nav-link">About</a>
+                <a href="{{ route('contact') }}" class="nav-link">Contact</a>
             </nav>
 
             <div class="flex items-center space-x-6">
