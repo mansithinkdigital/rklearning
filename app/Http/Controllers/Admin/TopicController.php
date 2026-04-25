@@ -31,7 +31,7 @@ class TopicController extends Controller
             'unit_id' => 'required|exists:units,id',
             'name' => 'required|string|max:255',
             'video_url' => 'nullable|url',
-            'study_material' => 'nullable|file|mimes:pdf,doc,docx,zip|max:20480',
+            'study_material' => 'nullable|file|mimes:pdf,doc,docx,zip',
             'content' => 'nullable|string',
             'order' => 'nullable|integer',
         ]);
@@ -77,7 +77,7 @@ class TopicController extends Controller
             'unit_id' => 'required|exists:units,id',
             'name' => 'required|string|max:255',
             'video_url' => 'nullable|url',
-            'study_material' => 'nullable|file|mimes:pdf,doc,docx,zip|max:20480',
+            'study_material' => 'nullable|file|mimes:pdf,doc,docx,zip',
             'content' => 'nullable|string',
             'order' => 'nullable|integer',
         ]);

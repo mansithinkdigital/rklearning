@@ -52,8 +52,11 @@
                     <td class="px-6 py-5">
                         <div class="flex items-center justify-start gap-2">
                             <a href="{{ route('admin.course-subject.mcqs.manage', $cs->id) }}"
-                                class="flex items-center gap-1.5 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-[#0062ff] rounded-xl text-[11px] font-black uppercase tracking-wider hover:bg-[#0062ff] hover:text-white transition-all">
+                                class="flex items-center gap-1.5 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-[#0062ff] rounded-xl text-[11px] font-black uppercase tracking-wider hover:bg-[#0062ff] hover:text-white transition-all group/btn">
                                 <i data-lucide="layers" class="w-4 h-4"></i> Add/Edit MCQs
+                                <span class="ml-1 px-1.5 py-0.5 bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-200 rounded-md text-[10px] group-hover/btn:bg-white/20 group-hover/btn:text-white transition-colors">
+                                    {{ $cs->mcqs_count }}
+                                </span>
                             </a>
                             <div class="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
                             <button onclick='editCS(@json($cs))'
@@ -121,6 +124,23 @@
                     <option value="">-- Select Course First --</option>
                 </select>
             </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Total Marks</label>
+                    <input type="number" name="total_marks" required min="0" value="0"
+                        class="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Pass Marks</label>
+                    <input type="number" name="pass_marks" required min="0" value="0"
+                        class="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Time Limit (Min)</label>
+                    <input type="number" name="time_limit" required min="0" value="0"
+                        class="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all">
+                </div>
+            </div>
             <div class="flex gap-4 pt-2">
                 <button type="button" onclick="closeModal('create-cs-modal')"
                     class="flex-1 px-6 py-4 bg-slate-100 dark:bg-slate-800 rounded-2xl text-[11px] font-black text-slate-600 uppercase tracking-[0.2em] hover:bg-slate-200 transition-all">
@@ -169,6 +189,23 @@
                     class="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all">
                     <option value="">-- Loading... --</option>
                 </select>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Total Marks</label>
+                    <input type="number" name="total_marks" id="edit-total-marks" required min="0"
+                        class="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Pass Marks</label>
+                    <input type="number" name="pass_marks" id="edit-pass-marks" required min="0"
+                        class="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Time Limit (Min)</label>
+                    <input type="number" name="time_limit" id="edit-time-limit" required min="0"
+                        class="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all">
+                </div>
             </div>
             <div class="flex gap-4 pt-2">
                 <button type="button" onclick="closeModal('edit-cs-modal')"
@@ -228,6 +265,10 @@
 
         document.getElementById('edit-course').value = cs.course_id;
         loadSubjects(cs.course_id, 'edit-subject', cs.subject_id);
+
+        document.getElementById('edit-total-marks').value = cs.total_marks;
+        document.getElementById('edit-pass-marks').value = cs.pass_marks;
+        document.getElementById('edit-time-limit').value = cs.time_limit;
 
         openModal('edit-cs-modal');
     }

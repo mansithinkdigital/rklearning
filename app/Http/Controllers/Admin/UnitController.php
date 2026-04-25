@@ -13,14 +13,12 @@ class UnitController extends Controller
     public function index(Request $request, $subjectId = null)
     {
         $subjectId = $subjectId ?? $request->subject_id;
-        
         if ($subjectId) {
             $subject = Subject::with('course')->findOrFail($subjectId);
-            $units = Unit::where('subject_id', $subjectId)->orderBy('order')->get();
+            $units = Unit::withCount('topics')->where('subject_id', $subjectId)->orderBy('order')->get();
             return view('admin.pages.unit.index', compact('units', 'subject'));
         }
-        
-        $units = Unit::with('subject.course')->latest()->get();
+        $units = Unit::withCount('topics')->with('subject.course')->latest()->get();
         $subjects = Subject::all();
         return view('admin.pages.unit.index', compact('units', 'subjects'));
     }
@@ -32,11 +30,9 @@ class UnitController extends Controller
             'name' => 'required|string|max:255',
             'order' => 'nullable|integer',
         ]);
-
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'errors' => $validator->errors()], 422);
         }
-
         try {
             Unit::create($request->all());
             return response()->json(['status' => 'success', 'message' => 'Unit added successfully!']);
@@ -54,17 +50,14 @@ class UnitController extends Controller
     public function update(Request $request, string $id)
     {
         $unit = Unit::findOrFail($id);
-
         $validator = Validator::make($request->all(), [
             'subject_id' => 'required|exists:subjects,id',
             'name' => 'required|string|max:255',
             'order' => 'nullable|integer',
         ]);
-
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'errors' => $validator->errors()], 422);
         }
-
         try {
             $unit->update($request->all());
             return response()->json(['status' => 'success', 'message' => 'Unit updated successfully!']);

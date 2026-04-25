@@ -57,8 +57,13 @@ class StudentAuthController extends Controller
         ]);
 
         Auth::login($user);
+        $request->session()->regenerate();
 
-        return redirect()->route('student.dashboard');
+        if ($request->redirect_to) {
+            return redirect($request->redirect_to);
+        }
+
+        return redirect()->intended(route('student.dashboard'));
     }
 
     /**
@@ -87,6 +92,11 @@ class StudentAuthController extends Controller
             
             if ($user->role === 'student') {
                 $request->session()->regenerate();
+                
+                if ($request->redirect_to) {
+                    return redirect($request->redirect_to);
+                }
+                
                 return redirect()->intended(route('student.dashboard'));
             }
 

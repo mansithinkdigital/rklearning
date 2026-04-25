@@ -10,6 +10,8 @@ class Course extends Model
     protected $fillable = [
         'name',
         'image',
+        'duration',
+        'language',
         'description',
         'long_description', // ✅ added
         'price',            // ✅ added

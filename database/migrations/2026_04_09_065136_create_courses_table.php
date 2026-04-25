@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('image');
             $table->decimal('price', 10, 2);
+            $table->string('duration')->nullable();
+            $table->string('language')->nullable();
             $table->longText('description');
             $table->longText('long_description');
             $table->string('status')->default('Active'); // ✅ default

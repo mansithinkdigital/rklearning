@@ -1,180 +1,293 @@
 @extends('layouts.client')
-
-@section('title', $course->name . ' - RK Learning Hub')
-
+@section('title', $course->name . ' - Course Overview | RK Learning Hub')
 @section('content')
-<section class="py-20 bg-slate-50">
-    <div class="container mx-auto px-6">
-        <div class="grid gap-12 lg:grid-cols-3">
-            <!-- Left Column: Course Details -->
-            <div class="lg:col-span-2 space-y-10">
-                <!-- Course Hero Card -->
-                <div class="rounded-[2.5rem] overflow-hidden shadow-2xl relative group">
-                    <img src="{{ asset($course->image) }}" alt="{{ $course->name }}" class="w-full h-[480px] object-cover transition-transform duration-700 group-hover:scale-105">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60"></div>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+    .lms-details {
+        font-family: 'Outfit', sans-serif;
+        background-color: #fcfcfd;
+        color: #1e293b;
+    }
+
+    .details-hero {
+        background: #0f172a;
+        padding: 60px 0 120px;
+        color: white;
+        position: relative;
+    }
+
+    .content-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    }
+
+    .syllabus-btn {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+    }
+
+    .syllabus-btn:hover {
+        border-color: #2563eb;
+        background: #ffffff;
+    }
+
+    .sticky-enroll {
+        position: sticky;
+        top: 2rem;
+    }
+
+    .enroll-action-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 24px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    .btn-enroll {
+        background: #2563eb;
+        color: white;
+        width: 100%;
+        padding: 18px;
+        border-radius: 14px;
+        font-weight: 800;
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-enroll:hover {
+        background: #1d4ed8;
+        transform: translateY(-2px);
+    }
+
+    .icon-box {
+        width: 40px;
+        height: 40px;
+        background: #eff6ff;
+        color: #2563eb;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
+    .badge-premium {
+        background: rgba(37, 99, 235, 0.1);
+        color: #2563eb;
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+</style>
+
+<div class="lms-details min-h-screen">
+    <!-- Breadcrumb & Title Hero -->
+    <section class="details-hero">
+        <div class="container mx-auto px-6">
+            <nav class="flex items-center gap-2 text-slate-400 text-xs font-bold mb-8">
+                <a href="{{ route('home') }}" class="hover:text-white transition">Home</a>
+                <i class="fa fa-chevron-right text-[8px]"></i>
+                <a href="{{ route('courses') }}" class="hover:text-white transition">Courses</a>
+                <i class="fa fa-chevron-right text-[8px]"></i>
+                <span class="text-white">{{ $course->name }}</span>
+            </nav>
+
+            <div class="max-w-4xl">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="badge-premium">Official Certification</span>
+                    <span class="text-slate-500 text-xs font-bold"></span>
+                </div>
+                <h1 class="text-4xl md:text-6xl font-black text-white leading-tight mb-8">{{ $course->name }}</h1>
+                <p class="text-slate-400 text-xl font-medium max-w-2xl leading-relaxed">{{ strip_tags($course->description) }}</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <section class="container mx-auto px-6 -mt-20 relative z-10 pb-32">
+        <div class="grid lg:grid-cols-12 gap-10">
+            <!-- Left: Course Information -->
+            <div class="lg:col-span-8 space-y-10">
+                <!-- Summary Stats -->
+                <div class="content-card p-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Subjects</p>
+                        <p class="text-lg font-black text-slate-900">{{ $course->subjects->count() }} Modules</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Duration</p>
+                        <p class="text-lg font-black text-slate-900">{{ $course->duration }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Language</p>
+                        <p class="text-lg font-black text-slate-900">{{ $course->language }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Enrolled</p>
+                        <p class="text-lg font-black text-slate-900">{{ $course->students->count() }}+</p>
+                    </div>
                 </div>
 
-                <div class="bg-white rounded-[2.5rem] p-10 shadow-lg border border-slate-100">
-                    <div class="flex items-center gap-4 mb-10">
+                <!-- curriculum Accordion -->
+                <div class="content-card p-10">
+                    <div class="flex items-center gap-4 mb-10 pb-6 border-b border-slate-50">
                         <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
-                        <h2 class="text-3xl font-black text-slate-900 tracking-tight">Course Curriculum</h2>
+                        <h2 class="text-2xl font-black text-slate-900 tracking-tight uppercase">Detailed Curriculum</h2>
                     </div>
-                    
+
                     <div class="space-y-4">
                         @forelse($course->subjects as $subject)
-                            <!-- Subject Accordion -->
-                            <div class="rounded-3xl border border-slate-100 bg-slate-50/50 overflow-hidden">
-                                <button onclick="toggleCurriculum({{ $subject->id }})" class="w-full px-8 py-6 flex items-center justify-between hover:bg-white transition-all text-left group">
-                                    <div class="flex items-center gap-5">
-                                        <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-blue-600 shadow-sm group-hover:bg-blue-600 group-hover:text-white transition-all">
-                                            <i class="fa fa-book-open"></i>
-                                        </div>
-                                        <div>
-                                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Subject Module</p>
-                                            <h4 class="text-lg font-black text-slate-800 tracking-tight uppercase">{{ $subject->name }}</h4>
-                                        </div>
+                        <div class="overflow-hidden">
+                            <button onclick="toggleCurriculum({{ $subject->id }}, this)" class="syllabus-btn w-full px-8 py-6 flex items-center justify-between group">
+                                <div class="flex items-center gap-5">
+                                    <div class="icon-box group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                        <i class="fa fa-layer-group text-sm"></i>
                                     </div>
-                                    <i id="icon-subject-{{ $subject->id }}" class="fa fa-chevron-down text-slate-300 transition-transform"></i>
-                                </button>
+                                    <div class="text-left">
+                                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Module</p>
+                                        <h4 class="text-lg font-bold text-slate-800 tracking-tight uppercase">{{ $subject->name }}</h4>
+                                    </div>
+                                </div>
+                                <i id="icon-subject-{{ $subject->id }}" class="fa fa-chevron-down text-slate-300 transition-transform"></i>
+                            </button>
 
-                                <div id="subject-{{ $subject->id }}" class="hidden px-6 pb-6 animate-in slide-in-from-top-2 duration-300">
+                            <div id="subject-{{ $subject->id }}" class="hidden px-6 pt-4 pb-8 border-x border-b border-slate-50 rounded-b-2xl animate-in slide-in-from-top-2">
+                                <div class="grid md:grid-cols-2 gap-6">
                                     @foreach($subject->units as $unit)
-                                        <div class="mt-4 p-6 bg-white rounded-2xl border border-slate-100">
-                                            <div class="flex items-center gap-3 mb-4">
-                                                <i class="fa fa-layer-group text-blue-500 text-sm"></i>
-                                                <span class="text-xs font-black text-slate-500 uppercase tracking-[0.2em]">{{ $unit->name }}</span>
-                                            </div>
-                                            
-                                            <ul class="space-y-3">
-                                                @foreach($unit->topics as $topic)
-                                                <li class="flex items-center gap-3 text-sm font-medium text-slate-600 pl-2">
-                                                    <div class="w-1 h-1 rounded-full bg-blue-400"></div>
-                                                    {{ $topic->name }}
-                                                </li>
-                                                @endforeach
-                                            </ul>
-
-                                            @if($unit->paidVideos->count() > 0 || $unit->freePdfs->count() > 0)
-                                            <div class="mt-6 pt-4 border-t border-slate-50 flex flex-wrap gap-2">
-                                                @foreach($unit->paidVideos as $video)
-                                                    <span class="px-3 py-1.5 bg-blue-50 text-blue-600 text-[10px] font-bold rounded-lg uppercase tracking-tight">
-                                                        <i class="fa fa-play mr-1"></i> Video Class
-                                                    </span>
-                                                @endforeach
-                                                @foreach($unit->freePdfs as $pdf)
-                                                    <span class="px-3 py-1.5 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-lg uppercase tracking-tight">
-                                                        <i class="fa fa-file-pdf mr-1"></i> PDF Notes
-                                                    </span>
-                                                @endforeach
-                                            </div>
-                                            @endif
+                                    <div class="bg-slate-50 p-6 rounded-2xl border border-white">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest">{{ $unit->name }}</span>
+                                            <i class="fa fa-check-circle text-emerald-500 text-xs"></i>
                                         </div>
+                                        <ul class="space-y-2">
+                                            @foreach($unit->topics as $topic)
+                                            <li class="flex items-start text-xs font-bold text-slate-600">
+                                                <i class="fa fa-circle text-[6px] text-slate-300 mt-1.5 mr-3"></i>
+                                                {{ $topic->name }}
+                                            </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
                                     @endforeach
                                 </div>
                             </div>
+                        </div>
                         @empty
-                            <div class="text-center py-20 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200">
-                                <i class="fa fa-layer-group text-slate-300 text-5xl mb-4"></i>
-                                <p class="text-slate-400 font-bold uppercase tracking-widest text-sm">Curriculum under optimization</p>
-                            </div>
+                        <div class="text-center py-12 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                            <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">No curriculum defined for this program</p>
+                        </div>
                         @endforelse
                     </div>
+                </div>
 
-                    <div class="mt-16 pt-16 border-t border-slate-100">
-                        <div class="flex items-center gap-4 mb-8">
-                            <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
-                            <h2 class="text-3xl font-black text-slate-900 tracking-tight">Key Learning outcomes</h2>
-                        </div>
-                        <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed font-medium bg-slate-50 rounded-3xl p-8 border border-slate-100">
-                            {!! $course->description !!}
-                        </div>
+                <!-- Extended Info -->
+                <div class="content-card p-10">
+                    <div class="flex items-center gap-4 mb-1 pb-6 border-b border-slate-50">
+                        <div class="w-1.5 h-8 bg-amber-600 rounded-full"></div>
+                        <h2 class="text-2xl font-black text-slate-900 tracking-tight uppercase">Program Highlights</h2>
+                    </div>
+                    <div class="prose prose-slate max-w-none text-slate-600 mt-0 font-medium leading-relaxed 
+            [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6">
+                        {!! $course->long_description !!}
                     </div>
                 </div>
             </div>
 
-            <!-- Right Column: Sidebar -->
-            <aside class="space-y-8">
-                <div class="rounded-[2.5rem] bg-white p-10 shadow-2xl border border-slate-100 sticky top-10">
-                    <div class="mb-8">
-                        <p class="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 mb-2">Total investment</p>
-                        <p class="text-5xl font-black text-slate-900 leading-none">
-                            @if($course->price > 0)
-                                <span class="text-lg font-bold align-top mt-1 inline-block -mr-1">₹</span> {{ number_format($course->price) }}
-                            @else
+            <!-- Right: Dynamic Sidebar -->
+            <div class="lg:col-span-4">
+                <div class="sticky-enroll">
+                    <div class="enroll-action-card p-10">
+                        <div class="mb-10 text-center">
+                            <p class="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 mb-2">Total investment</p>
+                            <p class="text-6xl font-black text-slate-900 tracking-tighter">
+                                @if($course->price > 0)
+                                <span class="text-2xl align-top mt-2 inline-block">₹</span>{{ number_format($course->price) }}
+                                @else
                                 FREE
-                            @endif
-                        </p>
-                    </div>
+                                @endif
+                            </p>
+                        </div>
 
-                    <div class="space-y-4 mb-10">
-                        @auth
+                        <div class="space-y-4 mb-10">
+                            @auth
                             @if($hasPurchased)
-                                <a href="{{ route('student.learning', $course->id) }}" class="w-full flex items-center justify-center gap-3 py-5 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-200">
-                                    <i class="fa fa-play"></i> Access Course Content
-                                </a>
-                            @else
-                                <a href="{{ route('student.courses.checkout', $course->id) }}" class="w-full flex items-center justify-center gap-3 py-5 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-200">
-                                    Enroll in Course Now
-                                </a>
-                            @endif
-                        @else
-                            <a href="{{ route('student.login') }}" class="w-full flex items-center justify-center gap-3 py-5 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all shadow-xl shadow-slate-200">
-                                Sign In to Enroll
+                            <a href="{{ route('student.learning', $course->id) }}" class="btn-enroll bg-emerald-600 hover:bg-emerald-700 shadow-xl shadow-emerald-100">
+                                <i class="fa fa-play text-xs"></i> Resume Learning
                             </a>
-                        @endauth
-                    </div>
+                            @elseif($isPending)
+                            <div class="p-6 rounded-2xl bg-amber-50 border border-amber-100 text-center">
+                                <p class="text-xs font-black text-amber-600 uppercase tracking-widest mb-1">Status: Pending</p>
+                                <p class="text-[10px] text-amber-500 font-bold">Waiting for admin approval</p>
+                            </div>
+                            @else
+                            <a href="{{ route('student.courses.checkout', $course->id) }}" class="btn-enroll">
+                                Secure Enrollment Now
+                            </a>
+                            @endif
+                            @else
+                            <a href="{{ route('login') }}?redirect_to={{ urlencode(route('student.courses.checkout', $course->id)) }}" class="btn-enroll bg-slate-900 hover:bg-black">
+                                Buy Now
+                            </a>
+                            @endauth
+                        </div>
 
-                    <div class="space-y-6">
-                        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 pb-4">Course Highlights</h3>
-                        <ul class="space-y-4">
-                            <li class="flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600"><i class="fa fa-book text-sm"></i></div>
-                                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Global Modules</span>
+                        <ul class="space-y-6 pt-10 border-t border-slate-50">
+                            <li class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400"><i class="fa fa-infinity text-sm"></i></div>
+                                <div>
+                                    <h5 class="text-xs font-black text-slate-800 uppercase tracking-tight">Lifetime Pass</h5>
+                                    <p class="text-[10px] text-slate-500 font-medium">Never expiring access to modules</p>
                                 </div>
-                                <span class="text-sm font-black text-slate-800">{{ $course->subjects->count() }}</span>
                             </li>
-                            <li class="flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600"><i class="fa fa-users text-sm"></i></div>
-                                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Active Learners</span>
+                            <li class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400"><i class="fa fa-certificate text-sm"></i></div>
+                                <div>
+                                    <h5 class="text-xs font-black text-slate-800 uppercase tracking-tight">Verification</h5>
+                                    <p class="text-[10px] text-slate-500 font-medium">Industry recognized certification</p>
                                 </div>
-                                <span class="text-sm font-black text-slate-800">{{ $course->students->count() }}+</span>
-                            </li>
-                            <li class="flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600"><i class="fa fa-certificate text-sm"></i></div>
-                                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Certification</span>
-                                </div>
-                                <span class="text-sm font-black text-slate-800">ISO 9001</span>
                             </li>
                         </ul>
                     </div>
-                </div>
 
-                <!-- Assistance Card -->
-                <div class="rounded-[2rem] bg-gradient-to-br from-slate-900 to-slate-800 p-8 shadow-xl text-white">
-                    <h4 class="text-lg font-black mb-2 uppercase italic tracking-tighter">Need Assistance?</h4>
-                    <p class="text-slate-400 text-xs font-bold leading-relaxed mb-6">Our academic counselors are available to guide your learning path.</p>
-                    <a href="{{ route('contact') }}" class="flex items-center justify-center gap-2 py-4 bg-white/10 hover:bg-white/20 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all">
-                        Support Center
-                    </a>
+                    <div class="mt-8 p-8 bg-blue-600 rounded-[2.5rem] text-white shadow-xl shadow-blue-100">
+                        <h4 class="text-lg font-black mb-2 uppercase leading-tight italic">Enroll with Confidence</h4>
+                        <p class="text-blue-100 text-xs font-medium leading-relaxed">Join thousands of students who have transformed their careers with RK Learning Hub.</p>
+                    </div>
                 </div>
-            </aside>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+</div>
 
 <script>
-    function toggleCurriculum(id) {
+    function toggleCurriculum(id, btn) {
         const el = document.getElementById(`subject-${id}`);
-        const icon = document.getElementById(`icon-subject-${id}`);
-        if(el.classList.contains('hidden')) {
+        const icon = btn.querySelector(`#icon-subject-${id}`);
+        if (el.classList.contains('hidden')) {
             el.classList.remove('hidden');
-            icon.style.transform = 'rotate(180deg)';
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-up');
+            icon.style.color = '#2563eb';
         } else {
             el.classList.add('hidden');
-            icon.style.transform = 'rotate(0deg)';
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+            icon.style.color = '#cbd5e1';
         }
     }
 </script>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,11 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
         .sidebar-link {
             display: flex;
             items-center: center;
@@ -19,18 +24,57 @@
             text-decoration: none;
             margin-bottom: 2px;
         }
-        .sidebar-link:hover { background-color: #f1f5f9; color: #1e293b; }
-        .sidebar-link.active { background-color: #e2e8f0; color: #1e293b; font-weight: 500; }
-        .sidebar-link i { margin-right: 0.75rem; width: 20px; height: 20px; }
-        .main-content { margin-left: 260px; }
-        .sidebar { width: 260px; height: 100vh; position: fixed; left: 0; top: 0; border-right: 1px solid #e2e8f0; background: white; z-index: 50; overflow-y: auto; }
+
+        .sidebar-link:hover {
+            background-color: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .sidebar-link.active {
+            background-color: #e2e8f0;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .sidebar-link i {
+            margin-right: 0.75rem;
+            width: 20px;
+            height: 20px;
+        }
+
+        .main-content {
+            margin-left: 260px;
+        }
+
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            border-right: 1px solid #e2e8f0;
+            background: white;
+            z-index: 50;
+            overflow-y: auto;
+        }
+
         @media (max-width: 1024px) {
-            .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
-            .sidebar.open { transform: translateX(0); }
-            .main-content { margin-left: 0; }
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
+
 <body>
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -39,7 +83,7 @@
                 <img src="/logo.png" alt="Logo" class="h-16 mb-2" onerror="this.src='https://via.placeholder.com/150x50?text=RK+LEARNING'">
                 <p class="text-xs text-orange-600 font-semibold tracking-widest uppercase">Way to success</p>
             </div>
-            
+
             <nav class="space-y-1">
                 <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->is('admin/dashboard') ? 'active' : '' }}">
                     <i data-lucide="book-open"></i>
@@ -53,9 +97,7 @@
                     <i data-lucide="book-open"></i>
                     <span>Course Purchased</span>
                 </a>
-                
                 <hr class="my-4 border-gray-100">
-                
                 <a href="#" class="sidebar-link">
                     <i data-lucide="book-open"></i>
                     <span>Our courses</span>
@@ -68,9 +110,7 @@
                     <i data-lucide="book-open"></i>
                     <span>Student Marks</span>
                 </a>
-                
                 <hr class="my-4 border-gray-100">
-                
                 <a href="#" class="sidebar-link">
                     <i data-lucide="book-open"></i>
                     <span>Free PDF</span>
@@ -79,9 +119,7 @@
                     <i data-lucide="book-open"></i>
                     <span>Free Video</span>
                 </a>
-                
                 <hr class="my-4 border-gray-100">
-                
                 <a href="#" class="sidebar-link">
                     <i data-lucide="book-open"></i>
                     <span>Add Paid Video</span>
@@ -90,14 +128,11 @@
                     <i data-lucide="book-open"></i>
                     <span>View Paid Video</span>
                 </a>
-                
                 <hr class="my-4 border-gray-100">
-                
                 <a href="#" class="sidebar-link">
                     <i data-lucide="book-open"></i>
                     <span>Test Series</span>
                 </a>
-
                 <div class="mt-8 pt-4 border-t border-gray-100">
                     <form action="{{ route('admin.logout') }}" method="POST">
                         @csrf
@@ -122,14 +157,13 @@
                 </div>
             </div>
         </header>
-
         <div class="p-8">
             @yield('content')
         </div>
     </main>
-
     <script>
         lucide.createIcons();
     </script>
 </body>
+
 </html>

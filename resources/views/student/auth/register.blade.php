@@ -40,9 +40,9 @@
                 <h3 class="text-2xl font-bold text-slate-800">Create Account</h3>
                 <p class="text-slate-500">Sign up for your free student account.</p>
             </div>
-            <form action="{{ route('student.register.submit') }}" method="POST" class="space-y-4">
+            <form action="{{ route('student.register.submit') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
                 @csrf
-
+                <input type="hidden" name="redirect_to" value="{{ request('redirect_to') }}">
                 @if($errors->any())
                     <div class="px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm font-medium">
                         {{ $errors->first() }}
@@ -92,6 +92,11 @@
                         @endforeach
                     </select>
                 </div>
+                <div>
+                    <label class="text-sm font-bold text-slate-700 block mb-2">Profile Photo</label>
+                    <input type="file" name="image" required
+                        class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="text-sm font-bold text-slate-700 block mb-2">Password</label>
@@ -117,7 +122,7 @@
                     as Student</button>
             </form>
             <div class="mt-8 pt-8 border-t text-center">
-                <p class="text-sm text-slate-500">Already have an account? <a href="{{ route('student.login') }}"
+                <p class="text-sm text-slate-500">Already have an account? <a href="{{ route('student.login') }}?redirect_to={{ request('redirect_to') }}"
                         class="text-blue-600 font-bold hover:underline">Login here</a></p>
             </div>
         </div>

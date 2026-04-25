@@ -23,22 +23,74 @@
     </ul>
 </div>
 @endif
+<div class="mb-6 bg-white dark:bg-[#0b1120] rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-6">
+    <form action="{{ route('admin.student.index') }}" method="GET" id="filterForm" class="flex flex-wrap items-end gap-4">
+        <div class="space-y-2">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Filter by Course</label>
+            <select name="course_id" class="block w-48 px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-blue-500/20 transition-all">
+                <option value="">All Courses</option>
+                @foreach($allCourses as $course)
+                <option value="{{ $course->id }}" {{ request('course_id') == $course->id ? 'selected' : '' }}>{{ $course->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="space-y-2">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Year</label>
+            <select name="year" class="block w-32 px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-blue-500/20 transition-all">
+                <option value="">All Years</option>
+                @for($y = date('Y'); $y >= 2023; $y--)
+                <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>{{ $y }}</option>
+                @endfor
+            </select>
+        </div>
+        <div class="space-y-2">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">From Date</label>
+            <input type="date" name="from_date" value="{{ request('from_date') }}" class="block px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-blue-500/20 transition-all">
+        </div>
+        <div class="space-y-2">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">To Date</label>
+            <input type="date" name="to_date" value="{{ request('to_date') }}" class="block px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-blue-500/20 transition-all">
+        </div>
+        <div class="flex gap-2">
+            <button type="submit" class="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center gap-2 shadow-lg shadow-blue-200 dark:shadow-none">
+                <i data-lucide="search" class="w-3.5 h-3.5"></i>
+                Filter
+            </button>
+            <button type="button" onclick="exportData('excel')" class="px-5 py-2.5 bg-emerald-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-all flex items-center gap-2 shadow-lg shadow-emerald-200 dark:shadow-none">
+                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i>
+                Excel
+            </button>
+            <button type="button" onclick="exportData('pdf')" class="px-5 py-2.5 bg-rose-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 transition-all flex items-center gap-2 shadow-lg shadow-rose-200 dark:shadow-none">
+                <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                PDF
+            </button>
+            @if(request()->anyFilled(['course_id', 'year', 'from_date', 'to_date']))
+            <a href="{{ route('admin.student.index') }}" class="px-5 py-2.5 bg-slate-200 text-slate-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-300 transition-all flex items-center gap-2">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                Reset
+            </a>
+            @endif
+        </div>
+    </form>
+</div>
 
 <div class="bg-white dark:bg-[#0b1120] rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
-    <div class="p-8 lg:p-10 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
-        <div class="flex items-center gap-3">
-            <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
-            <h2 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">Active Students</h2>
+    <div class="p-8 lg:p-10 border-b border-slate-100 dark:border-slate-800">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            <div class="flex items-center gap-3">
+                <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
+                <h2 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">Student Inventory</h2>
+            </div>
         </div>
     </div>
-
     <div class="overflow-x-auto">
         <table class="w-full text-left">
             <thead>
                 <tr class="bg-slate-50/50 dark:bg-slate-800/20 border-b border-slate-100 dark:border-slate-800">
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">ID</th>
-                    <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Student Info</th>
-                    <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Contact</th>
+                    <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Basic Details</th>
+                    <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Contact Info</th>
+                    <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Purchased Courses</th>
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Branch</th>
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-right">Actions</th>
                 </tr>
@@ -52,11 +104,11 @@
                     <td class="px-10 py-8">
                         <div class="flex items-center gap-3">
                             @if($student->image)
-                                <img src="{{ asset($student->image) }}" class="w-10 h-10 rounded-full object-cover shadow-sm">
+                            <img src="{{ asset($student->image) }}" class="w-10 h-10 rounded-full object-cover shadow-sm">
                             @else
-                                <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
-                                    {{ substr($student->name, 0, 1) }}
-                                </div>
+                            <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                                {{ substr($student->name, 0, 1) }}
+                            </div>
                             @endif
                             <div>
                                 <p class="text-[13px] font-black text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors mb-0.5">{{ $student->name }}</p>
@@ -70,17 +122,33 @@
                                 <i data-lucide="phone" class="w-3.5 h-3.5 text-blue-500"></i>
                                 {{ $student->phone }}
                             </p>
-                            <p class="text-[11px] font-medium text-slate-400 flex items-center gap-1.5 line-clamp-1">
+                            <!-- <p class="text-[11px] font-medium text-slate-400 flex items-center gap-1.5 line-clamp-1">
                                 <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
                                 {{ $student->address }}
-                            </p>
+                            </p> -->
+                        </div>
+                    </td>
+                    <td class="px-10 py-8">
+                        <div class="flex flex-col gap-2 max-w-[220px]">
+                            @forelse($student->courses as $course)
+                            <div class="flex flex-col">
+                                <span class="px-2.5 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg text-[9px] font-black uppercase tracking-widest border border-blue-100 dark:border-blue-800 w-fit">
+                                    {{ $course->name }}
+                                </span>
+                                <span class="text-[9px] font-bold text-slate-400 mt-1 pl-1">
+                                    Purchased: {{ \Carbon\Carbon::parse($course->pivot->created_at)->format('d M, Y') }}
+                                </span>
+                            </div>
+                            @empty
+                            <span class="text-[10px] font-bold text-slate-400 italic">No courses</span>
+                            @endforelse
                         </div>
                     </td>
                     <td class="px-10 py-8">
                         <div class="flex flex-col gap-1">
                             <p class="text-[12px] font-black text-slate-700 dark:text-slate-200">
                                 @php
-                                    $branch = $branches->firstWhere('id', $student->branch_id);
+                                $branch = $branches->firstWhere('id', $student->branch_id);
                                 @endphp
                                 {{ $branch ? $branch->branch_name : 'N/A' }}
                             </p>
@@ -115,7 +183,6 @@
         </table>
     </div>
 </div>
-
 <!-- Student Edit Modal -->
 <div id="studentModal" class="hidden fixed inset-0 z-[100] overflow-y-auto">
     <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"></div>
@@ -130,11 +197,9 @@
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
-            
             <form id="studentForm" method="POST" action="" class="p-8 lg:p-10">
                 @csrf
                 @method('PUT')
-                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Name -->
                     <div class="col-span-1">
@@ -164,7 +229,7 @@
                             class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600 transition-all appearance-none cursor-pointer">
                             <option value="">Select Branch</option>
                             @foreach($branches as $branch)
-                                <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
+                            <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -233,8 +298,29 @@
         document.getElementById('branch_id').value = student.branch_id || '';
         document.getElementById('address').value = student.address || '';
         document.getElementById('new_password').value = '';
-        
         openStudentModal();
+    }
+
+    function exportData(type) {
+        const filterForm = document.getElementById('filterForm');
+        const originalAction = filterForm.action;
+
+        // Create a hidden input for export type
+        const typeInput = document.createElement('input');
+        typeInput.type = 'hidden';
+        typeInput.name = 'type';
+        typeInput.value = type;
+        filterForm.appendChild(typeInput);
+
+        // Change action to export route
+        filterForm.action = "{{ route('admin.student.export') }}";
+        filterForm.submit();
+
+        // Reset form for future use
+        setTimeout(() => {
+            filterForm.action = originalAction;
+            typeInput.remove();
+        }, 100);
     }
 </script>
 @endsection

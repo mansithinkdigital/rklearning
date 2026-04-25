@@ -5,23 +5,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Rk Learning Hub - Transform Your Future')</title>
-
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('admin/asset/favicons/favicon.png') }}">
-
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
-
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <!-- Styles -->
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-
     <style>
         :root {
             --primary: #4F46E5;
@@ -124,22 +119,26 @@
             <a href="/" class="flex items-center">
                 <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}" alt="Logo" class="h-10 w-auto mr-2">
             </a>
-
             <nav class="hidden lg:flex items-center space-x-10">
                 <a href="{{ route('home') }}" class="nav-link">Home</a>
                 <a href="{{ route('courses') }}" class="nav-link">Courses</a>
-                <a href="{{ route('about') }}" class="nav-link">Pages</a>
-                <a href="#" class="nav-link">Blog</a>
-                <a href="{{ route('contact') }}" class="nav-link">Contact Us</a>
+                <a href="{{ route('about') }}" class="nav-link">About</a>
+                <a href="{{ route('contact') }}" class="nav-link">Contact</a>
             </nav>
 
             <div class="flex items-center space-x-6">
                 <button class="text-slate-400 hover:text-primary transition-colors">
                     <i class="fa fa-search text-xl"></i>
                 </button>
-                <a href="{{ route('student.register') }}" class="btn-join hidden md:block">
+                @auth
+                <a href="{{ route('student.dashboard') }}" class="btn-join hidden md:block">
+                    <i class="fa fa-th-large mr-2"></i> Dashboard
+                </a>
+                @else
+                <a href="{{ route('student.login') }}" class="btn-join hidden md:block">
                     Join Now
                 </a>
+                @endauth
                 <!-- Mobile toggle -->
                 <button class="lg:hidden text-slate-900">
                     <i class="fa fa-bars text-2xl"></i>
@@ -154,103 +153,103 @@
     </main>
 
     <!-- Footer -->
-<footer class="bg-white text-slate-600 border-t border-slate-100">
-    <div class="container mx-auto px-6 pt-20 pb-10">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
+    <footer class="bg-white text-slate-600 border-t border-slate-100">
+        <div class="container mx-auto px-6 pt-20 pb-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
 
-            <div class="lg:col-span-4">
-                <div class="flex items-center mb-6">
-                    <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}" 
-                         class="h-12 w-auto object-contain" alt="Rk Learning Hub Logo">
+                <div class="lg:col-span-4">
+                    <div class="flex items-center mb-6">
+                        <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}"
+                            class="h-12 w-auto object-contain" alt="Rk Learning Hub Logo">
+                    </div>
+                    <p class="mb-8 text-base leading-relaxed text-slate-500 max-w-sm">
+                        Empowering learners worldwide through high-quality, project-based education. Join our community and start your journey today.
+                    </p>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
                 </div>
-                <p class="mb-8 text-base leading-relaxed text-slate-500 max-w-sm">
-                    Empowering learners worldwide through high-quality, project-based education. Join our community and start your journey today.
+
+                <div class="lg:col-span-2">
+                    <h4 class="font-bold text-slate-900 mb-7 relative inline-block">
+                        Explore
+                        <span class="absolute -bottom-2 left-0 w-8 h-1 bg-indigo-600 rounded-full"></span>
+                    </h4>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">About Us</a></li>
+                        <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">All Courses</a></li>
+                        <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Instructors</a></li>
+                        <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Latest News</a></li>
+                    </ul>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <h4 class="font-bold text-slate-900 mb-7 relative inline-block">
+                        Support
+                        <span class="absolute -bottom-2 left-0 w-8 h-1 bg-indigo-600 rounded-full"></span>
+                    </h4>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Help Center</a></li>
+                        <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Community</a></li>
+                    </ul>
+                </div>
+
+                <div class="lg:col-span-4">
+                    <h4 class="font-bold text-slate-900 mb-7 relative inline-block">
+                        Get in Touch
+                        <span class="absolute -bottom-2 left-0 w-8 h-1 bg-indigo-600 rounded-full"></span>
+                    </h4>
+                    <div class="bg-slate-50 rounded-3xl p-6 space-y-5">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                                <i class="fa fa-map-marker-alt text-indigo-600"></i>
+                            </div>
+                            <span class="text-sm">25/B, Knowledge City, New York, USA</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                                <i class="fa fa-phone-alt text-indigo-600"></i>
+                            </div>
+                            <span class="text-sm font-medium">+1 (234) 567 890</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                                <i class="fa fa-envelope text-indigo-600"></i>
+                            </div>
+                            <span class="text-sm font-medium text-indigo-600">info@rklearning.com</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center text-sm font-medium">
+                <p class="text-slate-400">
+                    &copy; {{ date('Y') }} <span class="text-slate-900">Rk Learning Hub</span>. All rights reserved.
                 </p>
-                <div class="flex gap-3">
-                    <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
-                        <i class="fab fa-linkedin-in"></i>
+
+                <div class="mt-4 md:mt-0 px-6 py-2 bg-slate-50 rounded-full">
+                    <span class="text-slate-400">Handcrafted by</span>
+                    <a href="https://thinkdigital.com" target="_blank"
+                        class="text-indigo-600 hover:text-indigo-800 transition ml-1">
+                        ThinkDigital
                     </a>
                 </div>
             </div>
-
-            <div class="lg:col-span-2">
-                <h4 class="font-bold text-slate-900 mb-7 relative inline-block">
-                    Explore
-                    <span class="absolute -bottom-2 left-0 w-8 h-1 bg-indigo-600 rounded-full"></span>
-                </h4>
-                <ul class="space-y-4">
-                    <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">About Us</a></li>
-                    <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">All Courses</a></li>
-                    <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Instructors</a></li>
-                    <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Latest News</a></li>
-                </ul>
-            </div>
-
-            <div class="lg:col-span-2">
-                <h4 class="font-bold text-slate-900 mb-7 relative inline-block">
-                    Support
-                    <span class="absolute -bottom-2 left-0 w-8 h-1 bg-indigo-600 rounded-full"></span>
-                </h4>
-                <ul class="space-y-4">
-                    <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Help Center</a></li>
-                    <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Terms of Service</a></li>
-                    <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Privacy Policy</a></li>
-                    <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Community</a></li>
-                </ul>
-            </div>
-
-            <div class="lg:col-span-4">
-                <h4 class="font-bold text-slate-900 mb-7 relative inline-block">
-                    Get in Touch
-                    <span class="absolute -bottom-2 left-0 w-8 h-1 bg-indigo-600 rounded-full"></span>
-                </h4>
-                <div class="bg-slate-50 rounded-3xl p-6 space-y-5">
-                    <div class="flex items-start space-x-4">
-                        <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                            <i class="fa fa-map-marker-alt text-indigo-600"></i>
-                        </div>
-                        <span class="text-sm">25/B, Knowledge City, New York, USA</span>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                            <i class="fa fa-phone-alt text-indigo-600"></i>
-                        </div>
-                        <span class="text-sm font-medium">+1 (234) 567 890</span>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                            <i class="fa fa-envelope text-indigo-600"></i>
-                        </div>
-                        <span class="text-sm font-medium text-indigo-600">info@rklearning.com</span>
-                    </div>
-                </div>
-            </div>
         </div>
-
-        <div class="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center text-sm font-medium">
-            <p class="text-slate-400">
-                &copy; {{ date('Y') }} <span class="text-slate-900">Rk Learning Hub</span>. All rights reserved.
-            </p>
-
-            <div class="mt-4 md:mt-0 px-6 py-2 bg-slate-50 rounded-full">
-                <span class="text-slate-400">Handcrafted by</span> 
-                <a href="https://thinkdigital.com" target="_blank"
-                   class="text-indigo-600 hover:text-indigo-800 transition ml-1">
-                    ThinkDigital
-                </a>
-            </div>
-        </div>
-    </div>
-</footer>
+    </footer>
 
     @yield('scripts')
 </body>

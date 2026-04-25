@@ -54,7 +54,7 @@
                 @forelse($courses as $course)
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/10 transition-colors group">
                     <td class="px-10 py-8">
-                        <span class="text-sm font-black text-slate-400">#{{ str_pad($course->id, 3, '0', STR_PAD_LEFT) }}</span>
+                        <span class="text-sm font-black text-slate-400">#{{ str_pad($loop->iteration, 3, '0', STR_PAD_LEFT) }}</span>
                     </td>
                     <td class="px-10 py-8">
                         <div class="w-20 h-14 rounded-xl border border-slate-100 dark:border-slate-800 overflow-hidden bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center">
@@ -67,9 +67,16 @@
                             <p class="text-[11px] font-bold text-slate-400 line-clamp-1 max-w-[300px]">{{ $course->description }}</p>
                         </div>
                     </td>
+
                     <td class="px-10 py-8">
                         <span class="text-sm font-black text-green-600">
                             ₹{{ number_format($course->price, 2) }}
+                        </span>
+                        <span class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                            Duration: {{ $course->duration }}
+                        </span>
+                        <span class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                            Language: {{ $course->language }}
                         </span>
                     </td>
                     <td class="px-10 py-8 text-center">
@@ -80,13 +87,16 @@
                     </td>
                     <td class="px-10 py-8 text-right">
                         <div class="flex items-center justify-end gap-2">
-                            <a href="{{ route('admin.course.manage', $course->id) }}" class="px-4 py-2 bg-blue-600 text-[10px] font-black uppercase tracking-widest text-white hover:bg-blue-700 rounded-xl transition-all shadow-lg shadow-blue-500/20 flex items-center gap-2">
+                            <!-- <a href="{{ route('admin.course.manage', $course->id) }}" class="px-4 py-2 bg-blue-600 text-[10px] font-black uppercase tracking-widest text-white hover:bg-blue-700 rounded-xl transition-all shadow-lg shadow-blue-500/20 flex items-left gap-2">
                                 <i data-lucide="layers" class="w-3.5 h-3.5"></i>
                                 Manage Content
-                            </a>
-                            <a href="{{ route('admin.subject.index', ['course_id' => $course->id]) }}" class="px-4 py-2 bg-slate-50 dark:bg-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all border border-slate-200 dark:border-slate-700 flex items-center gap-2">
+                            </a> -->
+                            <a href="{{ route('admin.subject.index', ['course_id' => $course->id]) }}" class="px-4 py-2 bg-slate-50 dark:bg-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all border border-slate-200 dark:border-slate-700 flex items-center gap-2 whitespace-nowrap">
                                 <i data-lucide="list" class="w-3.5 h-3.5"></i>
                                 Subjects
+                                <span class="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-full">
+                                    {{ $course->subjects_count }}
+                                </span>
                             </a>
                             <button onclick="editCourse({{ $course->id }})" class="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-800 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all border border-slate-200 dark:border-slate-700">
                                 <i data-lucide="edit-3" class="w-4 h-4"></i>
@@ -99,7 +109,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="px-10 py-20 text-center">
+                    <td colspan="7" class="px-10 py-20 text-center">
                         <div class="flex flex-col items-center justify-center gap-4">
                             <i data-lucide="box" class="w-12 h-12 text-slate-200 dark:text-slate-800"></i>
                             <p class="text-sm font-bold text-slate-400">No courses listed. Launch your first course!</p>
@@ -126,9 +136,7 @@
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
-
-            <form id="courseForm" class="p-8 lg:p-10" enctype="multipart/form-data">
-                @csrf
+            <form id="courseForm" class="p-8 lg:p-10" enctype="multipart/form-data"> @csrf
                 <input type="hidden" id="course_id_pk" name="id">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Course Image Preview & Input -->
@@ -142,7 +150,6 @@
                             <input type="file" name="image" id="imageInput" class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="previewImage(this)">
                         </div>
                     </div>
-
                     <!-- Course Name -->
                     <div class="col-span-2">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Course Title</label>
@@ -158,18 +165,34 @@
                             class="w-full bg-slate-50 dark:bg-slate-800/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600"
                             placeholder="e.g. 4999">
                     </div>
+                    <div class="col-span-2">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">
+                            Duration
+                        </label>
+                        <input type="text" name="duration" id="course_duration" required
+                            class="w-full bg-slate-50 dark:bg-slate-800/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600"
+                            placeholder="e.g. 3 Months">
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">
+                            Language
+                        </label>
+                        <input type="text" name="language" id="course_language" required
+                            class="w-full bg-slate-50 dark:bg-slate-800/50 rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600"
+                            placeholder="e.g. English, Hindi">
+                    </div>
                     <!-- Description -->
                     <div class="col-span-full">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Course Description</label>
                         <textarea name="description" id="course_description" rows="4" required
                             class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-blue-600 transition-all resize-none"
-                            placeholder="Enter course curriculum or details..."></textarea>
+                            placeholder="Enter short course curriculum or details..."></textarea>
                     </div>
                     <div class="col-span-full">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">
                             Full Course Details
                         </label>
-                        <textarea name="long_description" id="long_description"></textarea>
+                        <textarea name="long_description" id="long_description" placeholder="Enter full course details..."></textarea>
                     </div>
                     <!-- Status -->
                     <div class="col-span-3">
@@ -270,7 +293,7 @@
     function openCourseModal(isEdit = false) {
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
-        
+
         // Ensure Summernote is initialized with full config
         if (!$('#long_description').next().hasClass('note-editor')) {
             initSummernote();
@@ -285,6 +308,8 @@
             lucide.createIcons();
             $('#long_description').summernote('code', '');
             document.getElementById('course_price').value = '';
+            document.getElementById('course_duration').value = '';
+            document.getElementById('course_language').value = '';
             document.getElementById('imageInput').required = true;
         }
     }
@@ -307,6 +332,8 @@
                 document.getElementById('course_description').value = data.description;
                 document.getElementById('course_status').value = data.status;
                 document.getElementById('course_price').value = data.price;
+                document.getElementById('course_duration').value = data.duration;
+                document.getElementById('course_language').value = data.language;
                 $('#long_description').summernote('code', data.long_description);
                 imagePreview.innerHTML = `<img src="/admin/uploads/courseimg/${data.image}" class="w-full h-full object-cover">`;
             });

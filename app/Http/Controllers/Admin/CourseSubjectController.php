@@ -13,7 +13,7 @@ class CourseSubjectController extends Controller
     public function index()
     {
         $courses = Course::all();
-        $courseSubjects = CourseSubject::with(['course', 'subject'])->latest()->get();
+        $courseSubjects = CourseSubject::with(['course', 'subject'])->withCount('mcqs')->latest()->get();
         return view('admin.pages.coursesubject.index', compact('courses', 'courseSubjects'));
     }
 
@@ -28,6 +28,9 @@ class CourseSubjectController extends Controller
         $request->validate([
             'course_id'  => 'required|exists:courses,id',
             'subject_id' => 'required|exists:subjects,id',
+            'total_marks' => 'required|integer|min:0',
+            'pass_marks' => 'required|integer|min:0',
+            'time_limit' => 'required|integer|min:0',
         ]);
 
         $exists = CourseSubject::where('course_id', $request->course_id)
@@ -39,8 +42,11 @@ class CourseSubjectController extends Controller
         }
 
         CourseSubject::create([
-            'course_id'  => $request->course_id,
-            'subject_id' => $request->subject_id,
+            'course_id'   => $request->course_id,
+            'subject_id'  => $request->subject_id,
+            'total_marks' => $request->total_marks,
+            'pass_marks'  => $request->pass_marks,
+            'time_limit'  => $request->time_limit,
         ]);
 
         return back()->with('success', 'Course and Subject added successfully.');
@@ -49,8 +55,11 @@ class CourseSubjectController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'course_id'  => 'required|exists:courses,id',
-            'subject_id' => 'required|exists:subjects,id',
+            'course_id'   => 'required|exists:courses,id',
+            'subject_id'  => 'required|exists:subjects,id',
+            'total_marks' => 'required|integer|min:0',
+            'pass_marks'  => 'required|integer|min:0',
+            'time_limit'  => 'required|integer|min:0',
         ]);
 
         $courseSubject = CourseSubject::findOrFail($id);
@@ -65,8 +74,11 @@ class CourseSubjectController extends Controller
         }
 
         $courseSubject->update([
-            'course_id'  => $request->course_id,
-            'subject_id' => $request->subject_id,
+            'course_id'   => $request->course_id,
+            'subject_id'  => $request->subject_id,
+            'total_marks' => $request->total_marks,
+            'pass_marks'  => $request->pass_marks,
+            'time_limit'  => $request->time_limit,
         ]);
 
         return back()->with('success', 'Course and Subject updated successfully.');

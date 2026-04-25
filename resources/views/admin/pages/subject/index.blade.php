@@ -7,16 +7,16 @@
     <div>
         <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-none mb-2 uppercase">
             @if($selectedCourse)
-                {{ $selectedCourse->name }} <span class="text-blue-600">Subjects</span>
+            {{ $selectedCourse->name }} <span class="text-blue-600">Subjects</span>
             @else
-                SUBJECTS REPOSITORY
+            SUBJECTS REPOSITORY
             @endif
         </h1>
         <p class="text-sm font-bold text-slate-400 dark:text-slate-500">
             @if($selectedCourse)
-                Managing academic modules for the selected course
+            Managing academic modules for the selected course
             @else
-                Manage academic subjects and their parent courses
+            Manage academic subjects and their parent courses
             @endif
         </p>
     </div>
@@ -52,9 +52,9 @@
             <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
             <h2 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">
                 @if($selectedCourse)
-                    Course Modules
+                Course Modules
                 @else
-                    Academic Subjects
+                Academic Subjects
                 @endif
             </h2>
         </div>
@@ -96,8 +96,13 @@
                     </td>
                     <td class="px-10 py-8 text-right">
                         <div class="flex items-center justify-end gap-2">
-                             <a href="{{ route('admin.subject.units.index', $subject->id) }}" class="px-3 h-10 flex items-center justify-center bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl transition-all border border-blue-200 dark:border-blue-800 text-[11px] font-black uppercase tracking-widest gap-2">
-                                <i data-lucide="layers" class="w-4 h-4"></i> Units
+                            <a href="{{ route('admin.subject.units.index', $subject->id) }}"
+                                class="px-3 h-10 flex items-center justify-center bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl transition-all border border-blue-200 dark:border-blue-800 text-[11px] font-black uppercase tracking-widest gap-2 whitespace-nowrap">
+                                <i data-lucide="layers" class="w-4 h-4"></i>
+                                Units
+                                <span class="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-full">
+                                    {{ $subject->units_count }}
+                                </span>
                             </a>
                             <button onclick="editSubject({{ $subject->id }})" class="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-800 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all border border-slate-200 dark:border-slate-700">
                                 <i data-lucide="edit-3" class="w-4 h-4"></i>
@@ -149,7 +154,7 @@
                             class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600 transition-all appearance-none cursor-pointer">
                             <option value="">Select Course</option>
                             @foreach($courses as $course)
-                                <option value="{{ $course->id }}">{{ $course->name }}</option>
+                            <option value="{{ $course->id }}">{{ $course->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -186,6 +191,7 @@
     const modalTitle = document.getElementById('modalTitle');
     const submitBtn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
+
     function showAlert(type, message) {
         const container = document.getElementById('alertContainer');
         const box = document.getElementById('alertBox');
@@ -245,8 +251,8 @@
         const method = id ? 'PUT' : 'POST';
         const formData = new FormData(form);
         const data = {};
-        formData.forEach((value, key) => data[key] = value);        
-        if(id) {
+        formData.forEach((value, key) => data[key] = value);
+        if (id) {
             data['_method'] = 'PUT';
         }
         submitBtn.disabled = true;
@@ -276,23 +282,23 @@
     };
 
     function deleteSubject(id) {
-        if(confirm('Are you sure you want to delete this subject?')) {
+        if (confirm('Are you sure you want to delete this subject?')) {
             fetch(`/admin/subject/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    showAlert('success', data.message);
-                    setTimeout(() => window.location.reload(), 1500);
-                } else {
-                    showAlert('error', 'Failed to delete subject.');
-                }
-            });
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showAlert('success', data.message);
+                        setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        showAlert('error', 'Failed to delete subject.');
+                    }
+                });
         }
     }
 </script>

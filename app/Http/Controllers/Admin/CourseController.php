@@ -12,7 +12,7 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $courses = Course::latest()->get();
+        $courses = Course::withCount('subjects')->latest()->get();
         return view('admin.pages.course.index', compact('courses'));
     }
 
@@ -21,6 +21,8 @@ class CourseController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
+            'duration' => 'required|string|max:255',
+            'language' => 'required|string|max:255',
             'image' => $request->id ? 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10048' : 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10048',
             'description' => 'required|string',
             'long_description' => 'required|string',
@@ -64,6 +66,8 @@ class CourseController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
+            'duration' => 'required|string|max:255',
+            'language' => 'required|string|max:255',
             'image' => $request->id ? 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10048' : 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10048',
             'description' => 'required|string',
             'long_description' => 'required|string',

@@ -1,7 +1,5 @@
 @extends('admin.layouts.main')
-
 @section('title', 'Unit Management')
-
 @section('content')
 <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
     <div>
@@ -16,16 +14,16 @@
         </div>
         <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-none mb-2 uppercase">
             @if(isset($subject))
-                {{ $subject->name }} <span class="text-emerald-600">Units</span>
+            {{ $subject->name }} <span class="text-emerald-600">Units</span>
             @else
-                UNITS REPOSITORY
+            UNITS REPOSITORY
             @endif
         </h1>
         <p class="text-sm font-bold text-slate-400 dark:text-slate-500">
             @if(isset($subject))
-                Structure your subject curriculum into manageable units
+            Structure your subject curriculum into manageable units
             @else
-                Manage academic units and their parent subjects
+            Manage academic units and their parent subjects
             @endif
         </p>
     </div>
@@ -61,9 +59,9 @@
             <div class="w-1.5 h-8 bg-emerald-600 rounded-full"></div>
             <h2 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">
                 @if(isset($subject))
-                    Subject Units
+                Subject Units
                 @else
-                    Academic Units
+                Academic Units
                 @endif
             </h2>
         </div>
@@ -98,6 +96,7 @@
                     <td class="px-10 py-8">
                         <p class="text-[13px] font-black text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">{{ $unit->name }}</p>
                     </td>
+
                     <td class="px-10 py-8">
                         <span class="text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
                             {{ $unit->subject->name }}
@@ -105,8 +104,13 @@
                     </td>
                     <td class="px-10 py-8 text-right">
                         <div class="flex items-center justify-end gap-2">
-                             <a href="{{ route('admin.unit.topics.index', $unit->id) }}" class="px-3 h-10 flex items-center justify-center bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-xl transition-all border border-emerald-200 dark:border-emerald-800 text-[11px] font-black uppercase tracking-widest gap-2">
-                                <i data-lucide="book" class="w-4 h-4"></i> Topics
+                            <a href="{{ route('admin.unit.topics.index', $unit->id) }}"
+                                class="px-3 h-10 flex items-center justify-center bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-xl transition-all border border-emerald-200 dark:border-emerald-800 text-[11px] font-black uppercase tracking-widest gap-2 whitespace-nowrap">
+                                <i data-lucide="book" class="w-4 h-4"></i>
+                                Topics
+                                <span class="bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded-full">
+                                    {{ $unit->topics_count }}
+                                </span>
                             </a>
                             <button onclick="editUnit({{ $unit->id }})" class="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-800 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all border border-slate-200 dark:border-slate-700">
                                 <i data-lucide="edit-3" class="w-4 h-4"></i>
@@ -155,18 +159,18 @@
                     <div class="col-span-1">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Parent Subject <span class="text-red-600">*</span></label>
                         @if(isset($subject))
-                            <input type="hidden" name="subject_id" value="{{ $subject->id }}">
-                            <div class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-500">
-                                {{ $subject->name }}
-                            </div>
+                        <input type="hidden" name="subject_id" value="{{ $subject->id }}">
+                        <div class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-500">
+                            {{ $subject->name }}
+                        </div>
                         @else
-                            <select name="subject_id" id="subject_id" required
-                                class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600 transition-all appearance-none cursor-pointer">
-                                <option value="">Select Subject</option>
-                                @foreach($subjects as $s)
-                                    <option value="{{ $s->id }}">{{ $s->name }} ({{ $s->course->name }})</option>
-                                @endforeach
-                            </select>
+                        <select name="subject_id" id="subject_id" required
+                            class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600 transition-all appearance-none cursor-pointer">
+                            <option value="">Select Subject</option>
+                            @foreach($subjects as $s)
+                            <option value="{{ $s->id }}">{{ $s->name }} ({{ $s->course->name }})</option>
+                            @endforeach
+                        </select>
                         @endif
                     </div>
 
@@ -199,7 +203,6 @@
         </div>
     </div>
 </div>
-
 @endsection
 
 @section('scripts')
@@ -209,7 +212,6 @@
     const modalTitle = document.getElementById('modalTitle');
     const submitBtn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
-
     function showAlert(type, message) {
         const container = document.getElementById('alertContainer');
         const box = document.getElementById('alertBox');
@@ -257,7 +259,7 @@
             .then(response => response.json())
             .then(data => {
                 document.getElementById('unit_id_pk').value = data.id;
-                if(document.getElementById('subject_id')) {
+                if (document.getElementById('subject_id')) {
                     document.getElementById('subject_id').value = data.subject_id;
                 }
                 document.getElementById('unit_name').value = data.name;
@@ -272,8 +274,8 @@
         const method = id ? 'PUT' : 'POST';
         const formData = new FormData(form);
         const data = {};
-        formData.forEach((value, key) => data[key] = value);        
-        if(id) {
+        formData.forEach((value, key) => data[key] = value);
+        if (id) {
             data['_method'] = 'PUT';
         }
         submitBtn.disabled = true;
@@ -303,23 +305,23 @@
     };
 
     function deleteUnit(id) {
-        if(confirm('Are you sure you want to delete this unit?')) {
+        if (confirm('Are you sure you want to delete this unit?')) {
             fetch(`/admin/unit/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    showAlert('success', data.message);
-                    setTimeout(() => window.location.reload(), 1500);
-                } else {
-                    showAlert('error', 'Failed to delete unit.');
-                }
-            });
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showAlert('success', data.message);
+                        setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        showAlert('error', 'Failed to delete unit.');
+                    }
+                });
         }
     }
 </script>

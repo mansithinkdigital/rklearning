@@ -45,9 +45,11 @@ class HomeController extends Controller
     {
         $course->load(['subjects.units.topics', 'subjects.units.paidVideos', 'subjects.units.freePdfs']);
         $user = Auth::user();
-        $hasPurchased = $user ? $user->courses()->where('course_id', $course->id)->exists() : false;
+        $enrollment = $user ? $user->courses()->where('course_id', $course->id)->first() : null;
+        $hasPurchased = $enrollment && $enrollment->pivot->status === 'approved';
+        $isPending = $enrollment && $enrollment->pivot->status === 'pending';
 
-        return view('client.course-detail', compact('course', 'hasPurchased'));
+        return view('client.course-detail', compact('course', 'hasPurchased', 'isPending'));
     }
 
     public function contact()

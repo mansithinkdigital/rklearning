@@ -12,7 +12,7 @@ class SubjectController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Subject::with('course');
+        $query = Subject::with('course')->withCount('units');
         if ($request->has('course_id')) {
             $query->where('course_id', $request->course_id);
         }

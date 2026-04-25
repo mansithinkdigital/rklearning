@@ -84,30 +84,15 @@
 
 <body class="bg-[#f8fafc] dark:bg-[#020617] text-slate-900 dark:text-slate-100 group">
     @include('admin.inc.sidebar')
+    
     <!-- Structural Wrapper -->
-    <div id="content-wrapper" class="main-container sidebar-expanded">
+    <div id="content-wrapper" class="main-container sidebar-expanded min-h-screen transition-all duration-300 ease-in-out">
         @include('admin.inc.header')
-        <main class="flex-grow p-4 lg:p-10">
-            <!-- Page Header (Reference Style) -->
-            <!-- <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-12">
-                <div>
-                    <h1 class="text-[34px] font-black text-[#111827] dark:text-white tracking-tight leading-none mb-3">@yield('page_title', 'Dashboard')</h1>
-                    <p class="text-[14px] font-bold text-slate-400 dark:text-slate-500">@yield('page_description', 'Institutional Dashboard')</p>
-                </div>
-
-                <div class="flex items-center gap-4 mt-6 md:mt-0">
-                    <button class="flex items-center gap-2 px-6 py-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-[11px] font-black text-slate-900 dark:text-white uppercase tracking-[0.2em] shadow-sm hover:bg-slate-50 transition-all">
-                        <i data-lucide="globe" class="w-4 h-4"></i>
-                        Live Website
-                    </button>
-                    <button class="flex items-center gap-2 px-6 py-3.5 bg-[#001c3d] dark:bg-blue-700 rounded-2xl text-[11px] font-black text-white uppercase tracking-[0.2em] shadow-xl hover:shadow-blue-500/20 transition-all group">
-                        <i data-lucide="zap" class="w-4 h-4 fill-white group-hover:scale-125 transition-transform"></i>
-                        Urgent Alert
-                    </button>
-                </div>
-            </div> -->
+        
+        <main class="flex-grow p-4 md:p-8 lg:p-12">
             @yield('content')
         </main>
+
         <footer class="p-10 text-center border-t border-slate-100 dark:border-slate-900">
             <p class="text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.4em]">RK LEARNING HUB &bull; POWERED BY GOVERNANCE V2.0 &bull; &copy; 2026</p>
         </footer>
