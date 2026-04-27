@@ -22,6 +22,56 @@
     </div>
     @endif
 
+    @php
+    $completedCourses = $enrolledCourses->where('is_fully_completed', true);
+    @endphp
+
+    @if($completedCourses->isNotEmpty())
+    <div class="mb-12">
+        <div class="flex items-center gap-4 mb-6">
+            <div class="w-12 h-12 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-200">
+                <i data-lucide="award" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h4 class="text-xl font-black text-slate-900 uppercase tracking-tight">Completed Achievements</h4>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Download your official certifications</p>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            @foreach($completedCourses as $c)
+            <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-[3rem] p-10 text-white relative overflow-hidden group shadow-2xl shadow-emerald-200">
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="px-4 py-1 bg-emerald-500/30 rounded-full text-[10px] font-black uppercase tracking-[0.2em] text-emerald-100 backdrop-blur-sm border border-emerald-400/20">Official Credential</span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
+                        </div>
+                        <h5 class="text-3xl md:text-5xl font-black uppercase tracking-tight mb-8 leading-tight">{{ $c->name }}</h5>
+                        
+                        <div class="flex flex-wrap gap-4">
+                            <a href="{{ route('student.certificate.download', $c->id) }}" class="inline-flex items-center gap-3 px-10 py-5 bg-white text-emerald-800 rounded-3xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-2xl shadow-emerald-900/20">
+                                <i data-lucide="award" class="w-5 h-5"></i> Landscape Certificate
+                            </a>
+                            <a href="{{ route('student.marksheet.download', $c->id) }}" class="inline-flex items-center gap-3 px-10 py-5 bg-emerald-900/40 text-white border border-white/20 backdrop-blur-md rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-emerald-900/60 transition-all">
+                                <i data-lucide="file-text" class="w-5 h-5"></i> Official Marksheet
+                            </a>
+                        </div>
+                    </div>
+                    <div class="hidden lg:flex items-center justify-center w-48 h-48 bg-white/5 rounded-full border border-white/10 backdrop-blur-sm relative">
+                        <i data-lucide="shield-check" class="w-24 h-24 text-white/40"></i>
+                        <div class="absolute inset-0 border-4 border-white/20 border-dashed rounded-full animate-[spin_20s_linear_infinite]"></div>
+                    </div>
+                </div>
+                <!-- Decorative Elements -->
+                <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-white/10 rounded-full blur-[100px]"></div>
+                <div class="absolute top-10 right-1/4 w-32 h-32 bg-emerald-400/20 rounded-full blur-[60px] animate-pulse"></div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
     @if($courseSubjects->isEmpty())
     <div class="p-20 bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-slate-800 text-center shadow-sm">
         <div class="w-24 h-24 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-6 text-blue-600">
@@ -134,6 +184,15 @@
                     <i data-lucide="eye" class="w-3.5 h-3.5"></i> View Detailed Result
                 </a>
             </div>
+            @elseif(!$cs->videos_completed)
+            <div class="space-y-3">
+                <button disabled class="w-full py-4 bg-amber-50 text-amber-600 border border-amber-200 rounded-2xl font-black text-[11px] uppercase tracking-widest text-center cursor-not-allowed flex items-center justify-center gap-2">
+                    <i data-lucide="lock" class="w-3.5 h-3.5"></i> Video Progress Pending
+                </button>
+                <a href="{{ route('student.learning', $cs->course_id) }}" class="flex items-center justify-center gap-2 w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest transition-colors shadow-lg shadow-blue-100">
+                    <i data-lucide="play" class="w-3.5 h-3.5"></i> Complete {{ $cs->video_count - $cs->completed_count }} More Videos
+                </a>
+            </div>
             @elseif($hasMcqs)
             <a href="{{ route('student.exams.start', $cs->id) }}"
                 class="w-full py-4 bg-slate-900 dark:bg-blue-600 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest text-center group-hover:bg-blue-600 transition-colors shadow-xl shadow-blue-100 dark:shadow-none flex items-center justify-center gap-2">
@@ -141,7 +200,7 @@
             </a>
             @else
             <button disabled class="w-full py-4 bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 rounded-2xl font-black text-[11px] uppercase tracking-widest text-center cursor-not-allowed">
-                Locked
+                No Questions
             </button>
             @endif
         </div>

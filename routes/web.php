@@ -54,6 +54,9 @@ Route::prefix('student')->name('student.')->group(function () {
         Route::get('/exams/{course_subject_id}/start', [StudentDashboardController::class, 'startExam'])->name('exams.start');
         Route::post('/exams/{course_subject_id}/submit', [StudentDashboardController::class, 'submitExam'])->name('exams.submit');
         Route::get('/exams/{course_subject_id}/result', [StudentDashboardController::class, 'viewResult'])->name('exams.result');
+        Route::get('/courses/{course_id}/certificate', [StudentDashboardController::class, 'downloadCertificate'])->name('certificate.download');
+        Route::get('/courses/{course_id}/marksheet', [StudentDashboardController::class, 'downloadMarksheet'])->name('marksheet.download');
+        Route::post('/videos/{video_id}/complete', [StudentDashboardController::class, 'markVideoCompleted'])->name('videos.complete');
         Route::get('/fee-history', [StudentDashboardController::class, 'financials'])->name('financials');
         Route::get('/receipt/{reference}', [StudentDashboardController::class, 'downloadReceipt'])->name('receipt.download');
 

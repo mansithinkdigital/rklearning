@@ -160,14 +160,7 @@
                 </div>
 
                 <!-- YouTube/Video State -->
-                <iframe 
-                    id="video-frame" 
-                    class="hidden w-full h-full border-none"
-                    src=""
-                    allow="autoplay; fullscreen"
-                    allowfullscreen
-                    referrerpolicy="strict-origin-when-cross-origin">
-                </iframe>                
+                <div id="video-frame" class="hidden w-full h-full"></div>
                 
                 <!-- PDF State -->
                 <object id="pdf-frame" class="hidden w-full h-full" data="" type="application/pdf">
@@ -238,7 +231,13 @@
                     <span class="text-blue-600">Dynamic Curriculum</span>
                 </div>
                 <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 h-full rounded-full transition-all duration-1000" style="width: 5%"></div>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
+                    <span class="text-slate-400">Course Progress</span>
+                    <span id="progress-percent" class="text-blue-600">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                    <div id="course-progress-bar" class="bg-gradient-to-r from-blue-600 to-indigo-600 h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
                 </div>
             </div>
         </div>
@@ -278,12 +277,30 @@
                             @endforeach
 
                             @foreach($unit->paidVideos as $video)
-                            <div onclick='playVideo(@json($video), @json($unit), @json($subject)); closeSidebarMobile();' class="material-link group bg-indigo-50/30 border-indigo-100 text-indigo-600 hover:bg-indigo-50">
-                                <div class="w-8 h-8 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-700 group-hover:scale-110 transition-all">
-                                    <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+                            @php
+                                $isCompleted = in_array($video->id, $completedVideoIds);
+                                $videoIndex = $allVideos->search(fn($v) => $v->id == $video->id);
+                                $isUnlocked = ($videoIndex === 0) || in_array($allVideos[$videoIndex-1]->id, $completedVideoIds);
+                            @endphp
+                            <div id="vid-{{ $video->id }}" 
+                                 data-video='@json($video)'
+                                 data-unit='@json($unit)'
+                                 data-subject='@json($subject)'
+                                 onclick='handleVideoClick(this); closeSidebarMobile();' 
+                                 class="material-link group {{ $isUnlocked ? 'bg-indigo-50/30 border-indigo-100 text-indigo-600 hover:bg-indigo-50' : 'bg-slate-50 border-slate-100 text-slate-400 cursor-not-allowed opacity-60' }}">
+                                <div class="w-8 h-8 rounded-xl {{ $isUnlocked ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-200 text-slate-400' }} flex items-center justify-center group-hover:scale-110 transition-all">
+                                    @if($isCompleted)
+                                        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600"></i>
+                                    @elseif(!$isUnlocked)
+                                        <i data-lucide="lock" class="w-4 h-4"></i>
+                                    @else
+                                        <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+                                    @endif
                                 </div>
                                 <div class="flex-1 py-1">
-                                    <p class="text-[9px] font-black uppercase tracking-widest leading-none mb-1 opacity-70">Play Video</p>
+                                    <p class="text-[9px] font-black uppercase tracking-widest leading-none mb-1 opacity-70">
+                                        {{ $isCompleted ? 'Completed' : ($isUnlocked ? 'Play Video' : 'Locked') }}
+                                    </p>
                                     <p class="text-[12px] font-black tracking-tight truncate">{{ $video->title }}</p>
                                 </div>
                             </div>
@@ -311,28 +328,76 @@
         </div>
 
         <!-- Footer -->
-        <div class="p-10 border-t border-slate-100 bg-slate-50/50">
+        <div id="sidebar-footer" class="p-10 border-t border-slate-100 bg-slate-50/50">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-600/20">
-                    <i data-lucide="award" class="w-6 h-6"></i>
+                <div id="exam-unlock-icon" class="w-12 h-12 bg-slate-200 text-slate-400 rounded-2xl flex items-center justify-center transition-all duration-500">
+                    <i data-lucide="lock" class="w-6 h-6"></i>
                 </div>
                 <div>
-                    <h5 class="text-sm font-black tracking-tight text-slate-800">Final Assessment</h5>
-                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Awaits Completion</p>
+                    <h5 id="exam-unlock-title" class="text-sm font-black tracking-tight text-slate-800">Exam Locked</h5>
+                    <p id="exam-unlock-subtitle" class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Complete all videos to unlock</p>
                 </div>
             </div>
         </div>
     </aside>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         lucide.createIcons();
 
+        // ─── STATE ───────────────────────────────────────────
+        let player = null;
+        let currentVideoId = null;
+        let currentVideoIdDB = null;
+        const ALL_VIDEOS = @json($allVideos);
+        let COMPLETED_VIDS = @json($completedVideoIds);
+        const COURSE_ID = {{ $course->id }};
+
+        // ─── YOUTUBE API ─────────────────────────────────────
+        function onYouTubeIframeAPIReady() {
+            // Player will be initialized when playVideo is called
+        }
+
+        function initPlayer(youtubeId) {
+            if (player) {
+                document.getElementById('player-loader').classList.add('hidden');
+                document.getElementById('video-frame').classList.remove('hidden');
+                player.loadVideoById(youtubeId);
+                return;
+            }
+
+            player = new YT.Player('video-frame', {
+                height: '100%',
+                width: '100%',
+                videoId: youtubeId,
+                playerVars: {
+                    'autoplay': 1,
+                    'rel': 0,
+                    'modestbranding': 1
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            document.getElementById('player-loader').classList.add('hidden');
+            document.getElementById('video-frame').classList.remove('hidden');
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                markAsCompleted(currentVideoIdDB);
+            }
+        }
+
+        // ─── CORE LOGIC ──────────────────────────────────────
         function toggleSubject(id, btn) {
             const el = document.getElementById(`subject-${id}`);
             const icon = btn.querySelector('i[data-lucide="chevron-right"]');
-            
-            // Toggle
             if (el.classList.contains('hidden')) {
                 el.classList.remove('hidden');
                 btn.classList.add('bg-blue-50/50');
@@ -350,13 +415,12 @@
             document.getElementById('pdf-frame').classList.add('hidden');
             document.getElementById('content-details').classList.remove('hidden');
             document.getElementById('material-indicator').classList.remove('hidden');
-            document.getElementById('video-frame').src = '';
             
-            // Show loader for media types
             if (type === 'video' || type === 'pdf') {
                 document.getElementById('player-loader').classList.remove('hidden');
             } else {
                 document.getElementById('player-loader').classList.add('hidden');
+                if (player) player.stopVideo();
             }
             
             const typeIconBox = document.getElementById('type-icon-box');
@@ -373,21 +437,136 @@
             lucide.createIcons();
         }
 
-        // Hide loader when iframe/pdf is ready
-        document.getElementById('video-frame').onload = function() {
-            document.getElementById('player-loader').classList.add('hidden');
-            document.getElementById('video-frame').classList.remove('hidden');
-        };
+        function playVideo(video, unit, subject) {
+            resetPlayer('video');
+            currentVideoIdDB = video.id;
+            
+            const input = video.video_id || video.video_url;
+            const youtubeId = extractYouTubeVideoId(input);
+            
+            if (youtubeId) {
+                currentVideoId = youtubeId;
+                initPlayer(youtubeId);
+            } else {
+                alert("Invalid Video Source");
+                document.getElementById('player-loader').classList.add('hidden');
+            }
 
-        const pdfFrame = document.getElementById('pdf-frame');
-        // Simple trick to detect PDF load - might vary by browser
-        pdfFrame.addEventListener('load', () => {
-             document.getElementById('player-loader').classList.add('hidden');
-        });
+            document.getElementById('label-unit').textContent = unit.name;
+            document.getElementById('label-subject').textContent = subject.name;
+            document.getElementById('content-title').textContent = video.name || video.title;
+            document.getElementById('content-body').innerHTML = '<div class="py-10 text-center"><p class="text-slate-500 font-bold uppercase tracking-widest text-[11px] mb-4">Class in Session</p><p class="text-slate-400 text-sm max-w-xs mx-auto">Please watch the entire video to mark this module as completed and unlock the next lesson.</p></div>';
+            
+            // Highlight
+            document.querySelectorAll('.material-link').forEach(el => el.classList.remove('active', 'ring-2', 'ring-blue-500'));
+            const currentEl = document.getElementById(`vid-${video.id}`);
+            if(currentEl) currentEl.classList.add('ring-2', 'ring-blue-500');
+        }
+
+        function markAsCompleted(dbId) {
+            if (COMPLETED_VIDS.includes(dbId)) return;
+
+            $.ajax({
+                url: `/student/videos/${dbId}/complete`,
+                method: 'POST',
+                data: { _token: '{{ csrf_token() }}' },
+                success: function(response) {
+                    if (response.success) {
+                        COMPLETED_VIDS.push(dbId);
+                        updateProgressUI();
+                        unlockNextVideo(dbId);
+                    }
+                },
+                error: function(err) {
+                    console.error("Failed to mark video as completed", err);
+                }
+            });
+        }
+
+        function updateProgressUI() {
+            const total = ALL_VIDEOS.length;
+            const completed = COMPLETED_VIDS.length;
+            const pct = Math.round((completed / total) * 100);
+            
+            document.getElementById('course-progress-bar').style.width = pct + '%';
+            document.getElementById('progress-percent').textContent = pct + '%';
+
+            if (pct >= 100) {
+                const iconBox = document.getElementById('exam-unlock-icon');
+                iconBox.className = 'w-12 h-12 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-600/20';
+                iconBox.innerHTML = '<i data-lucide="award" class="w-6 h-6"></i>';
+                document.getElementById('exam-unlock-title').textContent = 'Exam Unlocked!';
+                document.getElementById('exam-unlock-subtitle').textContent = 'Ready for assessment';
+                lucide.createIcons();
+            }
+        }
+
+        function handleVideoClick(el) {
+            if (el.classList.contains('cursor-not-allowed')) {
+                showLockedMsg();
+                return;
+            }
+            const video = JSON.parse(el.getAttribute('data-video'));
+            const unit = JSON.parse(el.getAttribute('data-unit'));
+            const subject = JSON.parse(el.getAttribute('data-subject'));
+            playVideo(video, unit, subject);
+        }
+
+        function unlockNextVideo(currentDbId) {
+            const currentIndex = ALL_VIDEOS.findIndex(v => v.id == currentDbId);
+            
+            // Mark current as done visually
+            const currentEl = document.getElementById(`vid-${currentDbId}`);
+            if (currentEl) {
+                const iconBox = currentEl.querySelector('.w-8.h-8');
+                iconBox.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4 text-emerald-600"></i>';
+                currentEl.querySelector('.opacity-70').textContent = 'Completed';
+            }
+
+            if (currentIndex < ALL_VIDEOS.length - 1) {
+                const nextVideo = ALL_VIDEOS[currentIndex + 1];
+                const nextEl = document.getElementById(`vid-${nextVideo.id}`);
+                if (nextEl) {
+                    nextEl.classList.remove('bg-slate-50', 'border-slate-100', 'text-slate-400', 'cursor-not-allowed', 'opacity-60');
+                    nextEl.classList.add('bg-indigo-50/30', 'border-indigo-100', 'text-indigo-600', 'hover:bg-indigo-50');
+                    
+                    const iconBox = nextEl.querySelector('.w-8.h-8');
+                    iconBox.classList.remove('bg-slate-200', 'text-slate-400');
+                    iconBox.classList.add('bg-indigo-100', 'text-indigo-700');
+                    iconBox.innerHTML = '<i data-lucide="play" class="w-4 h-4 fill-current"></i>';
+                    
+                    nextEl.querySelector('.opacity-70').textContent = 'Play Video';
+                }
+            }
+            lucide.createIcons();
+        }
+
+        function showLockedMsg() {
+            alert("🔒 Lesson Locked: Please complete the previous video lessons in sequence to unlock this module.");
+        }
+
+        function extractYouTubeVideoId(url) {
+            if (!url) return null;
+            if (url.length === 11 && !url.includes('http')) return url;
+            try {
+                const parsed = new URL(url);
+                if (parsed.hostname.includes('youtube.com')) return parsed.searchParams.get('v');
+                if (parsed.hostname === 'youtu.be') return parsed.pathname.slice(1);
+            } catch (e) { return null; }
+            return null;
+        }
 
         function playTopic(topic, unit, subject) {
-            // Auto-detect media - the DB property is now 'video_id'
             if (topic.video_id) {
+                // Topic is a video, check if it's the current "unlocked" one or already done
+                const vidId = ALL_VIDEOS.find(v => (v.video_id == topic.video_id || v.video_url == topic.video_id))?.id;
+                if (vidId) {
+                    const el = document.getElementById(`vid-${vidId}`);
+                    if (el && el.classList.contains('cursor-not-allowed')) {
+                        showLockedMsg();
+                        return;
+                    }
+                }
                 playVideo(topic, unit, subject);
             } else if (topic.study_material) {
                 const materialPath = `{{ asset('admin/uploads/material/') }}/${topic.study_material}`;
@@ -399,88 +578,36 @@
                 document.getElementById('content-title').textContent = topic.name;
                 document.getElementById('content-body').innerHTML = topic.content ? topic.content : '<div class="py-20 text-center"><p class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">No textual curriculum defined for this module.</p></div>';
             }
-            
-            // Highlight active item
             document.querySelectorAll('.topic-link').forEach(el => el.classList.remove('active'));
-            // Find the element that was clicked
-            if(window.event && window.event.currentTarget) {
-                window.event.currentTarget.classList.add('active');
-            }
-            
+            if(window.event && window.event.currentTarget) window.event.currentTarget.classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
-        function playVideo(video, unit, subject) {
-            resetPlayer('video');
-            document.getElementById('video-frame').classList.remove('hidden');
-            
-            // Ensure we get the ID from either property (database provides video_id now)
-            const input = video.video_id || video.video_url;
-            const videoId = extractYouTubeVideoId(input);
-            
-            if (videoId) {
-                const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-                document.getElementById('video-frame').src = embedUrl;
-            } else {
-                console.error("Invalid Video ID:", input);
-            }
-
-            document.getElementById('label-unit').textContent = unit.name;
-            document.getElementById('label-subject').textContent = subject.name;
-            document.getElementById('content-title').textContent = video.name || video.title;
-            document.getElementById('content-body').innerHTML = '<div class="py-10"><p class="text-slate-500 font-medium tracking-tight">Cinema-grade class in progress. Please focus on the media player for the full instructional session. All rights reserved.</p></div>';
-        }
-
-        function extractYouTubeVideoId(url) {
-    if (!url) return null;
-
-    // If already ID
-    if (url.length === 11 && !url.includes('http')) return url;
-
-    try {
-        const parsed = new URL(url);
-
-        if (parsed.hostname.includes('youtube.com')) {
-            return parsed.searchParams.get('v');
-        }
-
-        if (parsed.hostname === 'youtu.be') {
-            return parsed.pathname.slice(1);
-        }
-    } catch (e) {
-        return null;
-    }
-
-    return null;
-}
 
         function playPdf(url, name, unit, subject) {
             resetPlayer('pdf');
             document.getElementById('pdf-frame').classList.remove('hidden');
             document.getElementById('pdf-frame').data = url;
             document.getElementById('pdf-download-link').href = url;
-            
             document.getElementById('label-unit').textContent = unit.name;
             document.getElementById('label-subject').textContent = subject.name;
             document.getElementById('content-title').textContent = name;
             document.getElementById('content-body').innerHTML = '<div class="py-10"><p class="text-slate-500">Academic reference material active. If the PDF does not display above, please use the download button inside the player area.</p></div>';
         }
+
         function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar');
-            const overlay = document.querySelector('.sidebar-overlay');
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
+            document.querySelector('.sidebar').classList.toggle('active');
+            document.querySelector('.sidebar-overlay').classList.toggle('active');
         }
 
-        // Close sidebar on item click (mobile)
         function closeSidebarMobile() {
             if (window.innerWidth < 1024) {
-                const sidebar = document.querySelector('.sidebar');
-                const overlay = document.querySelector('.sidebar-overlay');
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
+                document.querySelector('.sidebar').classList.remove('active');
+                document.querySelector('.sidebar-overlay').classList.remove('active');
             }
         }
+
+        // Initialize Progress on load
+        document.addEventListener('DOMContentLoaded', updateProgressUI);
     </script>
     <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 </body>

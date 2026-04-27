@@ -185,7 +185,16 @@ class DashboardController extends Controller
             }
         }
         
-        return view('student.learning.player', compact('user', 'course'));
+        $allVideos = \App\Models\PaidVideo::where('course_id', $course_id)
+            ->orderBy('id', 'asc')
+            ->get();
+
+        $completedVideoIds = \App\Models\VideoCompletion::where('user_id', $user->id)
+            ->where('course_id', $course_id)
+            ->pluck('video_id')
+            ->toArray();
+        
+        return view('student.learning.player', compact('user', 'course', 'completedVideoIds', 'allVideos'));
     }
 
     public function exams()
@@ -196,19 +205,45 @@ class DashboardController extends Controller
         $enrolledCourses = $user->courses()
             ->wherePivot('status', 'approved')
             ->get()
-            ->map(function($course) {
+            ->map(function($course) use ($user) {
                 $startDate = $course->pivot->updated_at ?? $course->pivot->created_at;
                 $course->expiry_date = $this->calculateExpiryDate($startDate, $course->duration);
                 $course->is_expired = $course->expiry_date && $course->expiry_date->isPast();
+                
+                // Check if course is fully completed (all exams passed)
+                $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->get();
+                $course->is_fully_completed = false;
+                if ($subjects->isNotEmpty()) {
+                    $passedCount = ExamResult::where('user_id', $user->id)
+                        ->whereIn('course_subject_id', $subjects->pluck('id'))
+                        ->where('status', 'pass')
+                        ->count();
+                    $course->is_fully_completed = ($passedCount === $subjects->count());
+                }
+                
                 return $course;
             });
         
         $courseSubjects = \App\Models\CourseSubject::whereIn('course_id', $enrolledCourses->pluck('id'))
             ->with(['subject', 'course', 'mcqs'])
             ->get()
-            ->map(function($cs) use ($enrolledCourses) {
+            ->map(function($cs) use ($enrolledCourses, $user) {
                 $parentCourse = $enrolledCourses->firstWhere('id', $cs->course_id);
                 $cs->is_expired = $parentCourse ? $parentCourse->is_expired : false;
+                
+                // Check Video Progress
+                $totalVideos = \App\Models\PaidVideo::where('course_id', $cs->course_id)->count();
+                $completedVideos = \App\Models\VideoCompletion::where('user_id', $user->id)
+                    ->where('course_id', $cs->course_id)
+                    ->count();
+
+                $cs->videos_completed = ($totalVideos > 0) && ($completedVideos >= $totalVideos);
+                if ($totalVideos === 0) $cs->videos_completed = true;
+                
+                $cs->video_count = $totalVideos;
+                $cs->completed_count = $completedVideos;
+                $cs->progress_percent = ($totalVideos > 0) ? round(($completedVideos / $totalVideos) * 100) : 100;
+                
                 return $cs;
             });
 
@@ -219,7 +254,7 @@ class DashboardController extends Controller
                 ->first();
         }
 
-        return view('student.exams.index', compact('user', 'courseSubjects'));
+        return view('student.exams.index', compact('user', 'courseSubjects', 'enrolledCourses'));
     }
 
     public function startExam($course_subject_id)
@@ -231,6 +266,16 @@ class DashboardController extends Controller
         $isEnrolled = $user->courses()->where('courses.id', $courseSubject->course_id)->exists();
         if (!$isEnrolled) {
             return redirect()->route('student.exams')->with('error', 'Unauthorized access.');
+        }
+
+        // Check Video Completion
+        $totalVideos = \App\Models\PaidVideo::where('course_id', $courseSubject->course_id)->count();
+        $completedVideos = \App\Models\VideoCompletion::where('user_id', $user->id)
+            ->where('course_id', $courseSubject->course_id)
+            ->count();
+
+        if ($totalVideos > 0 && $completedVideos < $totalVideos) {
+            return redirect()->route('student.exams')->with('error', 'You must complete all video lessons before starting the exam.');
         }
 
         // Check if exam already taken
@@ -252,6 +297,46 @@ class DashboardController extends Controller
             : ($courseSubject->mcqs->count() * 2);
 
         return view('student.exams.portal', compact('user', 'courseSubject', 'timeLimit'));
+    }
+
+    public function markVideoCompleted(Request $request, $video_id)
+    {
+        $user = Auth::user();
+        $video = \App\Models\PaidVideo::findOrFail($video_id);
+
+        // Security: Check if enrolled in the course
+        $isEnrolled = $user->courses()->where('courses.id', $video->course_id)->exists();
+        if (!$isEnrolled) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        // Sequential Check: Is there a previous video?
+        $allVideos = \App\Models\PaidVideo::where('course_id', $video->course_id)
+            ->orderBy('id', 'asc')
+            ->get();
+        
+        $currentIndex = $allVideos->search(fn($v) => $v->id == $video->id);
+        
+        if ($currentIndex > 0) {
+            $prevVideo = $allVideos[$currentIndex - 1];
+            $prevCompleted = \App\Models\VideoCompletion::where('user_id', $user->id)
+                ->where('video_id', $prevVideo->id)
+                ->exists();
+            
+            if (!$prevCompleted) {
+                return response()->json(['success' => false, 'message' => 'Complete previous video first'], 400);
+            }
+        }
+
+        \App\Models\VideoCompletion::updateOrCreate([
+            'user_id' => $user->id,
+            'video_id' => $video_id,
+        ], [
+            'course_id' => $video->course_id,
+            'is_completed' => true
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Video marked as completed']);
     }
 
     public function submitExam(Request $request, $course_subject_id)
@@ -326,6 +411,68 @@ class DashboardController extends Controller
         }
 
         return view('student.exams.result', compact('user', 'courseSubject', 'result'));
+    }
+
+    public function downloadCertificate($course_id)
+    {
+        $user = Auth::user();
+        $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
+
+        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->get();
+        $passedCount = ExamResult::where('user_id', $user->id)
+            ->whereIn('course_subject_id', $subjects->pluck('id'))
+            ->where('status', 'pass')
+            ->count();
+
+        if ($passedCount < $subjects->count()) {
+            return back()->with('error', 'Complete all subject exams first.');
+        }
+
+        // Base64 Photo
+        $userPhotoBase64 = null;
+        if ($user->image && file_exists(public_path($user->image))) {
+            $path = public_path($user->image);
+            $type = pathinfo($path, PATHINFO_EXTENSION);
+            $data = file_get_contents($path);
+            $userPhotoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        }
+
+        $enrollDate = $course->pivot->created_at->format('d/m/Y');
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate'));
+        $pdf->setPaper('a4', 'landscape');
+        return $pdf->download("Certificate_{$course->name}.pdf");
+    }
+
+    public function downloadMarksheet($course_id)
+    {
+        $user = Auth::user();
+        $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
+
+        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->with('subject')->get();
+        $results = ExamResult::where('user_id', $user->id)
+            ->whereIn('course_subject_id', $subjects->pluck('id'))
+            ->get()
+            ->keyBy('course_subject_id');
+
+        if ($results->where('status', 'pass')->count() < $subjects->count()) {
+            return back()->with('error', 'Complete all subject exams first.');
+        }
+
+        // Base64 Photo
+        $userPhotoBase64 = null;
+        if ($user->image && file_exists(public_path($user->image))) {
+            $path = public_path($user->image);
+            $type = pathinfo($path, PATHINFO_EXTENSION);
+            $data = file_get_contents($path);
+            $userPhotoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        }
+
+        $enrollDate = $course->pivot->created_at->format('d/m/Y');
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('student.exams.marksheet_print', compact('user', 'course', 'subjects', 'results', 'enrollDate', 'userPhotoBase64'));
+        $pdf->setPaper('a4', 'portrait');
+        return $pdf->download("Marksheet_{$course->name}.pdf");
     }
 
     /**

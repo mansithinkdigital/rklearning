@@ -83,7 +83,6 @@
                 <img src="/logo.png" alt="Logo" class="h-16 mb-2" onerror="this.src='https://via.placeholder.com/150x50?text=RK+LEARNING'">
                 <p class="text-xs text-orange-600 font-semibold tracking-widest uppercase">Way to success</p>
             </div>
-
             <nav class="space-y-1">
                 <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->is('admin/dashboard') ? 'active' : '' }}">
                     <i data-lucide="book-open"></i>
