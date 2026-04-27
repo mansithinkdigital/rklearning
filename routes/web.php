@@ -59,7 +59,6 @@ Route::prefix('student')->name('student.')->group(function () {
         Route::post('/videos/{video_id}/complete', [StudentDashboardController::class, 'markVideoCompleted'])->name('videos.complete');
         Route::get('/fee-history', [StudentDashboardController::class, 'financials'])->name('financials');
         Route::get('/receipt/{reference}', [StudentDashboardController::class, 'downloadReceipt'])->name('receipt.download');
-
         // Free Content & Study Material
         Route::get('/free-videos', [StudentDashboardController::class, 'freeVideos'])->name('free-videos');
         Route::get('/free-pdfs', [StudentDashboardController::class, 'freePdfs'])->name('free-pdfs');

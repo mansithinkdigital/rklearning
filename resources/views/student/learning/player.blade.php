@@ -161,7 +161,7 @@
 
                 <!-- YouTube/Video State -->
                 <div id="video-frame" class="hidden w-full h-full"></div>
-                
+           
                 <!-- PDF State -->
                 <object id="pdf-frame" class="hidden w-full h-full" data="" type="application/pdf">
                     <div class="flex flex-col items-center justify-center h-full p-20 text-center text-white">
@@ -172,7 +172,6 @@
                         <a id="pdf-download-link" href="#" class="px-8 py-4 bg-blue-600 rounded-2xl text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-blue-500/20 hover:scale-105 transition-all">Download Reference</a>
                     </div>
                 </object>
-
                 <!-- Welcome State -->
                 <div id="placeholder-content" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 md:p-20 bg-gradient-to-br from-slate-900 to-indigo-950">
                     <div class="relative mb-6 md:mb-10">
@@ -201,7 +200,6 @@
                         <h1 id="content-title" class="text-2xl md:text-4xl font-black text-slate-900 tracking-tight leading-tight uppercase">Lesson Header</h1>
                     </div>
                 </div>
-                
                 <div class="bg-white rounded-3xl md:rounded-[2.5rem] p-6 md:p-14 border border-slate-100 shadow-sm relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-20"></div>
                     <div id="content-body" class="prose prose-slate max-w-none text-slate-600 font-medium leading-relaxed prose-sm md:prose-base">

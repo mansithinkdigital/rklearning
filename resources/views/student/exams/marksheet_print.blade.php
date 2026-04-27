@@ -1,337 +1,354 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
-    <title>Official Marksheet - {{ $user->name }}</title>
+    <title>Marksheet - {{ $user->name }}</title>
     <style>
         @page {
-            margin: 0;
-            size: a4 portrait;
+            size: A4;
+            margin: 10mm;
         }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #fff;
-            color: #333;
-        }
-        .container {
-            width: 100%;
-            height: 100%;
-            padding: 40px;
-            box-sizing: border-box;
-            position: relative;
-            background: #fff;
-        }
-        .outer-border {
-            border: 8px double #1a2a6c;
-            height: 100%;
-            padding: 5px;
-            box-sizing: border-box;
-        }
-        .inner-border {
-            border: 2px solid #b21f1f;
-            height: 100%;
-            padding: 20px;
-            box-sizing: border-box;
-            background-color: #fffaf0; /* parchment feel */
-            position: relative;
-        }
-        
-        /* Watermark */
-        .watermark {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 80px;
-            color: rgba(0,0,0,0.03);
-            font-weight: bold;
-            white-space: nowrap;
-            z-index: 0;
-            pointer-events: none;
+            font-family: 'Times New Roman', Times, serif;
+            color: #222;
         }
 
+        .marksheet-card {
+            border: 5px solid #1a2a6c;
+            padding: 2px;
+            height: 270mm;
+            box-sizing: border-box;
+        }
+
+        .inner-content {
+            border: 2px solid #d4af37;
+            height: 100%;
+            padding: 25px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* HEADER */
         .header {
             text-align: center;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-        }
-        .logo-main {
-            width: 100px;
-            margin-bottom: 10px;
-        }
-        .institute-name {
-            font-size: 42px;
-            color: #1a2a6c;
-            font-weight: 900;
-            margin: 0;
-            text-transform: uppercase;
-        }
-        .tagline {
-            font-size: 16px;
-            color: #0088cc;
-            font-weight: bold;
-            margin: 5px 0;
-        }
-        .govt-info {
-            font-size: 12px;
-            color: #b21f1f;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin: 5px 0;
-        }
-        .reg-info {
-            font-size: 11px;
-            color: #444;
-            margin: 5px 0;
-        }
-        .contact-info {
-            font-size: 11px;
-            color: #444;
-            border-bottom: 3px solid #000;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
         }
 
-        .marksheet-id-row {
-            display: table;
-            width: 100%;
-            margin-bottom: 15px;
+        .rk-logo {
+            width: 90px;
+            margin-bottom: 5px;
         }
-        .ms-id {
-            display: table-cell;
-            width: 30%;
+
+        .inst-name {
+            font-size: 36px;
             font-weight: bold;
-            font-size: 14px;
+            color: #b21f1f;
+            margin: 0;
         }
-        .ms-title-box {
-            display: table-cell;
-            width: 40%;
+
+        .inst-tag {
+            font-size: 16px;
+            color: #1a2a6c;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .inst-info {
+            font-size: 10px;
+            color: #555;
+            line-height: 1.2;
+        }
+
+        /* TITLES */
+        .title-block {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .m-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a2a6c;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .m-year {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        /* STUDENT INFO */
+        .info-section {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .info-table {
+            width: 75%;
+            border-collapse: collapse;
+        }
+
+        .info-table td {
+            padding: 6px 0;
+            font-size: 15px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            width: 150px;
+        }
+
+        .photo-area {
+            position: absolute;
+            top: 200px;
+            right: 40px;
+            width: 100px;
+            height: 120px;
+            border: 1px solid #1a2a6c;
             text-align: center;
         }
-        .ms-title {
-            background-color: #1a2a6c;
-            color: white;
-            padding: 8px 30px;
-            border-radius: 10px;
-            font-size: 24px;
-            font-weight: bold;
-            display: inline-block;
-        }
-        .ms-year {
-            display: table-cell;
-            width: 30%;
-            text-align: right;
-            font-weight: bold;
-            font-size: 13px;
+
+        .photo-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .photo-container {
-            position: absolute;
-            top: 240px;
-            right: 40px;
-            width: 110px;
-            height: 130px;
-            border: 1px solid #000;
-            padding: 2px;
-            background: white;
-            z-index: 10;
-        }
-        .photo-container img { width: 100%; height: 100%; object-fit: cover; }
-
-        .student-details {
-            margin-top: 20px;
-            line-height: 1.8;
-            font-size: 15px;
-            color: #000;
-            position: relative;
-            z-index: 1;
-        }
-        .detail-row { margin-bottom: 8px; font-weight: bold; }
-        .detail-value { font-weight: 500; }
-        .completed-text {
-            color: #b21f1f;
-            font-weight: 900;
-            font-size: 16px;
-        }
-
+        /* TABLE */
         .marks-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            position: relative;
-            z-index: 1;
+            margin-top: 30px;
         }
-        .marks-table th, .marks-table td {
-            border: 2px solid #000;
-            padding: 8px;
-            text-align: left;
-            font-weight: bold;
+
+        .marks-table th,
+        .marks-table td {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: center;
             font-size: 14px;
         }
-        .marks-table th { background-color: #eee; text-align: center; }
-        .center-text { text-align: center; }
 
-        .summary-row {
-            margin-top: 20px;
-            display: table;
-            width: 100%;
+        .marks-table th {
+            background-color: #f0f0f0;
             font-weight: bold;
-            font-size: 15px;
         }
-        .summary-item { display: table-cell; }
 
-        .footer {
+        .sub-name {
+            text-align: left !important;
+        }
+
+        .bold-row {
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+
+        /* SUMMARY */
+        .result-box {
+            margin-top: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border: 1px solid #1a2a6c;
+            padding: 10px;
+            display: inline-block;
+        }
+
+        /* FOOTER */
+        .footer-line {
             position: absolute;
-            bottom: 40px;
-            width: calc(100% - 40px);
-            left: 20px;
+            bottom: 30px;
+            left: 25px;
+            right: 25px;
+            width: calc(100% - 50px);
         }
-        .seal-row {
-            display: table;
+
+        .footer-table {
             width: 100%;
-            text-align: center;
+            border-collapse: collapse;
         }
-        .seal-box {
-            display: table-cell;
+
+        .footer-table td {
             width: 33%;
+            text-align: center;
             vertical-align: bottom;
         }
-        .seal-img { width: 80px; }
-        .signature-line {
-            width: 150px;
-            border-bottom: 2px solid #000;
-            margin: 0 auto 5px;
+
+        .f-logo {
+            height: 70px;
         }
-        .sig-text {
+
+        .f-label {
             font-size: 11px;
             font-weight: bold;
-            color: #1a2a6c;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .md-sign {
+            height: 60px;
+        }
+
+        .sign-text {
+            border-top: 1px solid #000;
+            padding-top: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            width: 160px;
+            margin: auto;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="outer-border">
-            <div class="inner-border">
-                <div class="watermark">RK INSTITUTE SUCCESS</div>
 
-                <div class="header">
-                    <img src="{{ public_path('assets/images/logo.png') }}" class="logo-main" alt="Logo">
-                    <h1 class="institute-name">RK INSTITUTE</h1>
-                    <p class="tagline">Ramesh Kolhe's Learning Hub</p>
-                    <p class="govt-info">GOVERNMENT OF INDIA MINISTRY OF CORPORATE AFFAIRS</p>
-                    <p class="reg-info">Reg No. U85301MH2023PTC401715</p>
-                    <p class="reg-info">Registered office: C 6, Plot No. 7 s, Shree Sai Village, Pathardi Road, Pathardi, Nashik-422010, Maharastra.</p>
-                    <p class="contact-info">Email : rklearninghub2023@gmail.com</p>
-                </div>
+    <div class="marksheet-card">
+        <div class="inner-content">
 
-                <div class="marksheet-id-row">
-                    <div class="ms-id">Marksheet No. RK{{ date('Y') }}{{ str_pad($user->id, 4, '0', STR_PAD_LEFT) }}</div>
-                    <div class="ms-title-box"><div class="ms-title">Marksheet</div></div>
-                    <div class="ms-year">Marksheet issued Year {{ date('Y') }}</div>
-                </div>
-
-                <div class="photo-container">
-                    @if($userPhotoBase64)
-                        <img src="{{ $userPhotoBase64 }}" alt="Student">
-                    @else
-                        <div style="width:100%; height:100%; background:#eee;"></div>
-                    @endif
-                </div>
-
-                <div class="student-details">
-                    <div class="detail-row">This is Certified that Mr/ms : <span class="detail-value">{{ strtoupper($user->name) }}</span></div>
-                    <div class="detail-row">Father Name : <span class="detail-value">{{ strtoupper($user->father_name ?? 'NOT DEFINED') }}</span></div>
-                    <div class="detail-row">Mother Name : <span class="detail-value">{{ strtoupper($user->mother_name ?? 'NOT DEFINED') }}</span></div>
-                    <div class="detail-row">HAS SUCCESSFULLY COMPLETED : <span class="completed-text">{{ strtoupper($course->name) }}</span></div>
-                    <div class="detail-row">Centre Name : <span class="detail-value">RK INSTITUTE 1 - Ashok Stumbha, Nashik</span></div>
-                    <div class="detail-row" style="margin-top:15px;">Performance in Examination as below</div>
-                </div>
-
-                <table class="marks-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 10%;">Sr No.</th>
-                            <th style="width: 45%;">Subject</th>
-                            <th colspan="2">Total Marks</th>
-                            <th style="width: 15%;">Obtain Marks</th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th style="width: 15%;">Max</th>
-                            <th style="width: 15%;">MIN</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php 
-                            $totalMax = 0;
-                            $totalMin = 0;
-                            $totalObtained = 0;
-                        @endphp
-                        @foreach($subjects as $index => $subject)
-                            @php 
-                                $res = $results->get($subject->id);
-                                $obtained = $res ? $res->score : 0;
-                                $totalMax += $subject->total_marks;
-                                $totalMin += $subject->pass_marks;
-                                $totalObtained += $obtained;
-                            @endphp
-                            <tr>
-                                <td class="center-text">{{ $index + 1 }}</td>
-                                <td>{{ $subject->subject->name }}</td>
-                                <td class="center-text">{{ $subject->total_marks }}</td>
-                                <td class="center-text">{{ $subject->pass_marks }}</td>
-                                <td class="center-text">{{ $obtained }}</td>
-                            </tr>
-                        @endforeach
-                        <tr style="background-color: #eee;">
-                            <td colspan="2" style="text-align: right;">TOTAL</td>
-                            <td class="center-text">{{ $totalMax }}</td>
-                            <td class="center-text">{{ $totalMin }}</td>
-                            <td class="center-text">{{ $totalObtained }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                @php 
-                    $overallPct = ($totalMax > 0) ? round(($totalObtained / $totalMax) * 100) : 0;
-                    $grade = 'F';
-                    if($overallPct >= 80) $grade = 'O';
-                    elseif($overallPct >= 70) $grade = 'A+';
-                    elseif($overallPct >= 60) $grade = 'A';
-                    elseif($overallPct >= 50) $grade = 'B';
-                    elseif($overallPct >= 40) $grade = 'C';
-                @endphp
-
-                <div class="summary-row">
-                    <div class="summary-item">Date of issue : {{ date('d/m/Y') }}</div>
-                    <div class="summary-item" style="text-align: center;">Overall Percentage : {{ $overallPct }}%</div>
-                    <div class="summary-item" style="text-align: right;">Grade : {{ $grade }}</div>
-                </div>
-
-                <div class="footer">
-                    <div class="seal-row">
-                        <div class="seal-box">
-                            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="seal-img" alt="ISO">
-                            <div class="sig-text" style="color: #b21f1f;">ISO 9001:2015<br>Certified Company</div>
-                        </div>
-                        <div class="seal-box">
-                            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="seal-img" alt="Seal">
-                            <div class="sig-text">INSTITUTE<br>OFFICIAL SEAL</div>
-                        </div>
-                        <div class="seal-box">
-                            <div class="signature-line"></div>
-                            <div class="sig-text">Managing Director<br>Authorised Signatory</div>
-                        </div>
-                    </div>
+            <!-- HEADER -->
+            <div class="header">
+                <img src="{{ public_path('assets/images/logo.png') }}" class="rk-logo">
+                <div class="inst-name">RK INSTITUTE</div>
+                <div class="inst-tag">Ramesh Kolhe's Learning Hub</div>
+                <div class="inst-info">
+                    GOVERNMENT OF INDIA MINISTRY OF CORPORATE AFFAIRS<br>
+                    Reg No. U85301MH2023PTC401715 | Registered office: Nashik - 422010<br>
+                    Email: rklearninghub2023@gmail.com
                 </div>
             </div>
+
+            <hr style="border: 0.5px solid #d4af37; margin: 15px 0;">
+
+            <!-- TITLE -->
+            <div class="title-block">
+                <div class="m-title">MARKSHEET</div>
+                <div class="m-year">Academic Year: {{ date('Y') }}</div>
+            </div>
+
+            <!-- PHOTO -->
+            <div class="photo-area">
+                @if($userPhotoBase64)
+                <img src="{{ $userPhotoBase64 }}">
+                @else
+                <div style="padding-top: 40px; color: #ddd; font-size: 10px;">PHOTO</div>
+                @endif
+            </div>
+
+            <!-- STUDENT INFO -->
+            <div class="info-section">
+                <table class="info-table">
+                    <tr>
+                        <td class="info-label">Candidate Name</td>
+                        <td>: {{ strtoupper($user->name) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">Course Name</td>
+                        <td>: {{ strtoupper($course->name) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">Roll Number</td>
+                        <td>: RK{{ date('Y') }}{{ str_pad($user->id, 4, '0', STR_PAD_LEFT) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">Training Center</td>
+                        <td>: RK Institute, Nashik</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- MARKS TABLE -->
+            <table class="marks-table">
+                <thead>
+                    <tr>
+                        <th width="10%">Sr. No.</th>
+                        <th class="sub-name">Subject / Module</th>
+                        <th width="15%">Max Marks</th>
+                        <th width="15%">Min Marks</th>
+                        <th width="15%">Marks Obtained</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php 
+                        $totalMax = 0; 
+                        $totalMin = 0; 
+                        $totalObt = 0; 
+                    @endphp
+
+                    @foreach($subjects as $i => $subject)
+                    @php
+                        $res = $results->get($subject->id);
+                        $obt = $res ? round(($res->score / 100) * $subject->total_marks) : 0;
+                        
+                        $totalMax += $subject->total_marks;
+                        $totalMin += $subject->pass_marks;
+                        $totalObt += $obt;
+                    @endphp
+                    <tr>
+                        <td>{{ $i + 1 }}</td>
+                        <td class="sub-name">{{ $subject->subject->name }}</td>
+                        <td>{{ $subject->total_marks }}</td>
+                        <td>{{ $subject->pass_marks }}</td>
+                        <td><b>{{ $obt }}</b></td>
+                    </tr>
+                    @endforeach
+
+                    <tr class="bold-row">
+                        <td colspan="2">TOTAL</td>
+                        <td>{{ $totalMax }}</td>
+                        <td>{{ $totalMin }}</td>
+                        <td>{{ $totalObt }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- RESULT -->
+            @php
+                $pct = $totalMax ? round(($totalObt / $totalMax) * 100) : 0;
+                $grade = 'F';
+                if($pct >= 85) $grade = 'A+';
+                elseif($pct >= 75) $grade = 'A';
+                elseif($pct >= 60) $grade = 'B';
+                elseif($pct >= 50) $grade = 'C';
+                elseif($pct >= 40) $grade = 'D';
+                $status = ($totalObt >= $totalMin) ? 'PASS' : 'FAIL';
+            @endphp
+
+            <div class="result-box">
+                Percentage: {{ $pct }}% &nbsp; | &nbsp; Grade: {{ $grade }} &nbsp; | &nbsp; Result: {{ $status }}
+            </div>
+
+            <div style="margin-top: 30px; font-size: 14px;">
+                <b>Date:</b> {{ date('d/m/Y') }}<br>
+                <b>Place:</b> Nashik
+            </div>
+
+            <!-- FOOTER -->
+            <div class="footer-line">
+                <table class="footer-table">
+                    <tr>
+                        <td>
+                            <img src="{{ public_path('student/asset/logo/1.png') }}" class="f-logo">
+                            <span class="f-label">ISO 9001:2015</span>
+                        </td>
+                        <td>
+                            <img src="{{ public_path('student/asset/logo/rlstamp.png') }}" class="f-logo">
+                            <span class="f-label">INSTITUTE STAMP</span>
+                        </td>
+                        <td>
+                            <img src="{{ public_path('student/asset/logo/rksign.png') }}" class="md-sign">
+                            <div class="sign-text">Managing Director</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
         </div>
     </div>
+
 </body>
+
 </html>
