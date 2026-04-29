@@ -55,7 +55,9 @@ Route::prefix('student')->name('student.')->group(function () {
         Route::post('/exams/{course_subject_id}/submit', [StudentDashboardController::class, 'submitExam'])->name('exams.submit');
         Route::get('/exams/{course_subject_id}/result', [StudentDashboardController::class, 'viewResult'])->name('exams.result');
         Route::get('/courses/{course_id}/certificate', [StudentDashboardController::class, 'downloadCertificate'])->name('certificate.download');
+        Route::get('/courses/{course_id}/certificate/preview', [StudentDashboardController::class, 'previewCertificate'])->name('certificate.preview');
         Route::get('/courses/{course_id}/marksheet', [StudentDashboardController::class, 'downloadMarksheet'])->name('marksheet.download');
+        Route::get('/courses/{course_id}/marksheet/preview', [StudentDashboardController::class, 'previewMarksheet'])->name('marksheet.preview');
         Route::post('/videos/{video_id}/complete', [StudentDashboardController::class, 'markVideoCompleted'])->name('videos.complete');
         Route::get('/fee-history', [StudentDashboardController::class, 'financials'])->name('financials');
         Route::get('/receipt/{reference}', [StudentDashboardController::class, 'downloadReceipt'])->name('receipt.download');
@@ -124,4 +126,52 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // -------------------------------------------------------------//
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     });
+});
+
+Route::get('/preview/certificate-demo', function () {
+    $user = (object)[
+        'name' => 'DARSHANA SHARAD SONJE',
+        'father_name' => 'SHARAD JAGANNATH SONJE',
+        'mother_name' => 'PUSHPA',
+        'id' => 9999,
+        'branch' => (object)['name' => 'Gangapur Road, Nashik']
+    ];
+    $course = (object)['name' => 'Diploma in Accounting with Taxation', 'id' => 1];
+    $enrollDate = '01/04/2026';
+    $userPhotoBase64 = null;
+
+    return view('student.exams.certificate_print', compact('user', 'course', 'enrollDate', 'userPhotoBase64'));
+});
+
+Route::get('/preview/marksheet-demo', function () {
+    $user = (object)[
+        'name' => 'DARSHANA SHARAD SONJE',
+        'father_name' => 'SHARAD JAGANNATH SONJE',
+        'mother_name' => 'PUSHPA',
+        'id' => 9999,
+    ];
+    $course = (object)['name' => 'Diploma in Accounting with Taxation', 'id' => 1];
+    
+    $subjects = collect([
+        (object)['id' => 1, 'total_marks' => 100, 'pass_marks' => 40, 'subject' => (object)['name' => 'Financial Accounting']],
+        (object)['id' => 2, 'total_marks' => 100, 'pass_marks' => 40, 'subject' => (object)['name' => 'Tally Prime']],
+        (object)['id' => 3, 'total_marks' => 100, 'pass_marks' => 40, 'subject' => (object)['name' => 'Goods and Services Tax (GST)']],
+        (object)['id' => 4, 'total_marks' => 100, 'pass_marks' => 40, 'subject' => (object)['name' => 'Income Tax']],
+        (object)['id' => 5, 'total_marks' => 100, 'pass_marks' => 40, 'subject' => (object)['name' => 'Fundamentals of Computer']],
+        (object)['id' => 6, 'total_marks' => 100, 'pass_marks' => 40, 'subject' => (object)['name' => 'MS Excel']],
+    ]);
+
+    $results = collect([
+        1 => (object)['score' => 90, 'status' => 'pass'],
+        2 => (object)['score' => 92, 'status' => 'pass'],
+        3 => (object)['score' => 80, 'status' => 'pass'],
+        4 => (object)['score' => 78, 'status' => 'pass'],
+        5 => (object)['score' => 88, 'status' => 'pass'],
+        6 => (object)['score' => 76, 'status' => 'pass'],
+    ]);
+
+    $enrollDate = '01/04/2026';
+    $userPhotoBase64 = null;
+
+    return view('student.exams.marksheet_print', compact('user', 'course', 'subjects', 'results', 'enrollDate', 'userPhotoBase64'));
 });

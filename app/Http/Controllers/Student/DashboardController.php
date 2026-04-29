@@ -49,7 +49,24 @@ class DashboardController extends Controller
             ->get();
 
         $activeCoursesCount = $enrolledCourses->where('is_expired', false)->count();
+
+        // Calculate actual certificates count (courses fully completed)
         $certificatesCount = 0;
+        $completedCourses = collect();
+        foreach ($user->courses()->wherePivot('status', 'approved')->get() as $course) {
+            $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->get();
+            if ($subjects->isNotEmpty()) {
+                $passedCount = ExamResult::where('user_id', $user->id)
+                    ->whereIn('course_subject_id', $subjects->pluck('id'))
+                    ->where('status', 'pass')
+                    ->count();
+                if ($passedCount === $subjects->count()) {
+                    $certificatesCount++;
+                    $completedCourses->push($course);
+                }
+            }
+        }
+
         $attendancePercentage = 100;
         $latestCourse = $enrolledCourses->where('is_expired', false)->first();
 
@@ -78,6 +95,7 @@ class DashboardController extends Controller
             'pendingRequests',
             'activeCoursesCount',
             'certificatesCount',
+            'completedCourses',
             'attendancePercentage',
             'announcements',
             'recentPayments',
@@ -473,6 +491,62 @@ class DashboardController extends Controller
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('student.exams.marksheet_print', compact('user', 'course', 'subjects', 'results', 'enrollDate', 'userPhotoBase64'));
         $pdf->setPaper('a4', 'portrait');
         return $pdf->download("Marksheet_{$course->name}.pdf");
+    }
+
+    public function previewCertificate($course_id)
+    {
+        $user = Auth::user();
+        $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
+
+        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->get();
+        $passedCount = ExamResult::where('user_id', $user->id)
+            ->whereIn('course_subject_id', $subjects->pluck('id'))
+            ->where('status', 'pass')
+            ->count();
+
+        if ($passedCount < $subjects->count()) {
+            return back()->with('error', 'Complete all subject exams first.');
+        }
+
+        $userPhotoBase64 = null;
+        if ($user->image && file_exists(public_path($user->image))) {
+            $path = public_path($user->image);
+            $type = pathinfo($path, PATHINFO_EXTENSION);
+            $data = file_get_contents($path);
+            $userPhotoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        }
+
+        $enrollDate = $course->pivot->created_at->format('d/m/Y');
+
+        return view('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate'));
+    }
+
+    public function previewMarksheet($course_id)
+    {
+        $user = Auth::user();
+        $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
+
+        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->with('subject')->get();
+        $results = ExamResult::where('user_id', $user->id)
+            ->whereIn('course_subject_id', $subjects->pluck('id'))
+            ->get()
+            ->keyBy('course_subject_id');
+
+        if ($results->where('status', 'pass')->count() < $subjects->count()) {
+            return back()->with('error', 'Complete all subject exams first.');
+        }
+
+        $userPhotoBase64 = null;
+        if ($user->image && file_exists(public_path($user->image))) {
+            $path = public_path($user->image);
+            $type = pathinfo($path, PATHINFO_EXTENSION);
+            $data = file_get_contents($path);
+            $userPhotoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        }
+
+        $enrollDate = $course->pivot->created_at->format('d/m/Y');
+
+        return view('student.exams.marksheet_print', compact('user', 'course', 'subjects', 'results', 'enrollDate', 'userPhotoBase64'));
     }
 
     /**

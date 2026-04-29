@@ -1,177 +1,171 @@
 @extends('layouts.client')
 
-@section('title', 'Contact Academic Support - RK Learning Hub')
+@section('title', 'Academic Support - RK Learning Hub')
 
-@section('content')
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
+@section('styles')
 <style>
-    .lms-contact {
-        font-family: 'Outfit', sans-serif;
-        background-color: #f8fafc;
-        color: #1e293b;
+    @keyframes revealUp {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
-    .contact-hero {
-        background: #0f172a;
-        padding: 80px 0 160px;
-        color: white;
-        text-align: center;
+    @keyframes grain {
+        0%, 100% { transform: translate(0, 0); }
+        10% { transform: translate(-5%, -10%); }
+        30% { transform: translate(3%, -15%); }
+        50% { transform: translate(12%, 9%); }
+        70% { transform: translate(-9%, 4%); }
+        90% { transform: translate(2%, -3%); }
     }
 
-    .form-card {
-        background: #ffffff;
-        border-radius: 32px;
-        box-shadow: 0 40px 60px -15px rgba(0, 0, 0, 0.1);
-        border: 1px solid #e2e8f0;
-        overflow: hidden;
+    .reveal {
+        animation: revealUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        opacity: 0;
     }
 
-    .info-card {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 20px;
-        padding: 24px;
-        transition: all 0.2s ease;
+    .grain-overlay::before {
+        content: "";
+        position: absolute;
+        top: -100%;
+        left: -100%;
+        width: 300%;
+        height: 300%;
+        background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+        opacity: 0.05;
+        pointer-events: none;
+        animation: grain 8s steps(10) infinite;
+        z-index: 1;
     }
 
-    .info-card:hover {
-        border-color: #2563eb;
-        background: #ffffff;
-        transform: translateY(-2px);
-    }
-
-    .form-input {
+    .contact-input {
         width: 100%;
-        padding: 16px 20px;
-        border-radius: 12px;
-        border: 1.5px solid #e2e8f0;
-        font-weight: 500;
-        transition: all 0.2s ease;
+        padding: 20px;
+        background: #f8fafc;
+        border: 2px solid transparent;
+        border-radius: 0px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border-bottom: 2px solid #0f172a;
     }
 
-    .form-input:focus {
-        border-color: #2563eb;
+    .contact-input:focus {
+        background: white;
+        border-color: #4f46e5;
         outline: none;
-        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.05);
+        padding-left: 24px;
     }
 
-    .contact-btn {
-        background: #2563eb;
-        color: white;
-        padding: 18px 32px;
-        border-radius: 16px;
-        font-weight: 800;
-        font-size: 15px;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        transition: all 0.2s ease;
-        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+    .neo-card {
+        background: white;
+        border: 2px solid #0f172a;
+        box-shadow: 12px 12px 0px #0f172a;
+        transition: all 0.3s ease;
     }
 
-    .contact-btn:hover {
-        background: #1d4ed8;
-        transform: translateY(-2px);
+    .method-card {
+        border-left: 4px solid #4f46e5;
+        padding-left: 24px;
+        transition: all 0.3s ease;
     }
 
-    .icon-circle {
-        width: 50px;
-        height: 50px;
-        background: #eff6ff;
-        color: #2563eb;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        margin-bottom: 20px;
+    .method-card:hover {
+        transform: translateX(8px);
     }
 </style>
+@endsection
 
-<div class="lms-contact min-h-screen">
-    <!-- Hero Header -->
-    <section class="contact-hero">
-        <div class="container mx-auto px-6">
-            <h1 class="text-4xl md:text-6xl font-black mb-6 tracking-tight">Academic Support Center</h1>
-            <p class="text-slate-400 text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed">Have questions about our curriculum or your enrollment? Our technical and academic teams are here to assist you.</p>
+@section('content')
+<main class="overflow-x-hidden">
+    <!-- Hero Section -->
+    <section class="relative bg-slate-900 pt-32 pb-48 grain-overlay">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-4xl">
+                <span class="inline-block px-4 py-1.5 bg-indigo-500/10 text-indigo-400 rounded-full text-xs font-black uppercase tracking-[0.2em] mb-8 reveal" style="animation-delay: 0.1s">
+                    Direct Liaison
+                </span>
+                <h1 class="text-6xl md:text-8xl font-black text-white leading-[0.9] mb-12 reveal" style="animation-delay: 0.2s">
+                    Connect with the <br> 
+                    <span class="text-indigo-500">Academic</span> <br>
+                    <span class="text-white opacity-20">Registrar.</span>
+                </h1>
+                <p class="text-slate-400 text-xl font-medium max-w-2xl leading-relaxed reveal" style="animation-delay: 0.3s">
+                    Technical inquiries, institutional partnerships, or curriculum guidance. Our specialists provide direct, high-fidelity support for your academic journey.
+                </p>
+            </div>
         </div>
     </section>
 
-    <!-- Content Matrix -->
-    <section class="container mx-auto px-6 -mt-24 pb-32">
-        <div class="max-w-6xl mx-auto">
-            <div class="form-card flex flex-col lg:flex-row shadow-2xl">
-                
-                <!-- Contact Methods -->
-                <div class="lg:w-1/3 bg-slate-900 p-12 lg:p-16 text-white">
-                    <h3 class="text-2xl font-black mb-8 uppercase tracking-tight">Contact Hub</h3>
-                    <p class="text-slate-400 text-sm font-medium mb-12 leading-relaxed italic">Our counselors are available Monday — Friday, 09:00 to 18:00 IST.</p>
-                    
-                    <div class="space-y-10">
-                        <div class="flex gap-5">
-                            <i class="fa fa-phone text-blue-500 text-xl mt-1"></i>
-                            <div>
-                                <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-1">Tele-Counseling</p>
-                                <p class="text-lg font-bold">+1 (234) 567 890</p>
+    <!-- Contact Matrix -->
+    <section class="py-24 bg-white relative -mt-32 z-20">
+        <div class="container mx-auto px-6">
+            <div class="neo-card flex flex-col lg:flex-row overflow-hidden reveal">
+                <!-- Contact Info -->
+                <div class="lg:w-1/3 bg-slate-900 p-12 lg:p-16 text-white flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-black mb-12 uppercase tracking-widest text-indigo-400">The Hub HQ</h3>
+                        
+                        <div class="space-y-12">
+                            <div class="method-card">
+                                <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-2">Voice Dispatch</p>
+                                <p class="text-xl font-bold">+1 (234) 567 890</p>
+                                <p class="text-xs text-slate-500 mt-1">Available 09:00 — 18:00 IST</p>
                             </div>
-                        </div>
-                        <div class="flex gap-5">
-                            <i class="fa fa-envelope text-blue-500 text-xl mt-1"></i>
-                            <div>
-                                <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-1">Official Inquiry</p>
-                                <p class="text-lg font-bold">hello@rk-learning.com</p>
+                            
+                            <div class="method-card">
+                                <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-2">Electronic Mail</p>
+                                <p class="text-xl font-bold">hello@rk-learning.com</p>
+                                <p class="text-xs text-slate-500 mt-1">Response within 12 academic hours</p>
                             </div>
-                        </div>
-                        <div class="flex gap-5">
-                            <i class="fa fa-location-dot text-blue-500 text-xl mt-1"></i>
-                            <div>
-                                <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-1">Main Campus</p>
-                                <p class="text-lg font-bold leading-snug">123 Knowledge St, NY 10001</p>
+
+                            <div class="method-card">
+                                <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-2">Main Lab</p>
+                                <p class="text-xl font-bold">123 Knowledge City, <br>NY 10001, USA</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-20 pt-10 border-t border-slate-800">
-                        <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-6 text-center">Follow the Hub</p>
-                        <div class="flex justify-center gap-6">
-                            <a href="#" class="text-slate-400 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#" class="text-slate-400 hover:text-white transition"><i class="fab fa-instagram"></i></a>
-                            <a href="#" class="text-slate-400 hover:text-white transition"><i class="fab fa-x-twitter"></i></a>
+                    <div class="mt-16 pt-12 border-t border-slate-800">
+                        <div class="flex gap-8">
+                            <a href="#" class="text-slate-400 hover:text-indigo-400 transition-colors"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="text-slate-400 hover:text-indigo-400 transition-colors"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-slate-400 hover:text-indigo-400 transition-colors"><i class="fab fa-linkedin-in"></i></a>
                         </div>
                     </div>
                 </div>
 
                 <!-- Contact Form -->
-                <div class="lg:w-2/3 p-12 lg:p-20 bg-white">
-                    <form action="#" method="POST" class="space-y-8">
-                        <div class="grid md:grid-cols-2 gap-8">
-                            <div class="space-y-2">
-                                <label class="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Full Student Name</label>
-                                <input type="text" class="form-input" placeholder="Alexander Thorne">
+                <div class="lg:w-2/3 p-12 lg:p-24 bg-white">
+                    <form action="#" method="POST" class="space-y-12">
+                        <div class="grid md:grid-cols-2 gap-12">
+                            <div class="space-y-4">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Formal Name</label>
+                                <input type="text" class="contact-input" placeholder="e.g. Alexander Thorne">
                             </div>
-                            <div class="space-y-2">
-                                <label class="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Academic Email</label>
-                                <input type="email" class="form-input" placeholder="alex@learning.curriculum">
+                            <div class="space-y-4">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Academic Identity</label>
+                                <input type="email" class="contact-input" placeholder="e.g. alex@university.edu">
                             </div>
                         </div>
 
-                        <div class="space-y-2">
-                            <label class="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Department / Inquiry Category</label>
-                            <select class="form-input appearance-none bg-white cursor-pointer">
-                                <option>General Course Information</option>
-                                <option>Enrollment Assistance</option>
-                                <option>Technical Platform Issue</option>
-                                <option>Institutional Partnership</option>
+                        <div class="space-y-4">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Inquiry Classification</label>
+                            <select class="contact-input cursor-pointer appearance-none bg-no-repeat bg-[right_20px_center]" style="background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'><path stroke=\'%230f172a\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'M6 8l4 4 4-4\'/></svg>');">
+                                <option>Curriculum Specialization Inquiry</option>
+                                <option>Institutional Strategic Partnership</option>
+                                <option>Technical Platform Architecture</option>
+                                <option>Career Acceleration Guidance</option>
                             </select>
                         </div>
 
-                        <div class="space-y-2">
-                            <label class="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Brief Description</label>
-                            <textarea rows="5" class="form-input" placeholder="Enter your inquiry details here..."></textarea>
+                        <div class="space-y-4">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Detailed Brief</label>
+                            <textarea rows="4" class="contact-input" placeholder="Explain your requirements in detail..."></textarea>
                         </div>
 
-                        <div class="pt-6">
-                            <button type="submit" class="contact-btn w-full md:w-auto">Transmit Dispatch</button>
+                        <div class="pt-8">
+                            <button type="submit" class="px-12 py-6 bg-slate-900 text-white font-black uppercase tracking-widest text-sm hover:bg-indigo-600 transition-all rounded-full">
+                                Transmit Dispatch
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -179,23 +173,58 @@
         </div>
     </section>
 
-    <!-- Simplified Office Info -->
-    <section class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8 pb-32">
-        <div class="info-card">
-            <div class="icon-circle"><i class="fa fa-life-ring"></i></div>
-            <h4 class="text-lg font-black text-slate-900 mb-2">24/7 Knowledge Base</h4>
-            <p class="text-sm text-slate-500 font-medium leading-relaxed">Access our comprehensive FAQ and documentation anytime for instant answers.</p>
-        </div>
-        <div class="info-card">
-            <div class="icon-circle"><i class="fa fa-users-gear"></i></div>
-            <h4 class="text-lg font-black text-slate-900 mb-2">Technical Guidance</h4>
-            <p class="text-sm text-slate-500 font-medium leading-relaxed">Stuck on a module? Our instructional team provides code and curriculum reviews.</p>
-        </div>
-        <div class="info-card">
-            <div class="icon-circle"><i class="fa fa-building-columns"></i></div>
-            <h4 class="text-lg font-black text-slate-900 mb-2">Campus Visitation</h4>
-            <p class="text-sm text-slate-500 font-medium leading-relaxed">Visit our administrative center for direct career counseling and academic roadmap planning.</p>
+    <!-- Secondary Info -->
+    <section class="py-24 bg-slate-50">
+        <div class="container mx-auto px-6 grid md:grid-cols-3 gap-12">
+            <div class="reveal" style="animation-delay: 0.1s">
+                <div class="w-12 h-12 bg-indigo-600 text-white flex items-center justify-center text-xl mb-6">
+                    <i class="fa fa-life-ring"></i>
+                </div>
+                <h4 class="text-xl font-black text-slate-900 mb-4 uppercase tracking-tight">24/7 Repository</h4>
+                <p class="text-slate-500 font-medium leading-relaxed">Most procedural questions are addressed in our exhaustive Knowledge Base. Explore documentation before initiating dispatch.</p>
+            </div>
+            
+            <div class="reveal" style="animation-delay: 0.2s">
+                <div class="w-12 h-12 bg-indigo-600 text-white flex items-center justify-center text-xl mb-6">
+                    <i class="fa fa-users-gear"></i>
+                </div>
+                <h4 class="text-xl font-black text-slate-900 mb-4 uppercase tracking-tight">Curriculum Clinic</h4>
+                <p class="text-slate-500 font-medium leading-relaxed">Stuck on a specific architectural module? Our instructional team hosts live code-review clinics every Tuesday and Thursday.</p>
+            </div>
+
+            <div class="reveal" style="animation-delay: 0.3s">
+                <div class="w-12 h-12 bg-indigo-600 text-white flex items-center justify-center text-xl mb-6">
+                    <i class="fa fa-building-columns"></i>
+                </div>
+                <h4 class="text-xl font-black text-slate-900 mb-4 uppercase tracking-tight">Campus Visit</h4>
+                <p class="text-slate-500 font-medium leading-relaxed">Direct career counseling sessions are available at our physical lab. Appointments must be scheduled 72 hours in advance.</p>
+            </div>
         </div>
     </section>
-</div>
+</main>
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal');
+        
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.classList.add('animate-revealUp');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        reveals.forEach(el => observer.observe(el));
+    });
+</script>
 @endsection

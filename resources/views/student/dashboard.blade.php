@@ -44,6 +44,36 @@
         </div>
     </div>
 </div>
+@if($completedCourses->isNotEmpty())
+<section class="mb-10">
+    <div class="flex items-center justify-between mb-6 px-2">
+        <h3 class="text-xl font-bold text-slate-800">Your Certificates</h3>
+        <p class="text-sm text-slate-500 font-medium">Official Credentials Earned</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        @foreach($completedCourses as $course)
+        <div class="card bg-gradient-to-br from-emerald-600 to-emerald-800 text-white border-none p-6 rounded-[2rem] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+            <div>
+                <span class="px-3 py-1 bg-emerald-500/30 rounded-full text-[9px] font-black uppercase tracking-[0.2em] text-emerald-100 border border-emerald-400/20">Official Credential</span>
+                <h4 class="text-lg font-bold mt-3 text-white">{{ $course->name }}</h4>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-2">
+                <a href="{{ route('student.certificate.preview', $course->id) }}" target="_blank" class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-emerald-700/50 text-white rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-emerald-700 transition-all border border-emerald-500/30">
+                    <i data-lucide="eye" class="w-4 h-4"></i> Certificate
+                </a>
+                <a href="{{ route('student.marksheet.preview', $course->id) }}" target="_blank" class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-emerald-700/50 text-white rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-emerald-700 transition-all border border-emerald-500/30">
+                    <i data-lucide="file-text" class="w-4 h-4"></i> Marksheet
+                </a>
+                <a href="{{ route('student.certificate.download', $course->id) }}" class="inline-flex items-center justify-center gap-2 px-4 py-3 bg-white text-emerald-800 rounded-xl font-bold text-xs uppercase tracking-wider hover:scale-105 transition-all shadow-md">
+                    <i data-lucide="award" class="w-4 h-4"></i> Download
+                </a>
+            </div>
+        </div>
+        @endforeach
+    </div>
+</section>
+@endif
+
 <section class="mb-10">
     <div class="flex items-center justify-between mb-6">
         <h3 class="text-xl font-bold text-slate-800">Free Learning Resources</h3>
