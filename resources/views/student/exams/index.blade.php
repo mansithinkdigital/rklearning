@@ -40,7 +40,7 @@
 
         <div class="space-y-6">
             @foreach($completedCourses as $c)
-            <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-[3rem] p-10 text-white relative overflow-hidden group shadow-2xl shadow-emerald-200">
+            <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-[2rem] sm:rounded-[3rem] p-6 sm:p-10 text-white relative overflow-hidden group shadow-2xl shadow-emerald-200">
                 <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
                     <div class="flex-1">
                         <div class="flex items-center gap-3 mb-4">
@@ -48,13 +48,13 @@
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
                         </div>
                         <h5 class="text-3xl md:text-5xl font-black uppercase tracking-tight mb-8 leading-tight">{{ $c->name }}</h5>
-                        
-                        <div class="flex flex-wrap gap-4">
-                            <a href="{{ route('student.certificate.download', $c->id) }}" class="inline-flex items-center gap-3 px-10 py-5 bg-white text-emerald-800 rounded-3xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-2xl shadow-emerald-900/20">
-                                <i data-lucide="award" class="w-5 h-5"></i> Landscape Certificate
+
+                        <div class="flex flex-col sm:flex-row flex-wrap gap-4">
+                            <a href="{{ route('student.certificate.download', $c->id) }}" class="inline-flex items-center justify-center text-center gap-3 px-6 sm:px-10 py-4 sm:py-5 bg-white text-emerald-800 rounded-2xl sm:rounded-3xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-2xl shadow-emerald-900/20">
+                                <i data-lucide="award" class="w-5 h-5 shrink-0"></i> Landscape Certificate
                             </a>
-                            <a href="{{ route('student.marksheet.download', $c->id) }}" class="inline-flex items-center gap-3 px-10 py-5 bg-emerald-900/40 text-white border border-white/20 backdrop-blur-md rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-emerald-900/60 transition-all">
-                                <i data-lucide="file-text" class="w-5 h-5"></i> Official Marksheet
+                            <a href="{{ route('student.marksheet.download', $c->id) }}" class="inline-flex items-center justify-center text-center gap-3 px-6 sm:px-10 py-4 sm:py-5 bg-emerald-900/40 text-white border border-white/20 backdrop-blur-md rounded-2xl sm:rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-emerald-900/60 transition-all">
+                                <i data-lucide="file-text" class="w-5 h-5 shrink-0"></i> Official Marksheet
                             </a>
                         </div>
                     </div>
@@ -116,6 +116,17 @@
             <div class="mb-6">
                 <p class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.2em] mb-2">{{ $cs->course->name }}</p>
                 <h4 class="text-xl font-black text-slate-900 dark:text-white tracking-tight uppercase leading-tight">{{ $cs->subject->name }}</h4>
+            </div>
+
+            <!-- Video Progress Bar -->
+            <div class="mb-6">
+                <div class="flex items-center justify-between text-[9px] font-black uppercase tracking-widest mb-2">
+                    <span class="text-slate-400">Course Completion</span>
+                    <span class="text-blue-600">{{ $cs->progress_percent }}%</span>
+                </div>
+                <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 h-full rounded-full transition-all duration-1000" style="width: {{ $cs->progress_percent }}%"></div>
+                </div>
             </div>
 
             <!-- Stats Table -->
@@ -186,11 +197,11 @@
             </div>
             @elseif(!$cs->videos_completed)
             <div class="space-y-3">
-                <button disabled class="w-full py-4 bg-amber-50 text-amber-600 border border-amber-200 rounded-2xl font-black text-[11px] uppercase tracking-widest text-center cursor-not-allowed flex items-center justify-center gap-2">
-                    <i data-lucide="lock" class="w-3.5 h-3.5"></i> Video Progress Pending
+                <button disabled class="w-full py-4 bg-slate-50 text-slate-400 border border-slate-200 rounded-2xl font-black text-[11px] uppercase tracking-widest text-center cursor-not-allowed flex items-center justify-center gap-2">
+                    <i data-lucide="lock" class="w-3.5 h-3.5"></i> Complete Course to Unlock Exam
                 </button>
-                <a href="{{ route('student.learning', $cs->course_id) }}" class="flex items-center justify-center gap-2 w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest transition-colors shadow-lg shadow-blue-100">
-                    <i data-lucide="play" class="w-3.5 h-3.5"></i> Complete {{ $cs->video_count - $cs->completed_count }} More Videos
+                <a href="{{ route('student.learning', $cs->course_id) }}" class="flex items-center justify-center gap-2 w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest transition-colors shadow-lg">
+                    <i data-lucide="play" class="w-3.5 h-3.5"></i> Complete Course ({{ $cs->progress_percent }}%)
                 </a>
             </div>
             @elseif($hasMcqs)
@@ -209,7 +220,7 @@
     @endif
 
     <!-- Instructions -->
-    <div class="mt-20 p-12 bg-gradient-to-br from-slate-900 to-black rounded-[3rem] text-white relative overflow-hidden group shadow-2xl">
+    <div class="mt-20 p-8 sm:p-12 bg-gradient-to-br from-slate-900 to-black rounded-[2rem] sm:rounded-[3rem] text-white relative overflow-hidden group shadow-2xl">
         <div class="relative z-10 flex flex-col md:flex-row items-center gap-12">
             <div class="flex-1">
                 <h5 class="text-2xl font-black mb-6 uppercase tracking-tight">Exam Instructions</h5>

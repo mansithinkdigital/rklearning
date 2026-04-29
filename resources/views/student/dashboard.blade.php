@@ -152,9 +152,10 @@
                                     <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
                                     <span>Expiry Date: {{ $course->expiry_date ? $course->expiry_date->format('d M, Y') : 'N/A' }}</span>
                                 </div>
+                                <span class="text-blue-600">{{ $course->progress_percent }}%</span>
                             </div>
                             <div class="w-full bg-slate-200 h-1.5 rounded-full mt-2">
-                                <div class="bg-{{ $course->is_expired ? 'red-500' : 'blue-600' }} h-1.5 rounded-full w-[25%] transition-all duration-1000"></div>
+                                <div class="bg-{{ $course->is_expired ? 'red-500' : 'blue-600' }} h-1.5 rounded-full transition-all duration-1000" style="width: {{ $course->progress_percent }}%"></div>
                             </div>
                         </div>
                     </div>
@@ -176,15 +177,31 @@
                 <div class="card border-blue-100 bg-blue-50/30 flex flex-col justify-between">
                     <div>
                         <div class="flex items-center space-x-2 text-blue-600 mb-4 font-bold text-sm">
-                            <i data-lucide="unlock" class="w-4 h-4"></i>
-                            <span>Active Exam</span>
+                            <i data-lucide="{{ ($latestCourse && $latestCourse->videos_completed) ? 'unlock' : 'lock' }}" class="w-4 h-4"></i>
+                            <span>{{ ($latestCourse && $latestCourse->videos_completed) ? 'Exam Ready' : 'Exam Locked' }}</span>
                         </div>
                         <h4 class="text-lg font-bold text-slate-800 mb-2">{{ $latestCourse ? $latestCourse->name : 'No Active Course' }}</h4>
                         <p class="text-sm text-slate-500 mb-6">
-                            {{ $latestCourse ? 'A new exam is ready for your latest enrolled course.' : 'Enroll in a course to unlock quizzes and exams.' }}
+                            @if($latestCourse)
+                                @if($latestCourse->videos_completed)
+                                    Congratulations! You've completed the curriculum. You can now start your examination.
+                                @else
+                                    Complete all video lessons to unlock the exam. ({{ $latestCourse->completed_vids_count }}/{{ $latestCourse->total_vids_count }} Completed)
+                                @endif
+                            @else
+                                Enroll in a course to unlock quizzes and exams.
+                            @endif
                         </p>
                     </div>
-                    <a href="{{ $latestCourse ? route('student.exams') : route('courses') }}" class="btn-primary text-center">{{ $latestCourse ? 'Start Exam Now' : 'Browse Courses' }}</a>
+                    @if($latestCourse)
+                        @if($latestCourse->videos_completed)
+                            <a href="{{ route('student.exams') }}" class="btn-primary text-center">Start Exam Now</a>
+                        @else
+                            <a href="{{ route('student.learning', $latestCourse->id) }}" class="w-full py-3 bg-slate-200 text-slate-500 rounded-xl font-bold text-center">Complete Course to Unlock</a>
+                        @endif
+                    @else
+                        <a href="{{ route('courses') }}" class="btn-primary text-center">Browse Courses</a>
+                    @endif
                 </div>
 
                 <!-- Locked Exam -->

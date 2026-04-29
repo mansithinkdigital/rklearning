@@ -34,20 +34,20 @@
                 <img src="{{ asset('admin/uploads/courseimg/' . $course->image) }}" class="w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
                     @if($course->is_expired)
-                        <span class="text-white text-xs font-bold px-2 py-1 bg-red-500 rounded">Expired</span>
+                    <span class="text-white text-xs font-bold px-2 py-1 bg-red-500 rounded">Expired</span>
                     @else
-                        <span class="text-white text-xs font-bold px-2 py-1 bg-emerald-500 rounded">Active</span>
+                    <span class="text-white text-xs font-bold px-2 py-1 bg-emerald-500 rounded">Active</span>
                     @endif
                 </div>
             </div>
-            <div class="p-6">
+            <div class="p-6 pb-4">
                 <h4 class="font-bold text-slate-800 mb-2 truncate">{{ $course->name }}</h4>
                 <div class="flex items-center justify-between text-xs font-bold mb-2">
                     <span class="text-blue-600">{{ $course->subjects_count }} Lessons</span>
-                    <span class="text-slate-400">Enrolled</span>
+                    <span class="text-slate-400">{{ $course->progress_percent }}% Completed</span>
                 </div>
                 <div class="w-full bg-slate-200 h-1.5 rounded-full">
-                    <div class="bg-blue-600 h-1.5 rounded-full w-[35%]"></div>
+                    <div class="bg-blue-600 h-1.5 rounded-full transition-all duration-1000" style="width: {{ $course->progress_percent }}%"></div>
                 </div>
                 <div class="mt-4 flex items-center gap-2 text-[11px] font-bold">
                     <div class="px-2 py-1 {{ $course->is_expired ? 'bg-red-50 text-red-700 border-red-100' : 'bg-amber-50 text-amber-700 border-amber-100' }} rounded-lg border flex items-center gap-1.5">
@@ -55,18 +55,57 @@
                         Expires: {{ $course->expiry_date ? $course->expiry_date->format('d M, Y') : 'N/A' }}
                     </div>
                 </div>
-                <div class="mt-2 flex items-center justify-between border-t border-slate-50 pt-4">
-                    @if($course->is_expired)
-                        <span class="inline-flex items-center justify-center gap-1 px-4 py-2 text-xs font-bold text-slate-400 bg-slate-100 border border-slate-200 rounded-md cursor-not-allowed">
-                            Access Expired
-                            <i data-lucide="lock" class="w-3 h-3"></i>
+
+                <!-- Syllabus Accordion -->
+                <div class="mt-4 border border-slate-100 rounded-xl overflow-hidden">
+                    <button onclick="toggleSyllabus(this)" class="w-full px-4 py-3 bg-slate-50 hover:bg-slate-100 text-left flex justify-between items-center transition-colors">
+                        <span class="text-xs font-bold text-slate-700 uppercase tracking-widest flex items-center gap-2">
+                            <i data-lucide="list" class="w-4 h-4 text-blue-600"></i> View Course Content
                         </span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="syllabus-content hidden bg-white">
+                        <div class="max-h-48 overflow-y-auto custom-scrollbar p-4 space-y-4">
+                            @forelse($course->subjects as $subject)
+                            <div>
+                                <h5 class="text-sm font-bold text-slate-800 mb-2 border-b border-slate-100 pb-1">{{ $subject->name }}</h5>
+                                <div class="space-y-3 pl-2 border-l-2 border-slate-100">
+                                    @foreach($subject->units as $unit)
+                                    <div>
+                                        <p class="text-[11px] font-black uppercase text-slate-500 tracking-widest mb-1 flex items-center gap-1.5">
+                                            <i data-lucide="folder" class="w-3 h-3"></i> {{ $unit->name }}
+                                        </p>
+                                        <ul class="space-y-1 pl-4 border-l border-slate-50">
+                                            @foreach($unit->topics as $topic)
+                                            <li class="text-xs text-slate-600 flex items-center gap-2">
+                                                <i data-lucide="circle" class="w-1.5 h-1.5 fill-slate-300 text-transparent"></i>
+                                                <span class="truncate">{{ $topic->name }}</span>
+                                            </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @empty
+                            <p class="text-xs text-slate-400 text-center italic">No content available yet.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
+                    @if($course->is_expired)
+                    <span class="inline-flex items-center justify-center gap-1 px-4 py-2 text-xs font-bold text-slate-400 bg-slate-100 border border-slate-200 rounded-md cursor-not-allowed">
+                        Access Expired
+                        <i data-lucide="lock" class="w-3 h-3"></i>
+                    </span>
                     @else
-                        <a href="{{ route('student.learning', $course->id) }}"
-                            class="inline-flex items-center justify-center gap-1 px-4 py-2 text-xs font-bold text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-blue-600 hover:text-white transition duration-200">
-                            Start Learning
-                            <i data-lucide="arrow-right" class="w-3 h-3"></i>
-                        </a>
+                    <a href="{{ route('student.learning', $course->id) }}"
+                        class="inline-flex items-center justify-center gap-1 px-4 py-2 text-xs font-bold text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-blue-600 hover:text-white transition duration-200">
+                        Start Learning
+                        <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                    </a>
                     @endif
 
                     @php $hasPdf = $course->paidVideos->whereNotNull('pdf')->first(); @endphp
@@ -158,4 +197,21 @@
     </div>
 </section>
 @endif
+@endsection
+
+@section('scripts')
+<script>
+    function toggleSyllabus(btn) {
+        const content = btn.nextElementSibling;
+        const icon = btn.querySelector('i[data-lucide="chevron-down"]');
+
+        if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            icon.style.transform = 'rotate(180deg)';
+        } else {
+            content.classList.add('hidden');
+            icon.style.transform = 'rotate(0deg)';
+        }
+    }
+</script>
 @endsection

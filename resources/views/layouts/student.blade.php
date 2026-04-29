@@ -194,7 +194,7 @@
                 </div>
             </header>
             <!-- Content Area -->
-            <div class="p-10">
+            <div class="p-4 sm:p-6 lg:p-10 overflow-x-hidden">
                 @yield('content')
             </div>
         </main>
@@ -202,12 +202,10 @@
 
     <script>
         lucide.createIcons();
-
         // Sidebar Toggle Logic
         const sidebar = document.getElementById('student-sidebar');
         const toggleBtn = document.getElementById('sidebar-toggle');
         const backdrop = document.createElement('div');
-
         backdrop.className = 'fixed inset-0 bg-slate-900/50 z-40 hidden lg:hidden transition-opacity duration-300 opacity-0';
         document.body.appendChild(backdrop);
 

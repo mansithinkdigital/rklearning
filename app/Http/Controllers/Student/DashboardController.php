@@ -22,7 +22,6 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
         // Fetch approved courses
         $enrolledCourses = $user->courses()
             ->wherePivot('status', 'approved')
@@ -30,11 +29,25 @@ class DashboardController extends Controller
             ->latest()
             ->take(5)
             ->get()
-            ->map(function($course) {
+            ->map(function ($course) use ($user) {
                 $startDate = $course->pivot->updated_at ?? $course->pivot->created_at;
                 $course->expiry_date = $this->calculateExpiryDate($startDate, $course->duration);
                 $course->days_remaining = $course->expiry_date ? now()->diffInDays($course->expiry_date, false) : 0;
                 $course->is_expired = $course->expiry_date && $course->expiry_date->isPast();
+
+                // Progress Calculation
+                $paidVideoCount = \App\Models\PaidVideo::where('course_id', $course->id)->count();
+                $topicVideoCount = \App\Models\Topic::whereHas('unit.subject', function ($q) use ($course) {
+                    $q->where('course_id', $course->id);
+                })->whereNotNull('video_id')->count();
+
+                $totalVideos = $paidVideoCount + $topicVideoCount;
+
+                $completedVideos = \App\Models\VideoCompletion::where('user_id', $user->id)
+                    ->where('course_id', $course->id)
+                    ->count();
+                $course->progress_percent = ($totalVideos > 0) ? round(($completedVideos / $totalVideos) * 100) : 0;
+
                 return $course;
             });
 
@@ -59,8 +72,10 @@ class DashboardController extends Controller
                 $passedCount = ExamResult::where('user_id', $user->id)
                     ->whereIn('course_subject_id', $subjects->pluck('id'))
                     ->where('status', 'pass')
+                    ->pluck('course_subject_id')
+                    ->unique()
                     ->count();
-                if ($passedCount === $subjects->count()) {
+                if ($passedCount >= $subjects->count()) {
                     $certificatesCount++;
                     $completedCourses->push($course);
                 }
@@ -69,6 +84,23 @@ class DashboardController extends Controller
 
         $attendancePercentage = 100;
         $latestCourse = $enrolledCourses->where('is_expired', false)->first();
+        if ($latestCourse) {
+            // Check Video Progress for Latest Course
+            $paidVideoCount = \App\Models\PaidVideo::where('course_id', $latestCourse->id)->count();
+            $topicVideoCount = \App\Models\Topic::whereHas('unit.subject', function ($q) use ($latestCourse) {
+                $q->where('course_id', $latestCourse->id);
+            })->whereNotNull('video_id')->count();
+
+            $totalVideos = $paidVideoCount + $topicVideoCount;
+
+            $completedVideos = \App\Models\VideoCompletion::where('user_id', $user->id)
+                ->where('course_id', $latestCourse->id)
+                ->count();
+            $latestCourse->videos_completed = ($totalVideos > 0) && ($completedVideos >= $totalVideos);
+            if ($totalVideos === 0) $latestCourse->videos_completed = true;
+            $latestCourse->completed_vids_count = $completedVideos;
+            $latestCourse->total_vids_count = $totalVideos;
+        }
 
         $announcements = [];
         if ($enrolledCourses->isNotEmpty()) {
@@ -112,18 +144,32 @@ class DashboardController extends Controller
     public function courses()
     {
         $user = Auth::user();
-        
+
         // Fetch approved courses
         $enrolledCourses = $user->courses()
             ->wherePivot('status', 'approved')
             ->withCount('subjects')
-            ->with('paidVideos')
+            ->with(['paidVideos', 'subjects.units.topics'])
             ->get()
-            ->map(function($course) {
+            ->map(function ($course) use ($user) {
                 $startDate = $course->pivot->updated_at ?? $course->pivot->created_at;
                 $course->expiry_date = $this->calculateExpiryDate($startDate, $course->duration);
                 $course->days_remaining = $course->expiry_date ? now()->diffInDays($course->expiry_date, false) : 0;
                 $course->is_expired = $course->expiry_date && $course->expiry_date->isPast();
+
+                // Progress Calculation
+                $paidVideoCount = \App\Models\PaidVideo::where('course_id', $course->id)->count();
+                $topicVideoCount = \App\Models\Topic::whereHas('unit.subject', function ($q) use ($course) {
+                    $q->where('course_id', $course->id);
+                })->whereNotNull('video_id')->count();
+
+                $totalVideos = $paidVideoCount + $topicVideoCount;
+
+                $completedVideos = \App\Models\VideoCompletion::where('user_id', $user->id)
+                    ->where('course_id', $course->id)
+                    ->count();
+                $course->progress_percent = ($totalVideos > 0) ? round(($completedVideos / $totalVideos) * 100) : 0;
+
                 return $course;
             });
 
@@ -165,11 +211,11 @@ class DashboardController extends Controller
             $image = $request->file('image');
             $imageName = time() . '_' . uniqid() . '.' . $image->extension();
             $path = public_path('student/uploads/registerimg');
-            
+
             if (!file_exists($path)) {
                 mkdir($path, 0777, true);
             }
-            
+
             $image->move($path, $imageName);
             $imagePath = 'student/uploads/registerimg/' . $imageName;
         }
@@ -202,32 +248,30 @@ class DashboardController extends Controller
                 return redirect()->route('student.courses')->with('error', 'Your access to this course has expired.');
             }
         }
-        
-        $allVideos = \App\Models\PaidVideo::where('course_id', $course_id)
-            ->orderBy('id', 'asc')
-            ->get();
+
+        $allVideos = $this->getSequentialVideos($course_id);
 
         $completedVideoIds = \App\Models\VideoCompletion::where('user_id', $user->id)
             ->where('course_id', $course_id)
             ->pluck('video_id')
             ->toArray();
-        
+
         return view('student.learning.player', compact('user', 'course', 'completedVideoIds', 'allVideos'));
     }
 
     public function exams()
     {
         $user = Auth::user();
-        
+
         // Fetch only non-expired enrolled courses
         $enrolledCourses = $user->courses()
             ->wherePivot('status', 'approved')
             ->get()
-            ->map(function($course) use ($user) {
+            ->map(function ($course) use ($user) {
                 $startDate = $course->pivot->updated_at ?? $course->pivot->created_at;
                 $course->expiry_date = $this->calculateExpiryDate($startDate, $course->duration);
                 $course->is_expired = $course->expiry_date && $course->expiry_date->isPast();
-                
+
                 // Check if course is fully completed (all exams passed)
                 $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->get();
                 $course->is_fully_completed = false;
@@ -235,38 +279,46 @@ class DashboardController extends Controller
                     $passedCount = ExamResult::where('user_id', $user->id)
                         ->whereIn('course_subject_id', $subjects->pluck('id'))
                         ->where('status', 'pass')
+                        ->pluck('course_subject_id')
+                        ->unique()
                         ->count();
-                    $course->is_fully_completed = ($passedCount === $subjects->count());
+                    $course->is_fully_completed = ($passedCount >= $subjects->count());
                 }
-                
+
                 return $course;
             });
-        
+
         $courseSubjects = \App\Models\CourseSubject::whereIn('course_id', $enrolledCourses->pluck('id'))
             ->with(['subject', 'course', 'mcqs'])
             ->get()
-            ->map(function($cs) use ($enrolledCourses, $user) {
+            ->map(function ($cs) use ($enrolledCourses, $user) {
                 $parentCourse = $enrolledCourses->firstWhere('id', $cs->course_id);
                 $cs->is_expired = $parentCourse ? $parentCourse->is_expired : false;
-                
+
                 // Check Video Progress
-                $totalVideos = \App\Models\PaidVideo::where('course_id', $cs->course_id)->count();
+                $paidVideoCount = \App\Models\PaidVideo::where('course_id', $cs->course_id)->count();
+                $topicVideoCount = \App\Models\Topic::whereHas('unit.subject', function ($q) use ($cs) {
+                    $q->where('course_id', $cs->course_id);
+                })->whereNotNull('video_id')->count();
+
+                $totalVideos = $paidVideoCount + $topicVideoCount;
+
                 $completedVideos = \App\Models\VideoCompletion::where('user_id', $user->id)
                     ->where('course_id', $cs->course_id)
                     ->count();
 
                 $cs->videos_completed = ($totalVideos > 0) && ($completedVideos >= $totalVideos);
                 if ($totalVideos === 0) $cs->videos_completed = true;
-                
+
                 $cs->video_count = $totalVideos;
                 $cs->completed_count = $completedVideos;
                 $cs->progress_percent = ($totalVideos > 0) ? round(($completedVideos / $totalVideos) * 100) : 100;
-                
+
                 return $cs;
             });
 
         // Attach results if any
-        foreach($courseSubjects as $cs) {
+        foreach ($courseSubjects as $cs) {
             $cs->result = ExamResult::where('user_id', $user->id)
                 ->where('course_subject_id', $cs->id)
                 ->first();
@@ -287,7 +339,13 @@ class DashboardController extends Controller
         }
 
         // Check Video Completion
-        $totalVideos = \App\Models\PaidVideo::where('course_id', $courseSubject->course_id)->count();
+        $paidVideoCount = \App\Models\PaidVideo::where('course_id', $courseSubject->course_id)->count();
+        $topicVideoCount = \App\Models\Topic::whereHas('unit.subject', function ($q) use ($courseSubject) {
+            $q->where('course_id', $courseSubject->course_id);
+        })->whereNotNull('video_id')->count();
+
+        $totalVideos = $paidVideoCount + $topicVideoCount;
+
         $completedVideos = \App\Models\VideoCompletion::where('user_id', $user->id)
             ->where('course_id', $courseSubject->course_id)
             ->count();
@@ -300,7 +358,7 @@ class DashboardController extends Controller
         $previousResult = ExamResult::where('user_id', $user->id)
             ->where('course_subject_id', $course_subject_id)
             ->first();
-        
+
         if ($previousResult) {
             return redirect()->route('student.exams')->with('error', 'You have already completed this examination.');
         }
@@ -320,27 +378,41 @@ class DashboardController extends Controller
     public function markVideoCompleted(Request $request, $video_id)
     {
         $user = Auth::user();
-        $video = \App\Models\PaidVideo::findOrFail($video_id);
+        $course_id = null;
+
+        if ($video_id > 1000000) {
+            $topic = \App\Models\Topic::with('unit.subject')->find($video_id - 1000000);
+            if ($topic && $topic->unit && $topic->unit->subject) {
+                $course_id = $topic->unit->subject->course_id;
+            } else {
+                return response()->json(['success' => false, 'message' => 'Topic not found'], 404);
+            }
+        } else {
+            $video = \App\Models\PaidVideo::find($video_id);
+            if ($video) {
+                $course_id = $video->course_id;
+            } else {
+                return response()->json(['success' => false, 'message' => 'Video not found'], 404);
+            }
+        }
 
         // Security: Check if enrolled in the course
-        $isEnrolled = $user->courses()->where('courses.id', $video->course_id)->exists();
+        $isEnrolled = $user->courses()->where('courses.id', $course_id)->exists();
         if (!$isEnrolled) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
 
-        // Sequential Check: Is there a previous video?
-        $allVideos = \App\Models\PaidVideo::where('course_id', $video->course_id)
-            ->orderBy('id', 'asc')
-            ->get();
-        
-        $currentIndex = $allVideos->search(fn($v) => $v->id == $video->id);
-        
+        // Sequential Check: Combine PaidVideos and Topics in correct UI order
+        $allVideos = $this->getSequentialVideos($course_id);
+
+        $currentIndex = $allVideos->search(fn($v) => $v->db_id == $video_id);
+
         if ($currentIndex > 0) {
             $prevVideo = $allVideos[$currentIndex - 1];
             $prevCompleted = \App\Models\VideoCompletion::where('user_id', $user->id)
-                ->where('video_id', $prevVideo->id)
+                ->where('video_id', $prevVideo->db_id)
                 ->exists();
-            
+
             if (!$prevCompleted) {
                 return response()->json(['success' => false, 'message' => 'Complete previous video first'], 400);
             }
@@ -350,7 +422,7 @@ class DashboardController extends Controller
             'user_id' => $user->id,
             'video_id' => $video_id,
         ], [
-            'course_id' => $video->course_id,
+            'course_id' => $course_id,
             'is_completed' => true
         ]);
 
@@ -361,7 +433,7 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $courseSubject = CourseSubject::with('mcqs')->findOrFail($course_subject_id);
-        
+
         // Security Check
         $isEnrolled = $user->courses()->where('courses.id', $courseSubject->course_id)->exists();
         if (!$isEnrolled) {
@@ -381,9 +453,9 @@ class DashboardController extends Controller
 
         $score = ($totalQuestions > 0) ? ($correctCount / $totalQuestions) * 100 : 0;
         $status = ($score >= ($courseSubject->pass_marks / ($courseSubject->total_marks ?: 1) * 100)) ? 'pass' : 'fail';
-        
+
         // Handle case where pass_marks might be zero or unset
-        if($courseSubject->pass_marks > 0) {
+        if ($courseSubject->pass_marks > 0) {
             $status = ($correctCount * ($courseSubject->total_marks / $totalQuestions) >= $courseSubject->pass_marks) ? 'pass' : 'fail';
         } else {
             // Default 40% pass if marks not set properly
@@ -419,7 +491,7 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $courseSubject = CourseSubject::with(['course', 'subject', 'mcqs'])->findOrFail($course_subject_id);
-        
+
         $result = ExamResult::where('user_id', $user->id)
             ->where('course_subject_id', $course_subject_id)
             ->first();
@@ -440,6 +512,8 @@ class DashboardController extends Controller
         $passedCount = ExamResult::where('user_id', $user->id)
             ->whereIn('course_subject_id', $subjects->pluck('id'))
             ->where('status', 'pass')
+            ->pluck('course_subject_id')
+            ->unique()
             ->count();
 
         if ($passedCount < $subjects->count()) {
@@ -455,7 +529,7 @@ class DashboardController extends Controller
             $userPhotoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         }
 
-        $enrollDate = $course->pivot->created_at->format('d/m/Y');
+        $enrollDate = optional($course->pivot->created_at)->format('d/m/Y') ?? 'N/A';
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate'));
         $pdf->setPaper('a4', 'landscape');
@@ -468,14 +542,20 @@ class DashboardController extends Controller
         $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
 
         $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->with('subject')->get();
+        $passedSubjectIds = ExamResult::where('user_id', $user->id)
+            ->whereIn('course_subject_id', $subjects->pluck('id'))
+            ->where('status', 'pass')
+            ->pluck('course_subject_id')
+            ->unique();
+
+        if ($passedSubjectIds->count() < $subjects->count()) {
+            return back()->with('error', 'Complete all subject exams first.');
+        }
+
         $results = ExamResult::where('user_id', $user->id)
             ->whereIn('course_subject_id', $subjects->pluck('id'))
             ->get()
             ->keyBy('course_subject_id');
-
-        if ($results->where('status', 'pass')->count() < $subjects->count()) {
-            return back()->with('error', 'Complete all subject exams first.');
-        }
 
         // Base64 Photo
         $userPhotoBase64 = null;
@@ -486,7 +566,7 @@ class DashboardController extends Controller
             $userPhotoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         }
 
-        $enrollDate = $course->pivot->created_at->format('d/m/Y');
+        $enrollDate = optional($course->pivot->created_at)->format('d/m/Y') ?? 'N/A';
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('student.exams.marksheet_print', compact('user', 'course', 'subjects', 'results', 'enrollDate', 'userPhotoBase64'));
         $pdf->setPaper('a4', 'portrait');
@@ -502,6 +582,8 @@ class DashboardController extends Controller
         $passedCount = ExamResult::where('user_id', $user->id)
             ->whereIn('course_subject_id', $subjects->pluck('id'))
             ->where('status', 'pass')
+            ->pluck('course_subject_id')
+            ->unique()
             ->count();
 
         if ($passedCount < $subjects->count()) {
@@ -516,7 +598,7 @@ class DashboardController extends Controller
             $userPhotoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         }
 
-        $enrollDate = $course->pivot->created_at->format('d/m/Y');
+        $enrollDate = optional($course->pivot->created_at)->format('d/m/Y') ?? 'N/A';
 
         return view('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate'));
     }
@@ -527,14 +609,20 @@ class DashboardController extends Controller
         $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
 
         $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->with('subject')->get();
+        $passedSubjectIds = ExamResult::where('user_id', $user->id)
+            ->whereIn('course_subject_id', $subjects->pluck('id'))
+            ->where('status', 'pass')
+            ->pluck('course_subject_id')
+            ->unique();
+
+        if ($passedSubjectIds->count() < $subjects->count()) {
+            return back()->with('error', 'Complete all subject exams first.');
+        }
+
         $results = ExamResult::where('user_id', $user->id)
             ->whereIn('course_subject_id', $subjects->pluck('id'))
             ->get()
             ->keyBy('course_subject_id');
-
-        if ($results->where('status', 'pass')->count() < $subjects->count()) {
-            return back()->with('error', 'Complete all subject exams first.');
-        }
 
         $userPhotoBase64 = null;
         if ($user->image && file_exists(public_path($user->image))) {
@@ -544,7 +632,7 @@ class DashboardController extends Controller
             $userPhotoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         }
 
-        $enrollDate = $course->pivot->created_at->format('d/m/Y');
+        $enrollDate = optional($course->pivot->created_at)->format('d/m/Y') ?? 'N/A';
 
         return view('student.exams.marksheet_print', compact('user', 'course', 'subjects', 'results', 'enrollDate', 'userPhotoBase64'));
     }
@@ -567,7 +655,7 @@ class DashboardController extends Controller
     public function downloadReceipt($reference)
     {
         $user = Auth::user();
-        
+
         // Extract pivot ID from reference (RK-PAY-XXXXX)
         $pivotId = (int) str_replace('RK-PAY-', '', $reference);
 
@@ -588,22 +676,49 @@ class DashboardController extends Controller
         }
 
         $filePath = public_path($enrollment->receipt_file);
-        
+
         if (!file_exists($filePath)) {
-             abort(404, 'Receipt file physically missing.');
+            abort(404, 'Receipt file physically missing.');
         }
 
         return response()->download($filePath, "Receipt-{$enrollment->receipt_no}.pdf");
     }
 
+    private function getSequentialVideos($course_id)
+    {
+        $course = Course::with([
+            'subjects.units.topics',
+            'subjects.units.paidVideos',
+        ])->findOrFail($course_id);
+
+        $allVideos = collect();
+        foreach ($course->subjects as $subject) {
+            foreach ($subject->units as $unit) {
+                foreach ($unit->topics as $topic) {
+                    if ($topic->video_id) {
+                        $topic->is_topic = true;
+                        $topic->db_id = $topic->id + 1000000;
+                        $allVideos->push($topic);
+                    }
+                }
+                foreach ($unit->paidVideos as $video) {
+                    $video->is_paid = true;
+                    $video->db_id = $video->id;
+                    $allVideos->push($video);
+                }
+            }
+        }
+        return $allVideos;
+    }
+
     private function calculateExpiryDate($startDate, $duration)
     {
         if (!$startDate) return null;
-        
+
         $date = \Carbon\Carbon::parse($startDate);
-        
+
         if (!$duration) return $date->addYears(1);
-        
+
         $durationLower = strtolower($duration);
         $amount = (int) filter_var($duration, FILTER_SANITIZE_NUMBER_INT);
         if ($amount <= 0) $amount = 1;
@@ -615,7 +730,7 @@ class DashboardController extends Controller
         } elseif (str_contains($durationLower, 'day')) {
             return $date->addDays($amount);
         }
-        
+
         return $date->addYears(1);
     }
 
@@ -629,7 +744,7 @@ class DashboardController extends Controller
             $query->take($limit);
         }
 
-        return $query->get()->map(function($course) {
+        return $query->get()->map(function ($course) {
             $startDate = $course->pivot->updated_at ?? $course->pivot->created_at;
             $expiryDate = $this->calculateExpiryDate($startDate, $course->duration);
             $daysLeft = $expiryDate ? now()->diffInDays($expiryDate, false) : 0;
@@ -673,14 +788,14 @@ class DashboardController extends Controller
             ->pluck('courses.id');
 
         // Fetch Study Material from Topics (Subject -> Unit -> Topic)
-        $studyMaterials = Topic::whereHas('unit.subject', function($q) use ($enrolledCourseIds) {
-                $q->whereIn('course_id', $enrolledCourseIds);
-            })
+        $studyMaterials = Topic::whereHas('unit.subject', function ($q) use ($enrolledCourseIds) {
+            $q->whereIn('course_id', $enrolledCourseIds);
+        })
             ->whereNotNull('study_material')
             ->with(['unit.subject.course'])
             ->latest()
             ->get()
-            ->filter(function($topic) {
+            ->filter(function ($topic) {
                 $course = $topic->unit->subject->course;
                 $enrollment = Auth::user()->courses()->where('course_id', $course->id)->first();
                 if ($enrollment) {
