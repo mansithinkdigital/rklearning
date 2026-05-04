@@ -23,6 +23,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'mother_name',
+        'father_name',
         'email',
         'phone',
         'address',
@@ -65,5 +66,53 @@ class User extends Authenticatable
         return $this->belongsToMany(Course::class, 'course_user')
             ->withPivot('id', 'payment_method', 'amount', 'status')
             ->withTimestamps();
+    }
+
+    public function checkCourseCompletion($course)
+    {
+        // 1. Video Completion Check
+        $paidVideoIds = \App\Models\PaidVideo::where('course_id', $course->id)->pluck('id')->toArray();
+        $topicVideoIds = \App\Models\Topic::whereHas('unit.subject', function ($q) use ($course) {
+            $q->where('course_id', $course->id);
+        })->whereNotNull('video_id')->pluck('id')->map(fn($id) => $id + 1000000)->toArray();
+
+        $allRequiredVideoIds = array_merge($paidVideoIds, $topicVideoIds);
+
+        if (!empty($allRequiredVideoIds)) {
+            $completedCount = \App\Models\VideoCompletion::where('user_id', $this->id)
+                ->whereIn('video_id', $allRequiredVideoIds)
+                ->where('is_completed', true)
+                ->count();
+
+            if ($completedCount < count($allRequiredVideoIds)) {
+                return false;
+            }
+        }
+
+        // 2. Exam Completion Check (only for subjects that HAVE MCQs)
+        $examSubjects = \App\Models\CourseSubject::where('course_id', $course->id)->whereHas('mcqs')->get();
+        
+        if ($examSubjects->isEmpty()) {
+            return true;
+        }
+
+        $passedCount = \App\Models\ExamResult::where('user_id', $this->id)
+            ->whereIn('course_subject_id', $examSubjects->pluck('id'))
+            ->where('status', 'pass')
+            ->pluck('course_subject_id')
+            ->unique()
+            ->count();
+
+        return ($passedCount >= $examSubjects->count());
+    }
+
+    public function hasCompletedAnyCourse()
+    {
+        foreach ($this->courses()->wherePivot('status', 'approved')->get() as $course) {
+            if ($this->checkCourseCompletion($course)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

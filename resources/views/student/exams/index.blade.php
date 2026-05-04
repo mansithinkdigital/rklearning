@@ -38,34 +38,48 @@
             </div>
         </div>
 
-        <div class="space-y-6">
+        <div class="space-y-4">
             @foreach($completedCourses as $c)
-            <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-[2rem] sm:rounded-[3rem] p-6 sm:p-10 text-white relative overflow-hidden group shadow-2xl shadow-emerald-200">
-                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-4">
-                            <span class="px-4 py-1 bg-emerald-500/30 rounded-full text-[10px] font-black uppercase tracking-[0.2em] text-emerald-100 backdrop-blur-sm border border-emerald-400/20">Official Credential</span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
-                        </div>
-                        <h5 class="text-3xl md:text-5xl font-black uppercase tracking-tight mb-8 leading-tight">{{ $c->name }}</h5>
+            <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl p-4 sm:p-6 text-white relative overflow-hidden group shadow-lg shadow-emerald-200">
 
-                        <div class="flex flex-col sm:flex-row flex-wrap gap-4">
-                            <a href="{{ route('student.certificate.download', $c->id) }}" class="inline-flex items-center justify-center text-center gap-3 px-6 sm:px-10 py-4 sm:py-5 bg-white text-emerald-800 rounded-2xl sm:rounded-3xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-2xl shadow-emerald-900/20">
-                                <i data-lucide="award" class="w-5 h-5 shrink-0"></i> Landscape Certificate
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+
+                    <div class="flex-1">
+
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="px-2 py-0.5 bg-emerald-500/30 rounded-full text-[9px] font-bold uppercase tracking-wider text-emerald-100 border border-emerald-400/20">
+                                Official Credential
+                            </span>
+                            <span class="w-1 h-1 rounded-full bg-emerald-300 animate-pulse"></span>
+                        </div>
+
+                        <h5 class="text-lg sm:text-2xl font-bold uppercase tracking-tight mb-4 leading-snug">
+                            {{ $c->name }}
+                        </h5>
+
+                        <div class="flex flex-wrap gap-2">
+
+                            <a href="{{ route('student.certificate.download', $c->id) }}"
+                                class="inline-flex items-center gap-2 px-4 py-2 bg-white text-emerald-800 rounded-xl font-semibold text-[10px] uppercase tracking-wide hover:scale-105 transition shadow-md">
+                                <i data-lucide="award" class="w-4 h-4"></i>
+                                Certificate
                             </a>
-                            <a href="{{ route('student.marksheet.download', $c->id) }}" class="inline-flex items-center justify-center text-center gap-3 px-6 sm:px-10 py-4 sm:py-5 bg-emerald-900/40 text-white border border-white/20 backdrop-blur-md rounded-2xl sm:rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-emerald-900/60 transition-all">
-                                <i data-lucide="file-text" class="w-5 h-5 shrink-0"></i> Official Marksheet
+
+                            <a href="{{ route('student.marksheet.download', $c->id) }}"
+                                class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-900/40 text-white border border-white/20 rounded-xl font-semibold text-[10px] uppercase tracking-wide hover:bg-emerald-900/60 transition">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                Marksheet
                             </a>
                         </div>
                     </div>
-                    <div class="hidden lg:flex items-center justify-center w-48 h-48 bg-white/5 rounded-full border border-white/10 backdrop-blur-sm relative">
-                        <i data-lucide="shield-check" class="w-24 h-24 text-white/40"></i>
-                        <div class="absolute inset-0 border-4 border-white/20 border-dashed rounded-full animate-[spin_20s_linear_infinite]"></div>
+                    <!-- Smaller Icon -->
+                    <div class="hidden lg:flex items-center justify-center w-24 h-24 bg-white/5 rounded-full border border-white/10">
+                        <i data-lucide="shield-check" class="w-10 h-10 text-white/40"></i>
                     </div>
                 </div>
-                <!-- Decorative Elements -->
-                <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-white/10 rounded-full blur-[100px]"></div>
-                <div class="absolute top-10 right-1/4 w-32 h-32 bg-emerald-400/20 rounded-full blur-[60px] animate-pulse"></div>
+
+                <!-- Softer Decorations -->
+                <div class="absolute -right-16 -bottom-16 w-48 h-48 bg-white/10 rounded-full blur-[60px]"></div>
             </div>
             @endforeach
         </div>

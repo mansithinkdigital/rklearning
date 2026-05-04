@@ -1,44 +1,42 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Certificate of Completion - {{ $user->name }}</title>
     @php
-        $bgPath = public_path('assets/certificate/RK Learning Certificates.png');
-        $bgBase64 = '';
-        if (file_exists($bgPath)) {
-            $bgData = file_get_contents($bgPath);
-            $bgBase64 = 'data:image/jpeg;base64,' . base64_encode($bgData);
-        }
+    $bgPath = public_path('assets/certificate/RK Learning Certificates.png');
+    $bgBase64 = '';
+    if (file_exists($bgPath)) {
+    $bgData = file_get_contents($bgPath);
+    $bgBase64 = 'data:image/jpeg;base64,' . base64_encode($bgData);
+    }
 
-        $logoPath = public_path('assets/certificate/Rk Logo.jpg');
-        $logoBase64 = '';
-        if (file_exists($logoPath)) {
-            $logoData = file_get_contents($logoPath);
-            $logoBase64 = 'data:image/jpeg;base64,' . base64_encode($logoData);
-        }
+    $logoPath = public_path('assets/certificate/Rk Logo.jpg');
+    $logoBase64 = '';
+    if (file_exists($logoPath)) {
+    $logoData = file_get_contents($logoPath);
+    $logoBase64 = 'data:image/jpeg;base64,' . base64_encode($logoData);
+    }
 
-        // Skills List
-        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->with('subject')->get();
-        $skillsList = $subjects->pluck('subject.name')->implode(', ');
-        if (empty($skillsList)) {
-            $skillsList = 'Accounting Fundamentals, Tally Prime Software, GST, Inventory Management, Payroll Management, Financial Reporting';
-        }
+    // Skills List
+    $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->with('subject')->get();
+    $skillsList = $subjects->pluck('subject.name')->implode(', ');
+    if (empty($skillsList)) {
+    $skillsList = 'Accounting Fundamentals, Tally Prime Software, GST, Inventory Management, Payroll Management, Financial Reporting';
+    }
 
-        // Student Photo Fallback
-        if (!isset($userPhotoBase64) || !$userPhotoBase64) {
-            $testImagePath = 'C:\\Users\\ThinkDigital\\.gemini\\antigravity\\brain\\a538b63a-d516-4f0d-909c-b746bcd8eda9\\media__1777377327970.png';
-            if (file_exists($testImagePath)) {
-                $testImageData = file_get_contents($testImagePath);
-                $userPhotoBase64 = 'data:image/png;base64,' . base64_encode($testImageData);
-            }
-        }
+    // Student Photo Fallback
+    if (!isset($userPhotoBase64) || !$userPhotoBase64) {
+    $userPhotoBase64 = null;
+    }
     @endphp
     <style>
         @page {
             margin: 0;
             size: a4 landscape;
         }
+
         body {
             font-family: 'Times New Roman', Times, serif;
             margin: 0;
@@ -46,6 +44,7 @@
             background-color: #fff;
             color: #0f2441;
         }
+
         .wrapper {
             width: 297mm;
             height: 210mm;
@@ -71,7 +70,8 @@
 
         .course-name {
             position: absolute;
-            top: 92mm; /* Let's use 55mm so it doesn't overlap Name too much */
+            top: 92mm;
+            /* Let's use 55mm so it doesn't overlap Name too much */
             left: 65mm;
             right: 0;
             text-align: center;
@@ -96,7 +96,7 @@
             position: absolute;
             max-width: 650px;
             top: 117mm;
-            left: 63mm  ;
+            left: 63mm;
             right: 15%;
             text-align: center;
             font-size: 11pt;
@@ -162,7 +162,7 @@
             color: #0f2441;
         }
 
-        
+
         .branch {
             position: absolute;
             top: 145mm;
@@ -172,7 +172,8 @@
             font-weight: bold;
             color: #0f2441;
         }
-         .website{
+
+        .website {
             position: absolute;
             bottom: 14mm;
             right: 109mm;
@@ -183,6 +184,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="wrapper">
         <div class="student-name">
@@ -194,19 +196,19 @@
         </div>
 
         <div class="period-text">
-           {{ $enrollDate }}&nbsp;&nbsp; to &nbsp;&nbsp;{{ date('d/m/Y') }}
+            {{ $enrollDate }}&nbsp;&nbsp; to &nbsp;&nbsp;{{ date('d/m/Y') }}
         </div>
 
         <div class="date-text">
-           {{ date('d') }}
+            {{ date('d') }}
         </div>
 
         <div class="month-text">
-           {{ date('m') }}
+            {{ date('m') }}
         </div>
 
         <div class="year-text">
-           {{ date('Y') }}
+            {{ date('Y') }}
         </div>
 
         <div class="skills-text">
@@ -218,13 +220,13 @@
         </div>
 
         <div class="branch">
-            {{ strtoupper($user->branch->name) }}
+            {{ strtoupper(optional($user->branch)->branch_name ?? 'Main Branch') }}
         </div>
 
         @if($userPhotoBase64)
-            <div class="photo-box">
-                <img src="{{ $userPhotoBase64 }}" class="photo-img">
-            </div>
+        <div class="photo-box">
+            <img src="{{ $userPhotoBase64 }}" class="photo-img">
+        </div>
         @endif
 
 
@@ -233,4 +235,5 @@
         </div>
     </div>
 </body>
+
 </html>

@@ -124,6 +124,35 @@
         @endforeach
     </div>
 
+    @if($isCourseCompleted)
+    <div class="mt-12 p-8 sm:p-12 bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-[3rem] text-white relative overflow-hidden shadow-2xl">
+        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="flex-1">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="px-4 py-1 bg-emerald-500/30 rounded-full text-[10px] font-black uppercase tracking-[0.2em] text-emerald-100 border border-emerald-400/20">Course Fully Completed</span>
+                    <i data-lucide="party-popper" class="w-5 h-5 text-emerald-300"></i>
+                </div>
+                <h5 class="text-3xl font-black uppercase tracking-tight mb-4">Congratulations!</h5>
+                <p class="text-sm text-emerald-100 font-medium mb-8 max-w-md">You have successfully passed all examinations for <b>{{ $course->name }}</b>. Your official credentials are now ready for download.</p>
+                
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="{{ route('student.certificate.download', $course->id) }}" class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-emerald-800 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-xl">
+                        <i data-lucide="award" class="w-5 h-5"></i> Download Certificate
+                    </a>
+                    <a href="{{ route('student.marksheet.download', $course->id) }}" class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-emerald-900/40 text-white border border-white/20 backdrop-blur-md rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-900/60 transition-all">
+                        <i data-lucide="file-text" class="w-5 h-5"></i> Official Marksheet
+                    </a>
+                </div>
+            </div>
+            <div class="w-32 h-32 bg-white/10 rounded-full flex items-center justify-center border border-white/20 backdrop-blur-sm">
+                <i data-lucide="shield-check" class="w-16 h-16 text-white/40"></i>
+            </div>
+        </div>
+        <!-- Decorative -->
+        <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-white/10 rounded-full blur-[100px]"></div>
+    </div>
+    @endif
+
     <div class="mt-12 text-center pb-20">
         <a href="{{ route('student.exams') }}" class="inline-flex items-center gap-2 px-10 py-5 bg-slate-900 text-white rounded-[2rem] font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-2xl">
             Return to Dashboard

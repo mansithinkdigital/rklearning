@@ -126,10 +126,12 @@
                     <i data-lucide="file-text"></i>
                     <span>Exam Portal</span>
                 </a>
-                <a href="#" class="sidebar-link">
+                @if(auth()->user()->hasCompletedAnyCourse())
+                <a href="{{ route('student.certificates') }}" class="sidebar-link {{ request()->routeIs('student.certificates') ? 'active' : '' }}">
                     <i data-lucide="award"></i>
                     <span>Certificates</span>
                 </a>
+                @endif
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-8 mb-4 px-2">Administrative</p>
                 <a href="{{ route('student.financials') }}" class="sidebar-link {{ request()->routeIs('student.financials') ? 'active' : '' }}">
                     <i data-lucide="credit-card"></i>

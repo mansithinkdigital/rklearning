@@ -58,6 +58,7 @@ Route::prefix('student')->name('student.')->group(function () {
         Route::get('/courses/{course_id}/certificate/preview', [StudentDashboardController::class, 'previewCertificate'])->name('certificate.preview');
         Route::get('/courses/{course_id}/marksheet', [StudentDashboardController::class, 'downloadMarksheet'])->name('marksheet.download');
         Route::get('/courses/{course_id}/marksheet/preview', [StudentDashboardController::class, 'previewMarksheet'])->name('marksheet.preview');
+        Route::get('/certificates', [StudentDashboardController::class, 'certificates'])->name('certificates');
         Route::post('/videos/{video_id}/complete', [StudentDashboardController::class, 'markVideoCompleted'])->name('videos.complete');
         Route::get('/fee-history', [StudentDashboardController::class, 'financials'])->name('financials');
         Route::get('/receipt/{reference}', [StudentDashboardController::class, 'downloadReceipt'])->name('receipt.download');

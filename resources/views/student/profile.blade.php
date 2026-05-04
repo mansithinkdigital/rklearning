@@ -72,6 +72,14 @@
                         <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block px-1">Branch</label>
                         <input type="text" value="{{ auth()->user()->branch->branch_name ?? 'Not Assigned' }}" disabled class="w-full px-5 py-3 rounded-2xl border border-slate-100 bg-slate-50 text-slate-400 cursor-not-allowed font-medium">
                     </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block px-1">Father's Name</label>
+                        <input type="text" name="father_name" value="{{ auth()->user()->father_name }}" class="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition shadow-sm font-medium" placeholder="Enter Father's Name">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block px-1">Mother's Name</label>
+                        <input type="text" name="mother_name" value="{{ auth()->user()->mother_name }}" class="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition shadow-sm font-medium" placeholder="Enter Mother's Name">
+                    </div>
                 </div>
                 <div>
                     <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block px-1">Address</label>

@@ -67,18 +67,9 @@ class DashboardController extends Controller
         $certificatesCount = 0;
         $completedCourses = collect();
         foreach ($user->courses()->wherePivot('status', 'approved')->get() as $course) {
-            $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->get();
-            if ($subjects->isNotEmpty()) {
-                $passedCount = ExamResult::where('user_id', $user->id)
-                    ->whereIn('course_subject_id', $subjects->pluck('id'))
-                    ->where('status', 'pass')
-                    ->pluck('course_subject_id')
-                    ->unique()
-                    ->count();
-                if ($passedCount >= $subjects->count()) {
-                    $certificatesCount++;
-                    $completedCourses->push($course);
-                }
+            if ($user->checkCourseCompletion($course)) {
+                $certificatesCount++;
+                $completedCourses->push($course);
             }
         }
 
@@ -201,6 +192,8 @@ class DashboardController extends Controller
         $user = Auth::user();
         $request->validate([
             'name' => 'required|string|max:255',
+            'mother_name' => 'nullable|string|max:255',
+            'father_name' => 'nullable|string|max:255',
             'phone' => 'required|string|max:15',
             'address' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048'
@@ -222,6 +215,8 @@ class DashboardController extends Controller
 
         $user->update([
             'name' => $request->name,
+            'mother_name' => $request->mother_name,
+            'father_name' => $request->father_name,
             'phone' => $request->phone,
             'address' => $request->address,
             'image' => $imagePath,
@@ -272,18 +267,8 @@ class DashboardController extends Controller
                 $course->expiry_date = $this->calculateExpiryDate($startDate, $course->duration);
                 $course->is_expired = $course->expiry_date && $course->expiry_date->isPast();
 
-                // Check if course is fully completed (all exams passed)
-                $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->get();
-                $course->is_fully_completed = false;
-                if ($subjects->isNotEmpty()) {
-                    $passedCount = ExamResult::where('user_id', $user->id)
-                        ->whereIn('course_subject_id', $subjects->pluck('id'))
-                        ->where('status', 'pass')
-                        ->pluck('course_subject_id')
-                        ->unique()
-                        ->count();
-                    $course->is_fully_completed = ($passedCount >= $subjects->count());
-                }
+                // Check if course is fully completed (all exams passed + all videos watched)
+                $course->is_fully_completed = $user->checkCourseCompletion($course);
 
                 return $course;
             });
@@ -500,7 +485,10 @@ class DashboardController extends Controller
             return redirect()->route('student.exams')->with('error', 'Result not found.');
         }
 
-        return view('student.exams.result', compact('user', 'courseSubject', 'result'));
+        // Check if entire course is now completed
+        $course = $courseSubject->course;
+        $isCourseCompleted = $user->checkCourseCompletion($course);
+        return view('student.exams.result', compact('user', 'courseSubject', 'result', 'isCourseCompleted', 'course'));
     }
 
     public function downloadCertificate($course_id)
@@ -508,16 +496,8 @@ class DashboardController extends Controller
         $user = Auth::user();
         $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
 
-        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->get();
-        $passedCount = ExamResult::where('user_id', $user->id)
-            ->whereIn('course_subject_id', $subjects->pluck('id'))
-            ->where('status', 'pass')
-            ->pluck('course_subject_id')
-            ->unique()
-            ->count();
-
-        if ($passedCount < $subjects->count()) {
-            return back()->with('error', 'Complete all subject exams first.');
+        if (!$user->checkCourseCompletion($course)) {
+            return back()->with('error', 'Complete all lessons and subject exams first.');
         }
 
         // Base64 Photo
@@ -541,16 +521,11 @@ class DashboardController extends Controller
         $user = Auth::user();
         $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
 
-        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->with('subject')->get();
-        $passedSubjectIds = ExamResult::where('user_id', $user->id)
-            ->whereIn('course_subject_id', $subjects->pluck('id'))
-            ->where('status', 'pass')
-            ->pluck('course_subject_id')
-            ->unique();
-
-        if ($passedSubjectIds->count() < $subjects->count()) {
-            return back()->with('error', 'Complete all subject exams first.');
+        if (!$user->checkCourseCompletion($course)) {
+            return back()->with('error', 'Complete all lessons and subject exams first.');
         }
+
+        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->with('subject')->get();
 
         $results = ExamResult::where('user_id', $user->id)
             ->whereIn('course_subject_id', $subjects->pluck('id'))
@@ -578,16 +553,8 @@ class DashboardController extends Controller
         $user = Auth::user();
         $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
 
-        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->get();
-        $passedCount = ExamResult::where('user_id', $user->id)
-            ->whereIn('course_subject_id', $subjects->pluck('id'))
-            ->where('status', 'pass')
-            ->pluck('course_subject_id')
-            ->unique()
-            ->count();
-
-        if ($passedCount < $subjects->count()) {
-            return back()->with('error', 'Complete all subject exams first.');
+        if (!$user->checkCourseCompletion($course)) {
+            return back()->with('error', 'Complete all lessons and subject exams first.');
         }
 
         $userPhotoBase64 = null;
@@ -608,16 +575,11 @@ class DashboardController extends Controller
         $user = Auth::user();
         $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
 
-        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->with('subject')->get();
-        $passedSubjectIds = ExamResult::where('user_id', $user->id)
-            ->whereIn('course_subject_id', $subjects->pluck('id'))
-            ->where('status', 'pass')
-            ->pluck('course_subject_id')
-            ->unique();
-
-        if ($passedSubjectIds->count() < $subjects->count()) {
-            return back()->with('error', 'Complete all subject exams first.');
+        if (!$user->checkCourseCompletion($course)) {
+            return back()->with('error', 'Complete all lessons and subject exams first.');
         }
+
+        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->with('subject')->get();
 
         $results = ExamResult::where('user_id', $user->id)
             ->whereIn('course_subject_id', $subjects->pluck('id'))
@@ -635,6 +597,40 @@ class DashboardController extends Controller
         $enrollDate = optional($course->pivot->created_at)->format('d/m/Y') ?? 'N/A';
 
         return view('student.exams.marksheet_print', compact('user', 'course', 'subjects', 'results', 'enrollDate', 'userPhotoBase64'));
+    }
+
+    public function certificates()
+    {
+        $user = Auth::user();
+        $completedCourses = collect();
+
+        foreach ($user->courses()->wherePivot('status', 'approved')->get() as $course) {
+            if ($user->checkCourseCompletion($course)) {
+                // Get Video Progress
+                $paidVideoCount = \App\Models\PaidVideo::where('course_id', $course->id)->count();
+                $topicVideoCount = \App\Models\Topic::whereHas('unit.subject', function ($q) use ($course) {
+                    $q->where('course_id', $course->id);
+                })->whereNotNull('video_id')->count();
+                $totalVideos = $paidVideoCount + $topicVideoCount;
+                $completedVideos = \App\Models\VideoCompletion::where('user_id', $user->id)
+                    ->where('course_id', $course->id)
+                    ->count();
+                $course->progress_percent = ($totalVideos > 0) ? round(($completedVideos / $totalVideos) * 100) : 100;
+
+                // Get Exam Date (Last passed exam)
+                $examSubjects = \App\Models\CourseSubject::where('course_id', $course->id)->whereHas('mcqs')->get();
+                $lastExam = ExamResult::where('user_id', $user->id)
+                    ->whereIn('course_subject_id', $examSubjects->pluck('id'))
+                    ->where('status', 'pass')
+                    ->latest()
+                    ->first();
+                $course->exam_date = $lastExam ? $lastExam->created_at->format('d M, Y') : 'N/A';
+
+                $completedCourses->push($course);
+            }
+        }
+
+        return view('student.certificates.index', compact('user', 'completedCourses'));
     }
 
     /**
@@ -683,6 +679,8 @@ class DashboardController extends Controller
 
         return response()->download($filePath, "Receipt-{$enrollment->receipt_no}.pdf");
     }
+
+
 
     private function getSequentialVideos($course_id)
     {
