@@ -121,9 +121,10 @@
             </a>
             <nav class="hidden lg:flex items-center space-x-10">
                 <a href="{{ route('home') }}" class="nav-link">Home</a>
-                <a href="{{ route('courses') }}" class="nav-link">Courses</a>
                 <a href="{{ route('about') }}" class="nav-link">About</a>
+                <a href="{{ route('courses') }}" class="nav-link">Courses</a>
                 <a href="{{ route('contact') }}" class="nav-link">Contact</a>
+                <a href="{{ route('certificate.verify') }}" class="nav-link">Verify Certificate</a>
             </nav>
 
             <div class="flex items-center space-x-6">
@@ -156,7 +157,6 @@
     <footer class="bg-white text-slate-600 border-t border-slate-100">
         <div class="container mx-auto px-6 pt-20 pb-10">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
-
                 <div class="lg:col-span-4">
                     <div class="flex items-center mb-6">
                         <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}"
@@ -180,7 +180,6 @@
                         </a>
                     </div>
                 </div>
-
                 <div class="lg:col-span-2">
                     <h4 class="font-bold text-slate-900 mb-7 relative inline-block">
                         Explore
@@ -188,7 +187,8 @@
                     </h4>
                     <ul class="space-y-4">
                         <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">About Us</a></li>
-                        <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">All Courses</a></li>
+                        <li><a href="{{ route('courses') }}" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">All Courses</a></li>
+                        <li><a href="{{ route('certificate.verify') }}" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Verify Certificate</a></li>
                         <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Instructors</a></li>
                         <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Latest News</a></li>
                     </ul>

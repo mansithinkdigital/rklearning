@@ -23,6 +23,7 @@ use \App\Http\Controllers\Admin\StudentController;
 use  \App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\CourseContentController;
 use App\Http\Controllers\Client\CheckoutController;
+use App\Http\Controllers\Client\CertificateVerificationController;
 
 
 
@@ -31,6 +32,8 @@ Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/courses', [HomeController::class, 'courses'])->name('courses');
 Route::get('/courses/{course}', [HomeController::class, 'courseDetail'])->name('courses.show');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('/verify-certificate', [CertificateVerificationController::class, 'index'])->name('certificate.verify');
+Route::post('/verify-certificate', [CertificateVerificationController::class, 'verify'])->name('certificate.verify.submit');
 
 
 Route::get('/login', [StudentAuthController::class, 'loginForm'])->name('login');

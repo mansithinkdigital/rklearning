@@ -491,15 +491,24 @@ class DashboardController extends Controller
         return view('student.exams.result', compact('user', 'courseSubject', 'result', 'isCourseCompleted', 'course'));
     }
 
+    private function ensureCertificateNo($user, $course)
+    {
+        $enrollment = $user->courses()->where('courses.id', $course->id)->first();
+        if ($enrollment && !$enrollment->pivot->certificate_no) {
+            $certNo = date('Ym') . '-' . rand(1000, 9999);
+            $user->courses()->updateExistingPivot($course->id, ['certificate_no' => $certNo]);
+            return $certNo;
+        }
+        return $enrollment->pivot->certificate_no;
+    }
+
     public function downloadCertificate($course_id)
     {
         $user = Auth::user();
         $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
-
         if (!$user->checkCourseCompletion($course)) {
             return back()->with('error', 'Complete all lessons and subject exams first.');
         }
-
         // Base64 Photo
         $userPhotoBase64 = null;
         if ($user->image && file_exists(public_path($user->image))) {
@@ -510,8 +519,9 @@ class DashboardController extends Controller
         }
 
         $enrollDate = optional($course->pivot->created_at)->format('d/m/Y') ?? 'N/A';
+        $certificateNo = $this->ensureCertificateNo($user, $course);
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate'));
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate', 'certificateNo'));
         $pdf->setPaper('a4', 'landscape');
         return $pdf->download("Certificate_{$course->name}.pdf");
     }
@@ -566,8 +576,9 @@ class DashboardController extends Controller
         }
 
         $enrollDate = optional($course->pivot->created_at)->format('d/m/Y') ?? 'N/A';
+        $certificateNo = $this->ensureCertificateNo($user, $course);
 
-        return view('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate'));
+        return view('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate', 'certificateNo'));
     }
 
     public function previewMarksheet($course_id)

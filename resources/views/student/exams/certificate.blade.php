@@ -1,50 +1,52 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Certificate - {{ $user->name }}</title>
     @php
-        $bgPath = public_path('assets/certificate/Certificate-template.jpeg');
-        if (!file_exists($bgPath)) {
-            $bgPath = public_path('assets/certificate/Certificate Blank.jpeg');
-        }
-        if (!file_exists($bgPath)) {
-            $bgPath = public_path('assets/certificate/bg-sertificate.jpeg');
-        }
-        $bgBase64 = '';
-        if (file_exists($bgPath)) {
-            $bgData = file_get_contents($bgPath);
-            $bgBase64 = 'data:image/jpeg;base64,' . base64_encode($bgData);
-        }
+    $bgPath = public_path('assets/certificate/Certificate-template.jpeg');
+    if (!file_exists($bgPath)) {
+    $bgPath = public_path('assets/certificate/Certificate Blank.jpeg');
+    }
+    if (!file_exists($bgPath)) {
+    $bgPath = public_path('assets/certificate/bg-sertificate.jpeg');
+    }
+    $bgBase64 = '';
+    if (file_exists($bgPath)) {
+    $bgData = file_get_contents($bgPath);
+    $bgBase64 = 'data:image/jpeg;base64,' . base64_encode($bgData);
+    }
 
-        $logoPath = public_path('assets/certificate/Rk Logo.jpg');
-        $logoBase64 = '';
-        if (file_exists($logoPath)) {
-            $logoData = file_get_contents($logoPath);
-            $logoBase64 = 'data:image/jpeg;base64,' . base64_encode($logoData);
-        }
+    $logoPath = public_path('assets/certificate/Rk Logo.jpg');
+    $logoBase64 = '';
+    if (file_exists($logoPath)) {
+    $logoData = file_get_contents($logoPath);
+    $logoBase64 = 'data:image/jpeg;base64,' . base64_encode($logoData);
+    }
 
-        // Skills List
-        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->with('subject')->get();
-        $skillsList = $subjects->pluck('subject.name')->implode(', ');
-        if (empty($skillsList)) {
-            $skillsList = 'Accounting Fundamentals, Tally Prime Software, GST, Inventory Management, Payroll Management, Financial Reporting';
-        }
+    // Skills List
+    $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->with('subject')->get();
+    $skillsList = $subjects->pluck('subject.name')->implode(', ');
+    if (empty($skillsList)) {
+    $skillsList = 'Accounting Fundamentals, Tally Prime Software, GST, Inventory Management, Payroll Management, Financial Reporting';
+    }
 
-        // Student Photo Fallback
-        if (!isset($userPhotoBase64) || !$userPhotoBase64) {
-            $testImagePath = 'C:\\Users\\ThinkDigital\\.gemini\\antigravity\\brain\\a538b63a-d516-4f0d-909c-b746bcd8eda9\\media__1777377327970.png';
-            if (file_exists($testImagePath)) {
-                $testImageData = file_get_contents($testImagePath);
-                $userPhotoBase64 = 'data:image/png;base64,' . base64_encode($testImageData);
-            }
-        }
+    // Student Photo Fallback
+    if (!isset($userPhotoBase64) || !$userPhotoBase64) {
+    $testImagePath = 'C:\\Users\\ThinkDigital\\.gemini\\antigravity\\brain\\a538b63a-d516-4f0d-909c-b746bcd8eda9\\media__1777377327970.png';
+    if (file_exists($testImagePath)) {
+    $testImageData = file_get_contents($testImagePath);
+    $userPhotoBase64 = 'data:image/png;base64,' . base64_encode($testImageData);
+    }
+    }
     @endphp
     <style>
         @page {
             margin: 0;
             size: A4 landscape;
         }
+
         body {
             font-family: 'Times New Roman', Times, serif;
             margin: 0;
@@ -52,6 +54,7 @@
             background-color: #fff;
             color: #0f2441;
         }
+
         .wrapper {
             width: 297mm;
             height: 210mm;
@@ -134,6 +137,7 @@
             height: 100%;
             object-fit: cover;
         }
+
         .rklogo {
             position: absolute;
             top: 25mm;
@@ -141,12 +145,14 @@
             width: 30mm;
             height: 30mm;
         }
+
         img.rklogo {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
-        .website{
+
+        .website {
             position: absolute;
             top: 175mm;
             left: 50%;
@@ -157,6 +163,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="wrapper">
         <div class="student-name">
@@ -176,24 +183,25 @@
         </div>
 
         <div class="cert-id">
-            RKIC/{{ strtoupper(substr($course->name, 0, 3)) }}/{{ date('Y') }}/{{ str_pad($user->id, 4, '0', STR_PAD_LEFT) }}
+            {{ $certificateNo ?? ($course->pivot->certificate_no ?? (date('Ym') . '-' . rand(1000, 9999))) }}
         </div>
 
         @if($userPhotoBase64)
-            <div class="photo-box">
-                <img src="{{ $userPhotoBase64 }}" class="photo-img">
-            </div>
+        <div class="photo-box">
+            <img src="{{ $userPhotoBase64 }}" class="photo-img">
+        </div>
         @endif
 
         <div class="rklogo">
             <img src="{{ $logoBase64 }}" class="rklogo">
         </div>
 
-       <div class="website">
-        <a href="https://www.rklearning.in" target="_blank">www.rklearning.in</a>
-       </div>
+        <div class="website">
+            <a href="https://www.rklearning.in" target="_blank">www.rklearning.in</a>
+        </div>
 
 
     </div>
 </body>
+
 </html>

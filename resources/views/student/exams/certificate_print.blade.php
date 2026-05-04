@@ -216,7 +216,7 @@
         </div>
 
         <div class="cert-id">
-            RKIC/{{ strtoupper(substr($course->name, 0, 3)) }}/{{ date('Y') }}/{{ str_pad($user->id, 4, '0', STR_PAD_LEFT) }}
+            {{ $certificateNo ?? (date('Ym') . '-' . rand(1000, 9999)) }}
         </div>
 
         <div class="branch">
