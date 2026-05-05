@@ -101,6 +101,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // ------------------STUDENT----------------------------------//
         Route::resource('student', StudentController::class);
         Route::get('/student-export', [StudentController::class, 'export'])->name('student.export');
+        Route::get('/student/{user}/course/{course}/certificate', [StudentController::class, 'previewCertificate'])->name('student.certificate.preview');
+        Route::get('/student/{user}/course/{course}/marksheet', [StudentController::class, 'previewMarksheet'])->name('student.marksheet.preview');
+        Route::get('/student/{user}/results', [\App\Http\Controllers\Admin\ExamResultController::class, 'studentResults'])->name('student.results');
         // ------------------VACANCY----------------------------------//
         Route::resource('vacancy', VacancyController::class);
         // ------------------TESTIMONIAL------------------------------//

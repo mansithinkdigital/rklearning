@@ -181,6 +181,11 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
+                    <!-- Visit Website Link -->
+                    <a href="{{ route('home') }}" class="hidden md:flex items-center gap-2 px-4 py-2 text-sm font-bold text-slate-600 hover:text-blue-600 transition-all border border-slate-200 rounded-xl hover:bg-slate-50">
+                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                        <span>Visit Website</span>
+                    </a>
                     <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition">
                         <i data-lucide="bell" class="w-5 h-5"></i>
                     </button>

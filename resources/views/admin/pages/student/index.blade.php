@@ -90,7 +90,7 @@
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">ID</th>
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Basic Details</th>
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Contact Info</th>
-                    <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Purchased Courses</th>
+                    <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Academic Status</th>
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Branch</th>
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-right">Actions</th>
                 </tr>
@@ -129,18 +129,27 @@
                         </div>
                     </td>
                     <td class="px-10 py-8">
-                        <div class="flex flex-col gap-2 max-w-[220px]">
+                        <div class="flex flex-col gap-3 min-w-[240px]">
                             @forelse($student->courses as $course)
-                            <div class="flex flex-col">
-                                <span class="px-2.5 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg text-[9px] font-black uppercase tracking-widest border border-blue-100 dark:border-blue-800 w-fit">
-                                    {{ $course->name }}
-                                </span>
-                                <span class="text-[9px] font-bold text-slate-400 mt-1 pl-1">
-                                    Purchased: {{ \Carbon\Carbon::parse($course->pivot->created_at)->format('d M, Y') }}
-                                </span>
+                            <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-[9px] font-black text-slate-900 dark:text-white uppercase tracking-tight truncate max-w-[150px]">{{ $course->name }}</span>
+                                    <span class="text-[8px] font-bold text-slate-400">{{ \Carbon\Carbon::parse($course->pivot->created_at)->format('d/m/y') }}</span>
+                                </div>
+                                <div class="flex flex-wrap gap-1.5">
+                                    <a href="{{ route('admin.student.results', $student->id) }}" class="flex items-center gap-1 px-2 py-1 bg-white dark:bg-slate-900 text-[8px] font-black text-blue-600 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-blue-50 transition-all" title="View Marks">
+                                        <i data-lucide="bar-chart-2" class="w-3 h-3"></i> MARKS
+                                    </a>
+                                    <a href="{{ route('admin.student.certificate.preview', [$student->id, $course->id]) }}" target="_blank" class="flex items-center gap-1 px-2 py-1 bg-white dark:bg-slate-900 text-[8px] font-black text-emerald-600 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-emerald-50 transition-all" title="Preview Certificate">
+                                        <i data-lucide="award" class="w-3 h-3"></i> CERT
+                                    </a>
+                                    <a href="{{ route('admin.student.marksheet.preview', [$student->id, $course->id]) }}" target="_blank" class="flex items-center gap-1 px-2 py-1 bg-white dark:bg-slate-900 text-[8px] font-black text-amber-600 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-amber-50 transition-all" title="Preview Marksheet">
+                                        <i data-lucide="file-text" class="w-3 h-3"></i> MS
+                                    </a>
+                                </div>
                             </div>
                             @empty
-                            <span class="text-[10px] font-bold text-slate-400 italic">No courses</span>
+                            <span class="text-[10px] font-bold text-slate-400 italic">No courses enrolled</span>
                             @endforelse
                         </div>
                     </td>

@@ -12,13 +12,36 @@ class ExamResultController extends Controller
     /**
      * Display a listing of all exam results.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $results = ExamResult::with(['user', 'courseSubject.course', 'courseSubject.subject'])
-            ->latest()
-            ->paginate(15);
+        $query = ExamResult::with(['user', 'courseSubject.course', 'courseSubject.subject']);
 
-        return view('admin.pages.exam_results.index', compact('results'));
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('user', function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('course_id')) {
+            $query->whereHas('courseSubject', function($q) use ($request) {
+                $q->where('course_id', $request->course_id);
+            });
+        }
+
+        if ($request->filled('from_date')) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+
+        if ($request->filled('to_date')) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        $results = $query->latest()->paginate(15)->withQueryString();
+        $allCourses = \App\Models\Course::all();
+
+        return view('admin.pages.exam_results.index', compact('results', 'allCourses'));
     }
 
     /**
@@ -30,5 +53,16 @@ class ExamResultController extends Controller
             ->findOrFail($id);
 
         return view('admin.pages.exam_results.show', compact('result'));
+    }
+
+    public function studentResults($user_id)
+    {
+        $user = User::findOrFail($user_id);
+        $results = ExamResult::where('user_id', $user_id)
+            ->with(['courseSubject.course', 'courseSubject.subject'])
+            ->latest()
+            ->get();
+
+        return view('admin.pages.exam_results.student_results', compact('user', 'results'));
     }
 }

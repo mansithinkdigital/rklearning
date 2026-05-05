@@ -491,7 +491,7 @@ class DashboardController extends Controller
         return view('student.exams.result', compact('user', 'courseSubject', 'result', 'isCourseCompleted', 'course'));
     }
 
-    private function ensureCertificateNo($user, $course)
+    public function ensureCertificateNo($user, $course)
     {
         $enrollment = $user->courses()->where('courses.id', $course->id)->first();
         if ($enrollment && !$enrollment->pivot->certificate_no) {
