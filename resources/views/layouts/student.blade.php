@@ -110,7 +110,6 @@
             <div class="mb-10 flex items-center px-2">
                 <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}" alt="Logo" class="h-10 mr-3">
             </div>
-
             <nav>
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 px-2">Menu</p>
                 <a href="{{ route('student.dashboard') }}" class="sidebar-link {{ request()->routeIs('student.dashboard') ? 'active' : '' }}">
@@ -181,6 +180,11 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
+                    <!-- Visit Website Link -->
+                    <a href="{{ route('home') }}" class="hidden md:flex items-center gap-2 px-4 py-2 text-sm font-bold text-slate-600 hover:text-blue-600 transition-all border border-slate-200 rounded-xl hover:bg-slate-50">
+                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                        <span>Visit Website</span>
+                    </a>
                     <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition">
                         <i data-lucide="bell" class="w-5 h-5"></i>
                     </button>

@@ -18,7 +18,7 @@
 
         <!-- Navigation Menu -->
         <nav class="flex-grow space-y-7">
-            <!-- Console -->
+            <!-- Main -->
             <div>
                 <p class="text-[10px] font-extrabold text-[#94a3b8] dark:text-[#475569] uppercase tracking-widest mb-3 px-2 group-[.sidebar-collapsed]:hidden">MAIN</p>
                 <div class="space-y-1">
@@ -32,12 +32,38 @@
                         <i data-lucide="map-pin" class="w-[18px] h-[18px]"></i>
                         <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Branch</span>
                     </a>
+                </div>
+            </div>
+            <!-- User Management -->
+            <div>
+                <p class="text-[10px] font-extrabold text-[#94a3b8] dark:text-[#475569] uppercase tracking-widest mb-3 px-2 group-[.sidebar-collapsed]:hidden">USER MANAGEMENT</p>
+                <div class="space-y-1">
                     <a href="{{ route('admin.student.index') }}"
                         class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
                         {{ request()->is('admin/student*') ? 'bg-[#0062ff] text-white shadow-lg shadow-blue-500/20' : 'text-[#64748b] dark:text-[#94a3b8] hover:bg-slate-50 dark:hover:bg-slate-800' }}">
                         <i data-lucide="users" class="w-[18px] h-[18px]"></i>
                         <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Students Register</span>
                     </a>
+                </div>
+            </div>
+
+            <!-- Academic -->
+            <div>
+                <p class="text-[10px] font-extrabold text-[#94a3b8] dark:text-[#475569] uppercase tracking-widest mb-3 px-2 group-[.sidebar-collapsed]:hidden">ACADEMIC</p>
+                <div class="space-y-1">
+                    <a href="{{ route('admin.exam-results.index') }}"
+                        class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
+                        {{ request()->is('admin/exam-results*') ? 'bg-[#0062ff] text-white shadow-lg shadow-blue-500/20' : 'text-[#64748b] dark:text-[#94a3b8] hover:bg-slate-50 dark:hover:bg-slate-800' }}">
+                        <i data-lucide="award" class="w-[18px] h-[18px]"></i>
+                        <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Exam Results</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Financials -->
+            <div>
+                <p class="text-[10px] font-extrabold text-[#94a3b8] dark:text-[#475569] uppercase tracking-widest mb-3 px-2 group-[.sidebar-collapsed]:hidden">FINANCIALS</p>
+                <div class="space-y-1">
                     <a href="{{ route('admin.payments.online') }}"
                         class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
                         {{ request()->is('admin/payments/online*') ? 'bg-[#0062ff] text-white shadow-lg shadow-blue-500/20' : 'text-[#64748b] dark:text-[#94a3b8] hover:bg-slate-50 dark:hover:bg-slate-800' }}">
@@ -49,12 +75,6 @@
                         {{ request()->is('admin/payments/offline*') ? 'bg-[#0062ff] text-white shadow-lg shadow-blue-500/20' : 'text-[#64748b] dark:text-[#94a3b8] hover:bg-slate-50 dark:hover:bg-slate-800' }}">
                         <i data-lucide="wallet" class="w-[18px] h-[18px]"></i>
                         <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Offline Payments</span>
-                    </a>
-                    <a href="{{ route('admin.exam-results.index') }}"
-                        class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
-                        {{ request()->is('admin/exam-results*') ? 'bg-[#0062ff] text-white shadow-lg shadow-blue-500/20' : 'text-[#64748b] dark:text-[#94a3b8] hover:bg-slate-50 dark:hover:bg-slate-800' }}">
-                        <i data-lucide="award" class="w-[18px] h-[18px]"></i>
-                        <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Exam Results</span>
                     </a>
                 </div>
             </div>

@@ -26,7 +26,7 @@
     .checkout-card {
         background: #ffffff;
         border: 1px solid var(--slate-100);
-        box-shadow: 0 20px 50px rgba(0,0,0,0.04);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
         border-radius: 32px;
     }
 
@@ -81,7 +81,10 @@
     }
 
     @keyframes revealIn {
-        to { opacity: 1; transform: translateY(0); }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .badge {
@@ -98,13 +101,45 @@
         height: 100px;
         border-radius: 20px;
         object-fit: cover;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .payment-card {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid #f1f5f9;
+        background: #f8fafc;
+    }
+
+    .peer:checked+.payment-card {
+        border-color: #2563eb;
+        background: #ffffff;
+        box-shadow: 0 15px 30px rgba(37, 99, 235, 0.08);
+        transform: translateY(-2px);
+    }
+
+    .payment-card .check-icon {
+        opacity: 0;
+        transform: scale(0.5);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .peer:checked+.payment-card .check-icon {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .payment-card .icon-box {
+        transition: all 0.4s ease;
+    }
+
+    .peer:checked+.payment-card .icon-box {
+        transform: scale(1.1);
     }
 </style>
 
 <div class="premium-page min-h-screen py-20 lg:py-32">
     <div class="container mx-auto px-6 max-w-6xl">
-        
+
         <!-- Header -->
         <div class="flex items-center justify-between mb-16 animate-reveal">
             <div>
@@ -129,7 +164,7 @@
         <div class="grid lg:grid-cols-12 gap-12">
             <!-- Order Details -->
             <div class="lg:col-span-7 space-y-8">
-               
+
                 <!-- Product Card -->
                 <div class="checkout-card p-8 animate-reveal" style="animation-delay: 0.1s">
                     <div class="flex flex-col md:flex-row gap-10">
@@ -191,7 +226,7 @@
             <div class="lg:col-span-5">
                 <div class="checkout-card p-10 md:p-12 sticky top-10 animate-reveal" style="animation-delay: 0.3s">
                     <h3 class="text-lg font-black text-slate-900 mb-8 tracking-tight">Investment Summary</h3>
-                    
+
                     <div class="space-y-2 mb-10">
                         <div class="summary-item">
                             <span class="text-sm font-bold text-slate-500">Academic Tuition</span>
@@ -218,48 +253,50 @@
                     </div>
 
                     @if(!Auth::check())
-                        <script>window.location.href = "{{ route('login') }}";</script>
+                    <script>
+                        window.location.href = "{{ route('login') }}";
+                    </script>
                     @endif
 
                     <form action="{{ route('student.courses.purchase', $course->id) }}" method="POST">
                         @csrf
-                        
+
                         <div class="mb-8 p-6 rounded-2xl border border-slate-100 bg-slate-50/50">
                             <h4 class="text-sm font-black text-slate-900 mb-4 uppercase tracking-wider">Select Payment Method</h4>
-                          
-                            <div class="space-y-3">
-                                <label class="payment-option cursor-pointer group block">
+
+                            <div class="space-y-4">
+                                <label class="cursor-pointer group block relative">
                                     <input type="radio" name="payment_method" value="online" class="opacity-0 absolute peer" required checked>
-                                    <div class="flex items-center justify-between p-4 rounded-xl border-2 border-white bg-white shadow-sm peer-checked:border-blue-600 peer-checked:bg-blue-50 transition-all">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
-                                                <i class="fa fa-credit-card"></i>
+                                    <div class="payment-card flex items-center justify-between p-5 rounded-2xl">
+                                        <div class="flex items-center gap-5">
+                                            <div class="icon-box w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                                                <i class="fa fa-credit-card text-lg"></i>
                                             </div>
                                             <div>
-                                                <p class="text-sm font-bold text-slate-900">Online Payment</p>
-                                                <p class="text-[10px] text-slate-500 font-medium">Razorpay, UPI, Cards, Netbanking</p>
+                                                <p class="text-sm font-black text-slate-900 mb-0.5">Online Enrollment</p>
+                                                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">UPI • Cards • Netbanking</p>
                                             </div>
                                         </div>
-                                        <div class="w-5 h-5 rounded-full border-2 border-slate-200 flex items-center justify-center peer-checked:border-blue-600">
-                                            <div class="w-2.5 h-2.5 rounded-full bg-blue-600 scale-0 peer-checked:scale-100 transition-transform"></div>
+                                        <div class="check-icon w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center">
+                                            <i class="fa fa-check text-[10px]"></i>
                                         </div>
                                     </div>
                                 </label>
 
-                                <label class="payment-option cursor-pointer group block">
+                                <label class="cursor-pointer group block relative">
                                     <input type="radio" name="payment_method" value="offline" class="opacity-0 absolute peer">
-                                    <div class="flex items-center justify-between p-4 rounded-xl border-2 border-white bg-white shadow-sm peer-checked:border-blue-600 peer-checked:bg-blue-50 transition-all">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center">
-                                                <i class="fa fa-hand-holding-dollar"></i>
+                                    <div class="payment-card flex items-center justify-between p-5 rounded-2xl">
+                                        <div class="flex items-center gap-5">
+                                            <div class="icon-box w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center">
+                                                <i class="fa fa-hand-holding-dollar text-lg"></i>
                                             </div>
                                             <div>
-                                                <p class="text-sm font-bold text-slate-900">Offline Request</p>
-                                                <p class="text-[10px] text-slate-500 font-medium">Pay at center or bank transfer</p>
+                                                <p class="text-sm font-black text-slate-900 mb-0.5">Offline Admission</p>
+                                                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Direct Bank • Center Pay</p>
                                             </div>
                                         </div>
-                                        <div class="w-5 h-5 rounded-full border-2 border-slate-200 flex items-center justify-center peer-checked:border-blue-600">
-                                            <div class="w-2.5 h-2.5 rounded-full bg-blue-600 scale-0 peer-checked:scale-100 transition-transform"></div>
+                                        <div class="check-icon w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center">
+                                            <i class="fa fa-check text-[10px]"></i>
                                         </div>
                                     </div>
                                 </label>
@@ -304,7 +341,7 @@
 
             if (paymentMethod === 'offline') {
                 e.preventDefault();
-                
+
                 Swal.fire({
                     title: 'Offline Request Received',
                     text: 'After admin accepts your request, your plan will get access. You can track the status in your dashboard.',
@@ -334,7 +371,7 @@
                                 Swal.showLoading();
                             }
                         });
-                        
+
                         // Submit the form
                         form.submit();
                     }

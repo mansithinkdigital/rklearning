@@ -51,7 +51,6 @@
                 </ul>
             </div>
             @endif
-
             <form action="{{ route('student.profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
                 @csrf
                 <input type="file" name="image" id="profileImageInput" accept="image/*" class="hidden">
@@ -66,15 +65,11 @@
                     </div>
                     <div>
                         <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block px-1">Phone Number</label>
-                        <input type="tel" name="phone" value="{{ auth()->user()->phone }}" class="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition shadow-sm font-medium" placeholder="Enter phone number">
+                        <input type="tel" name="phone" maxlength="10" value="{{ auth()->user()->phone }}" class="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition shadow-sm font-medium" placeholder="Enter phone number">
                     </div>
                     <div>
                         <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block px-1">Branch</label>
                         <input type="text" value="{{ auth()->user()->branch->branch_name ?? 'Not Assigned' }}" disabled class="w-full px-5 py-3 rounded-2xl border border-slate-100 bg-slate-50 text-slate-400 cursor-not-allowed font-medium">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block px-1">Father's Name</label>
-                        <input type="text" name="father_name" value="{{ auth()->user()->father_name }}" class="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition shadow-sm font-medium" placeholder="Enter Father's Name">
                     </div>
                     <div>
                         <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block px-1">Mother's Name</label>

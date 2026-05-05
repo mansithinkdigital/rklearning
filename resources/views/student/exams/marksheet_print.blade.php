@@ -262,9 +262,7 @@ $footerLogo3 = getBase64('student/asset/logo/rksign.png');
                                         <b>Email : rklearninghub2023@gmail.com</b>
                                     </div>
                                 </div>
-
                                 <div class="divider"></div>
-
                                 <!-- Title Row -->
                                 <table class="title-row">
                                     <tr>
@@ -278,7 +276,6 @@ $footerLogo3 = getBase64('student/asset/logo/rksign.png');
                                         <td style="width: 33%;"></td>
                                     </tr>
                                 </table>
-
                                 <!-- Student Info & Photo -->
                                 <table class="info-photo-table">
                                     <tr>
@@ -350,7 +347,6 @@ $footerLogo3 = getBase64('student/asset/logo/rksign.png');
                                             <td><b>{{ $obt }}</b></td>
                                         </tr>
                                         @endforeach
-
                                         <tr class="total-row">
                                             <td colspan="2">TOTAL</td>
                                             <td>{{ $totalMax }}</td>
@@ -359,7 +355,6 @@ $footerLogo3 = getBase64('student/asset/logo/rksign.png');
                                         </tr>
                                     </tbody>
                                 </table>
-
                                 <!-- Footer Info -->
                                 @php
                                 $pct = $totalMax ? round(($totalObt / $totalMax) * 100) : 0;
@@ -370,7 +365,6 @@ $footerLogo3 = getBase64('student/asset/logo/rksign.png');
                                 elseif($pct >= 50) $grade = 'B';
                                 elseif($pct >= 40) $grade = 'C';
                                 @endphp
-
                                 <table class="footer-info">
                                     <tr>
                                         <td style="width: 33%;">Date of issue : {{ date('d/m/Y') }}</td>

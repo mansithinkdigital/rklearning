@@ -210,4 +210,60 @@ class StudentController extends Controller
 
         return back()->with('success', 'Student deleted successfully.');
     }
+
+    public function previewCertificate($user_id, $course_id)
+    {
+        $user = User::findOrFail($user_id);
+        $course = Course::findOrFail($course_id);
+
+        $enrollment = $user->courses()->where('courses.id', $course_id)->first();
+        if (!$enrollment) {
+            return back()->with('error', 'Student not enrolled in this course.');
+        }
+
+        $userPhotoBase64 = null;
+        if ($user->image && file_exists(public_path($user->image))) {
+            $path = public_path($user->image);
+            $type = pathinfo($path, PATHINFO_EXTENSION);
+            $data = file_get_contents($path);
+            $userPhotoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        }
+
+        $enrollDate = optional($enrollment->pivot->created_at)->format('d/m/Y') ?? 'N/A';
+        
+        // Use the StudentDashboardController's logic for generating/ensuring cert no
+        $dashboardController = new \App\Http\Controllers\Student\DashboardController();
+        $certificateNo = $dashboardController->ensureCertificateNo($user, $course);
+
+        return view('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate', 'certificateNo'));
+    }
+
+    public function previewMarksheet($user_id, $course_id)
+    {
+        $user = User::findOrFail($user_id);
+        $course = Course::findOrFail($course_id);
+
+        $enrollment = $user->courses()->where('courses.id', $course_id)->first();
+        if (!$enrollment) {
+            return back()->with('error', 'Student not enrolled in this course.');
+        }
+
+        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->with('subject')->get();
+        $results = \App\Models\ExamResult::where('user_id', $user->id)
+            ->whereIn('course_subject_id', $subjects->pluck('id'))
+            ->get()
+            ->keyBy('course_subject_id');
+
+        $userPhotoBase64 = null;
+        if ($user->image && file_exists(public_path($user->image))) {
+            $path = public_path($user->image);
+            $type = pathinfo($path, PATHINFO_EXTENSION);
+            $data = file_get_contents($path);
+            $userPhotoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        }
+
+        $enrollDate = optional($enrollment->pivot->created_at)->format('d/m/Y') ?? 'N/A';
+
+        return view('student.exams.marksheet_print', compact('user', 'course', 'subjects', 'results', 'enrollDate', 'userPhotoBase64'));
+    }
 }

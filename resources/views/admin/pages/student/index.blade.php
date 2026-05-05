@@ -90,7 +90,7 @@
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">ID</th>
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Basic Details</th>
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Contact Info</th>
-                    <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Purchased Courses</th>
+                    <!-- <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Academic Status</th> -->
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Branch</th>
                     <th class="px-10 py-6 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-right">Actions</th>
                 </tr>
@@ -127,23 +127,7 @@
                                 {{ $student->address }}
                             </p> -->
                         </div>
-                    </td>
-                    <td class="px-10 py-8">
-                        <div class="flex flex-col gap-2 max-w-[220px]">
-                            @forelse($student->courses as $course)
-                            <div class="flex flex-col">
-                                <span class="px-2.5 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg text-[9px] font-black uppercase tracking-widest border border-blue-100 dark:border-blue-800 w-fit">
-                                    {{ $course->name }}
-                                </span>
-                                <span class="text-[9px] font-bold text-slate-400 mt-1 pl-1">
-                                    Purchased: {{ \Carbon\Carbon::parse($course->pivot->created_at)->format('d M, Y') }}
-                                </span>
-                            </div>
-                            @empty
-                            <span class="text-[10px] font-bold text-slate-400 italic">No courses</span>
-                            @endforelse
-                        </div>
-                    </td>
+                    </td>                    
                     <td class="px-10 py-8">
                         <div class="flex flex-col gap-1">
                             <p class="text-[12px] font-black text-slate-700 dark:text-slate-200">

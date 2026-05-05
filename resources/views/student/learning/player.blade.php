@@ -296,7 +296,7 @@
             <div class="flex-1 overflow-y-auto custom-scrollbar pt-4">
                 @foreach($course->subjects as $subject)
                 <div class="subject-container">
-                    <button onclick="toggleSubject({{ $subject->id }}, this)" class="w-full px-10 py-6 flex items-center justify-between hover:bg-slate-50 transition-all text-left group">
+                    <button onclick="toggleSubject({{ $subject->id }}, this)" class="w-full px-10 py-6 flex items-center justify-between hover:bg-slate-50 transition-all text-left group {{ $loop->first ? 'bg-blue-50/50' : '' }}">
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-slate-400 group-hover:scale-110 group-hover:bg-white group-hover:border-blue-200 group-hover:text-blue-600 transition-all shadow-sm">
                                 <i data-lucide="layers" class="w-6 h-6"></i>
@@ -306,10 +306,10 @@
                                 <p class="text-[14px] font-black tracking-tight text-slate-700 leading-none uppercase">{{ $subject->name }}</p>
                             </div>
                         </div>
-                        <i data-lucide="chevron-right" class="w-5 h-5 text-slate-300 transition-transform duration-300"></i>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-slate-300 transition-transform duration-300" style="{{ $loop->first ? 'transform: rotate(90deg)' : '' }}"></i>
                     </button>
 
-                    <div id="subject-{{ $subject->id }}" class="hidden overflow-hidden transition-all duration-500 bg-white">
+                    <div id="subject-{{ $subject->id }}" class="{{ $loop->first ? '' : 'hidden' }} overflow-hidden transition-all duration-500 bg-white">
                         @foreach($subject->units as $unit)
                         <div class="unit-card p-2">
                             <div class="px-6 py-4 flex items-center gap-3">
@@ -730,8 +730,19 @@
             }
         }
 
-        // Initialize Progress on load
-        document.addEventListener('DOMContentLoaded', updateProgressUI);
+        // Initialize Progress and Auto-play on load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateProgressUI();
+            
+            // Auto-play first video if available and unlocked
+            const firstVideoLink = document.querySelector('.material-link:not(.cursor-not-allowed)[data-video]');
+            if (firstVideoLink) {
+                // Small delay to ensure UI and Lucide icons are ready
+                setTimeout(() => {
+                    firstVideoLink.click();
+                }, 500);
+            }
+        });
     </script>
     <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
