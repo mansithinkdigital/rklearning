@@ -110,7 +110,6 @@
             <div class="mb-10 flex items-center px-2">
                 <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}" alt="Logo" class="h-10 mr-3">
             </div>
-
             <nav>
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 px-2">Menu</p>
                 <a href="{{ route('student.dashboard') }}" class="sidebar-link {{ request()->routeIs('student.dashboard') ? 'active' : '' }}">
