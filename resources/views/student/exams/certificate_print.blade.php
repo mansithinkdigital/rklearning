@@ -118,7 +118,7 @@
         .photo-box {
             position: absolute;
             top: 78mm;
-            right: 19mm;
+            right: 22mm;
             width: 35mm;
             height: 42mm;
             border: 1px solid #0f2441;
@@ -126,8 +126,7 @@
         }
 
         .photo-img {
-
-            width: 100%;
+            width: 105%;
             height: 100%;
             object-fit: cover;
         }

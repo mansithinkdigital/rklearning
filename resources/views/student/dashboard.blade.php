@@ -13,7 +13,6 @@
         <h3 class="text-2xl font-bold">{{ str_pad($activeCoursesCount, 2, '0', STR_PAD_LEFT) }}</h3>
         <p class="text-blue-100 text-sm">Active Courses</p>
     </div>
-
     <div class="card flex items-center space-x-5">
         <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
             <i data-lucide="award" class="w-7 h-7"></i>
@@ -23,7 +22,6 @@
             <p class="text-sm text-slate-500 font-medium">Certificates</p>
         </div>
     </div>
-
     <div class="card flex items-center space-x-5">
         <div class="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600">
             <i data-lucide="credit-card" class="w-7 h-7"></i>
@@ -33,7 +31,6 @@
             <p class="text-sm text-slate-500 font-medium">Pending Fees</p>
         </div>
     </div>
-
     <div class="card flex items-center space-x-5">
         <div class="w-14 h-14 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-600">
             <i data-lucide="check-circle" class="w-7 h-7"></i>
@@ -50,42 +47,36 @@
         <h3 class="text-xl font-bold text-slate-800">Your Certificates</h3>
         <p class="text-sm text-slate-500 font-medium">Official Credentials Earned</p>
     </div>
-
     <!-- FULL WIDTH LIST -->
     <div class="flex flex-col gap-6">
         @foreach($completedCourses as $course)
         <div class="w-full bg-gradient-to-br from-emerald-600 to-emerald-800 text-white border-none p-6 rounded-[2rem] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
-
             <div>
                 <span class="px-3 py-1 bg-emerald-500/30 rounded-full text-[9px] font-black uppercase tracking-[0.2em] text-emerald-100 border border-emerald-400/20">
                     Official Credential
                 </span>
                 <h4 class="text-lg font-bold mt-3 text-white">{{ $course->name }}</h4>
             </div>
-
             <div class="flex flex-col sm:flex-row gap-2">
                 <a href="{{ route('student.certificate.preview', $course->id) }}" target="_blank"
                     class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-emerald-700/50 text-white rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-emerald-700 transition-all border border-emerald-500/30">
                     <i data-lucide="eye" class="w-4 h-4"></i> Certificate
                 </a>
-
                 <a href="{{ route('student.marksheet.preview', $course->id) }}" target="_blank"
                     class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-emerald-700/50 text-white rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-emerald-700 transition-all border border-emerald-500/30">
                     <i data-lucide="file-text" class="w-4 h-4"></i> Marksheet
                 </a>
-
                 <a href="{{ route('student.certificate.download', $course->id) }}"
                     class="inline-flex items-center justify-center gap-2 px-4 py-3 bg-white text-emerald-800 rounded-xl font-bold text-xs uppercase tracking-wider hover:scale-105 transition-all shadow-md">
                     <i data-lucide="award" class="w-4 h-4"></i> Download
                 </a>
             </div>
-
         </div>
         @endforeach
     </div>
 </section>
 @endif
-
+<!-- ============================================================================== -->
 <section class="mb-10">
     <div class="flex items-center justify-between mb-6">
         <h3 class="text-xl font-bold text-slate-800">Free Learning Resources</h3>
@@ -181,7 +172,7 @@
             </div>
         </section>
 
-        <!-- Exam Portal Summary -->
+        <!--===== Exam Portal Summary ====-->
         <section>
             <h3 class="text-xl font-bold text-slate-800 mb-6 px-2">Exam Portal</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
