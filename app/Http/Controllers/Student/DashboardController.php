@@ -345,7 +345,9 @@ class DashboardController extends Controller
             ->first();
 
         if ($previousResult) {
-            return redirect()->route('student.exams')->with('error', 'You have already completed this examination.');
+            if ($previousResult->reattempt_status !== 'allowed') {
+                return redirect()->route('student.exams')->with('error', 'You have already completed this examination.');
+            }
         }
 
         if ($courseSubject->mcqs->isEmpty()) {
@@ -447,15 +449,26 @@ class DashboardController extends Controller
             $status = ($score >= 40) ? 'pass' : 'fail';
         }
 
-        $result = ExamResult::create([
+        $previousResult = ExamResult::where('user_id', $user->id)
+            ->where('course_subject_id', $course_subject_id)
+            ->first();
+
+        $result = ExamResult::updateOrCreate([
             'user_id'           => $user->id,
             'course_subject_id' => $course_subject_id,
+        ], [
             'total_questions'   => $totalQuestions,
             'correct_answers'   => $correctCount,
             'score'             => $score,
             'status'            => $status,
             'student_answers'   => $answers,
+            'reattempt_status'  => null
         ]);
+
+        if ($status === 'pass') {
+            $result->reattempt_status = null;
+            $result->save();
+        }
 
         $message = $status === 'pass'
             ? "🎉 Congratulations! You passed with {$correctCount}/{$totalQuestions} correct answers ({$score}%)."
@@ -470,6 +483,19 @@ class DashboardController extends Controller
         }
 
         return redirect()->route('student.exams.result', $course_subject_id)->with('success', $message);
+    }
+
+    public function requestReattempt($course_subject_id)
+    {
+        $user = Auth::user();
+        $result = ExamResult::where('user_id', $user->id)
+            ->where('course_subject_id', $course_subject_id)
+            ->where('status', 'fail')
+            ->firstOrFail();
+
+        $result->update(['reattempt_status' => 'requested']);
+
+        return back()->with('success', 'Reattempt request sent to admin.');
     }
 
     public function viewResult($course_subject_id)

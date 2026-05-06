@@ -62,9 +62,22 @@
                         {{ $result->created_at->format('d M, Y') }}
                     </td>
                     <td class="px-10 py-8 text-right">
-                        <a href="{{ route('admin.exam-results.show', $result->id) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all">
-                            <i data-lucide="eye" class="w-3.5 h-3.5"></i> View Details
-                        </a>
+                        <div class="flex items-center justify-end gap-2">
+                            <a href="{{ route('admin.exam-results.show', $result->id) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all">
+                                <i data-lucide="eye" class="w-3.5 h-3.5"></i> View Details
+                            </a>
+                            @if($result->status === 'fail' && $result->reattempt_status !== 'allowed')
+                            <form action="{{ route('admin.exam-results.allow-reattempt', $result->id) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-purple-700 transition-all {{ $result->reattempt_status === 'requested' ? 'ring-2 ring-purple-400 ring-offset-2' : '' }}" title="{{ $result->reattempt_status === 'requested' ? 'Reattempt Requested' : 'Allow Reattempt' }}">
+                                    <i data-lucide="rotate-cw" class="w-3.5 h-3.5 {{ $result->reattempt_status === 'requested' ? 'animate-spin-slow' : '' }}"></i>
+                                    @if($result->reattempt_status === 'requested')
+                                        <span class="ml-1">REQUESTED</span>
+                                    @endif
+                                </button>
+                            </form>
+                            @endif
+                        </div>
                     </td>
                 </tr>
                 @empty

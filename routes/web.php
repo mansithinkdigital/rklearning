@@ -69,6 +69,7 @@ Route::prefix('student')->name('student.')->group(function () {
         Route::get('/free-videos', [StudentDashboardController::class, 'freeVideos'])->name('free-videos');
         Route::get('/free-pdfs', [StudentDashboardController::class, 'freePdfs'])->name('free-pdfs');
         Route::get('/study-material', [StudentDashboardController::class, 'studyMaterial'])->name('study-material');
+        Route::post('/exams/{course_subject_id}/request-reattempt', [StudentDashboardController::class, 'requestReattempt'])->name('exams.request-reattempt');
     });
 });
 
@@ -130,6 +131,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // ------------------EXAM RESULTS-------------------------------//
         Route::get('/exam-results', [\App\Http\Controllers\Admin\ExamResultController::class, 'index'])->name('exam-results.index');
         Route::get('/exam-results/{id}', [\App\Http\Controllers\Admin\ExamResultController::class, 'show'])->name('exam-results.show');
+        Route::post('/exam-results/{id}/allow-reattempt', [\App\Http\Controllers\Admin\ExamResultController::class, 'allowReattempt'])->name('exam-results.allow-reattempt');
         // -------------------------------------------------------------//
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     });

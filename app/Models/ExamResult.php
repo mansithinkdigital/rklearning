@@ -13,7 +13,8 @@ class ExamResult extends Model
         'correct_answers',
         'score',
         'status',
-        'student_answers'
+        'student_answers',
+        'reattempt_status'
     ];
 
     protected $casts = [
