@@ -11,6 +11,24 @@ use App\Models\Freepdf;
 use App\Models\Topic;
 use App\Models\CourseSubject;
 use App\Models\ExamResult;
+use Illuminate\Support\Facades\Response;
+
+/*
+|--------------------------------------------------------------------------
+| Media Routes (CORS Fixed)
+|--------------------------------------------------------------------------
+*/
+Route::get('/media/{path}', function ($path) {
+    $fullPath = public_path($path);
+    if (!file_exists($fullPath)) {
+        abort(404);
+    }
+    return response()->file($fullPath, [
+        'Access-Control-Allow-Origin' => '*',
+        'Access-Control-Allow-Methods' => 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers' => '*',
+    ]);
+})->where('path', '.*');
 
 /*
 |--------------------------------------------------------------------------
