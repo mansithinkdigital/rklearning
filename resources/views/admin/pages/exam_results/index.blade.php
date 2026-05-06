@@ -109,6 +109,17 @@
                             <a href="{{ route('admin.student.marksheet.preview', [$result->user->id, $result->courseSubject->course->id]) }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-600 transition-all" title="Preview Marksheet">
                                 <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
                             </a>
+                            @if($result->status === 'fail' && $result->reattempt_status !== 'allowed')
+                            <form action="{{ route('admin.exam-results.allow-reattempt', $result->id) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-purple-700 transition-all {{ $result->reattempt_status === 'requested' ? 'ring-2 ring-purple-400 ring-offset-2' : '' }}" title="{{ $result->reattempt_status === 'requested' ? 'Reattempt Requested' : 'Allow Reattempt' }}">
+                                    <i data-lucide="rotate-cw" class="w-3.5 h-3.5 {{ $result->reattempt_status === 'requested' ? 'animate-spin-slow' : '' }}"></i>
+                                    @if($result->reattempt_status === 'requested')
+                                        <span class="ml-1">REQUESTED</span>
+                                    @endif
+                                </button>
+                            </form>
+                            @endif
                         </div>
                     </td>
                 </tr>

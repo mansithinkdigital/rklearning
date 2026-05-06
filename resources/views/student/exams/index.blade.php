@@ -205,9 +205,31 @@
                 <div class="w-full py-4 {{ $passed ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600' }} rounded-2xl font-black text-[11px] uppercase tracking-widest text-center border {{ $passed ? 'border-emerald-200' : 'border-red-200' }}">
                     {{ $passed ? '✓ Exam Passed' : '✗ Exam Failed' }} — {{ $result->correct_answers }}/{{ $result->total_questions }} Correct
                 </div>
-                <a href="{{ route('student.exams.result', $cs->id) }}" class="flex items-center justify-center gap-2 w-full py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-colors border border-slate-200 dark:border-slate-700">
-                    <i data-lucide="eye" class="w-3.5 h-3.5"></i> View Detailed Result
-                </a>
+                
+                <div class="flex flex-col gap-2">
+                    <a href="{{ route('student.exams.result', $cs->id) }}" class="flex items-center justify-center gap-2 w-full py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-colors border border-slate-200 dark:border-slate-700">
+                        <i data-lucide="eye" class="w-3.5 h-3.5"></i> View Detailed Result
+                    </a>
+
+                    @if(!$passed)
+                        @if(!$result->reattempt_status)
+                            <form action="{{ route('student.exams.request-reattempt', $cs->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="flex items-center justify-center gap-2 w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest transition-colors shadow-lg">
+                                    <i data-lucide="help-circle" class="w-3.5 h-3.5"></i> Ask Admin for Reattempt
+                                </button>
+                            </form>
+                        @elseif($result->reattempt_status === 'requested')
+                            <button disabled class="flex items-center justify-center gap-2 w-full py-3 bg-amber-50 text-amber-600 border border-amber-200 rounded-xl font-bold text-[10px] uppercase tracking-widest cursor-not-allowed">
+                                <i data-lucide="clock" class="w-3.5 h-3.5"></i> Reattempt Requested
+                            </button>
+                        @elseif($result->reattempt_status === 'allowed')
+                            <a href="{{ route('student.exams.start', $cs->id) }}" class="flex items-center justify-center gap-2 w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest transition-colors shadow-lg shadow-emerald-100">
+                                <i data-lucide="play-circle" class="w-3.5 h-3.5"></i> Start Reattempt Exam
+                            </a>
+                        @endif
+                    @endif
+                </div>
             </div>
             @elseif(!$cs->videos_completed)
             <div class="space-y-3">

@@ -65,4 +65,12 @@ class ExamResultController extends Controller
 
         return view('admin.pages.exam_results.student_results', compact('user', 'results'));
     }
+
+    public function allowReattempt($id)
+    {
+        $result = ExamResult::findOrFail($id);
+        $result->update(['reattempt_status' => 'allowed']);
+
+        return back()->with('success', 'Reattempt permission granted to the student.');
+    }
 }
