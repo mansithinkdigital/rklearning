@@ -1,10 +1,6 @@
 @extends('layouts.client')
 
-<<<<<<< Updated upstream
 @section('title', 'Academic Courses - RK Institute')
-=======
-@section('title', 'Browse Courses - Rk Learning Hub')
->>>>>>> Stashed changes
 @section('content')
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
