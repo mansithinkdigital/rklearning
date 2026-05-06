@@ -37,7 +37,7 @@
     </div>
 
     <!-- Stats Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-6">
         <!-- Departments -->
         <div class="group relative bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 hover:border-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500">
             <div class="flex h-full flex-col justify-between gap-4">
@@ -100,6 +100,29 @@
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Enrolled Students</p>
                 </div>
             </div>
+        </div>
+
+        <!-- Reattempt Requests -->
+        <div class="group relative bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 hover:border-purple-500/30 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-500 {{ $reattemptRequestsCount > 0 ? 'ring-2 ring-purple-500/20 ring-offset-2' : '' }}">
+            <div class="flex h-full flex-col justify-between gap-4">
+                <div class="flex items-center justify-between">
+                    <div class="w-14 h-14 rounded-2xl bg-purple-50 dark:bg-purple-950/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i data-lucide="rotate-cw" class="w-7 h-7 text-purple-600 dark:text-purple-400 {{ $reattemptRequestsCount > 0 ? 'animate-spin-slow' : '' }}"></i>
+                    </div>
+                    @if($reattemptRequestsCount > 0)
+                        <span class="px-3 py-1 rounded-full bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-[10px] font-black italic tracking-widest">PENDING</span>
+                    @else
+                        <span class="px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-black italic tracking-widest">CLEAR</span>
+                    @endif
+                </div>
+                <div>
+                    <h3 class="text-4xl font-black text-slate-900 dark:text-white leading-none mb-2">{{ $reattemptRequestsCount }}</h3>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Reattempt Requests</p>
+                </div>
+            </div>
+            @if($reattemptRequestsCount > 0)
+            <a href="{{ route('admin.exam-results.index') }}" class="absolute inset-0 z-10" aria-label="View Reattempt Requests"></a>
+            @endif
         </div>
     </div>
 

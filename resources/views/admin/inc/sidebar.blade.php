@@ -52,10 +52,17 @@
                 <p class="text-[10px] font-extrabold text-[#94a3b8] dark:text-[#475569] uppercase tracking-widest mb-3 px-2 group-[.sidebar-collapsed]:hidden">ACADEMIC</p>
                 <div class="space-y-1">
                     <a href="{{ route('admin.exam-results.index') }}"
-                        class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
+                        class="sidebar-link flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200
                         {{ request()->is('admin/exam-results*') ? 'bg-[#0062ff] text-white shadow-lg shadow-blue-500/20' : 'text-[#64748b] dark:text-[#94a3b8] hover:bg-slate-50 dark:hover:bg-slate-800' }}">
-                        <i data-lucide="award" class="w-[18px] h-[18px]"></i>
-                        <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Exam Results</span>
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="award" class="w-[18px] h-[18px]"></i>
+                            <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Exam Results</span>
+                        </div>
+                        @if($reattemptRequestsCount > 0)
+                            <span class="flex items-center justify-center w-5 h-5 rounded-full bg-red-500 text-[10px] font-black text-white group-[.sidebar-collapsed]:absolute group-[.sidebar-collapsed]:top-0 group-[.sidebar-collapsed]:right-0 group-[.sidebar-collapsed]:-translate-y-1 group-[.sidebar-collapsed]:translate-x-1 animate-pulse">
+                                {{ $reattemptRequestsCount }}
+                            </span>
+                        @endif
                     </a>
                 </div>
             </div>
