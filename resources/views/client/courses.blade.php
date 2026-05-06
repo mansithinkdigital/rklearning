@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title', 'Academic Courses - RK Learning Hub')
+@section('title', 'Academic Courses - RK Institute')
 @section('content')
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -24,8 +24,8 @@
     /* Hero Section with Mesh Gradient */
     .hero-section {
         background: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-                    radial-gradient(at 100% 100%, rgba(244, 63, 94, 0.1) 0px, transparent 50%),
-                    #ffffff;
+            radial-gradient(at 100% 100%, rgba(244, 63, 94, 0.1) 0px, transparent 50%),
+            #ffffff;
         padding: 100px 0 120px;
         border-bottom: 1px solid rgba(226, 232, 240, 0.8);
     }
@@ -149,8 +149,8 @@
         <div class="search-container p-3 rounded-3xl shadow-2xl border border-white flex flex-col md:flex-row gap-3 items-center">
             <div class="relative flex-1 w-full">
                 <i class="fa fa-search absolute left-6 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" placeholder="What do you want to learn today?" 
-                       class="w-full pl-14 pr-6 py-4 bg-transparent border-none focus:ring-0 text-lg font-medium">
+                <input type="text" placeholder="What do you want to learn today?"
+                    class="w-full pl-14 pr-6 py-4 bg-transparent border-none focus:ring-0 text-lg font-medium">
             </div>
             <div class="flex gap-3 w-full md:w-auto">
                 <button class="flex-1 md:flex-none px-8 py-4 rounded-2xl font-bold text-slate-700 hover:bg-slate-50 transition">
@@ -182,13 +182,13 @@
                         <img src="{{ asset('admin/uploads/courseimg/'.($course->image)) }}" alt="{{ $course->name }}" class="course-image">
                         <div class="price-tag">
                             @if($course->price > 0)
-                                ₹{{ number_format($course->price) }}
+                            ₹{{ number_format($course->price) }}
                             @else
-                                FREE
+                            FREE
                             @endif
                         </div>
                     </div>
-                    
+
                     <div class="px-7 pb-7 pt-2 flex-1 flex flex-col">
                         <div class="flex items-center gap-2 mb-4">
                             <span class="stat-badge"><i class="fa fa-star text-amber-400"></i> 4.9</span>
@@ -198,7 +198,7 @@
                         <h3 class="text-xl font-bold text-slate-900 mb-3 line-clamp-title">
                             {{ $course->name }}
                         </h3>
-                        
+
                         <p class="text-slate-500 text-sm font-medium mb-8 line-clamp-2">
                             {{ strip_tags($course->description) }}
                         </p>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Student Dashboard') - RK Learning Hub</title>
+    <title>@yield('title', 'Student Dashboard') - Rk Institute</title>
     <!-- Scripts & Styles -->
     <link rel="icon" type="image/png" href="{{ asset('admin/asset/favicons/favicon.png') }}">
     <script src="https://cdn.tailwindcss.com"></script>

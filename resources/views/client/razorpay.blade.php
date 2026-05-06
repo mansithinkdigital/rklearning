@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title', 'Processing Payment - RK Learning Hub')
+@section('title', 'Processing Payment - Rk Institute')
 
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-slate-50 py-20">
@@ -40,7 +40,7 @@
         "key": "YOUR_RAZORPAY_KEY", // Enter the Key ID generated from the Dashboard
         "amount": "{{ $course->price * 100 }}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
         "currency": "INR",
-        "name": "RK Learning Hub",
+        "name": "Rk Institute",
         "description": "Enrollment for {{ $course->name }}",
         "image": "{{ asset('logo.png') }}",
         "handler": function (response){
@@ -53,7 +53,7 @@
             "contact": "{{ $user->phone }}"
         },
         "notes": {
-            "address": "RK Learning Hub Office"
+            "address": "Rk Institute Office"
         },
         "theme": {
             "color": "#2563eb"

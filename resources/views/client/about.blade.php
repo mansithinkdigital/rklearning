@@ -1,13 +1,13 @@
 @extends('layouts.client')
 
-@section('title', 'About Us - Rk Learning Hub')
+@section('title', 'About Us - Rk Institute')
 
 @section('styles')
 <style>
     .section-spacing {
         padding: 100px 0;
     }
-    
+
     .stats-card {
         background: white;
         border-radius: 20px;
@@ -17,7 +17,7 @@
         transition: all 0.3s ease;
         border: 1px solid #f1f5f9;
     }
-    
+
     .stats-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
@@ -34,7 +34,7 @@
 
     .value-item:hover {
         border-color: #4f46e5;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
     }
 
     .faculty-image-container::after {
@@ -58,16 +58,18 @@
     <section class="relative py-28 md:py-36 overflow-hidden bg-slate-900">
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-indigo-900 via-slate-900 to-black"></div>
         <div class="absolute -top-24 -left-24 w-96 h-96 bg-indigo-500/20 rounded-full blur-[120px] animate-pulse"></div>
-        
+
         <div class="container mx-auto px-6 relative z-10 text-center">
             <nav class="inline-flex items-center space-x-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-10 transition-all hover:bg-white/10">
                 <a href="{{ route('home') }}" class="text-xs font-medium uppercase tracking-wider text-indigo-300 hover:text-white transition">Home</a>
-                <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
                 <span class="text-xs font-medium uppercase tracking-wider text-slate-400">About Us</span>
             </nav>
 
             <h1 class="text-5xl md:text-7xl font-black text-white mb-8 tracking-tight leading-[1.1]">
-                Transforming Lives Through <br> 
+                Transforming Lives Through <br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-400 to-teal-400">
                     Quality Education
                 </span>
@@ -84,8 +86,8 @@
             </div>
         </div>
 
-        <div class="absolute inset-0 opacity-20 mix-blend-overlay pointer-events-none" 
-             style="background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');">
+        <div class="absolute inset-0 opacity-20 mix-blend-overlay pointer-events-none"
+            style="background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');">
         </div>
     </section>
 
@@ -94,24 +96,24 @@
         <div class="container mx-auto px-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
                 <div class="relative group">
-                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop" 
-                         class="rounded-[32px] shadow-2xl relative z-10 w-full object-cover aspect-[4/3] group-hover:scale-[1.02] transition-transform duration-500" alt="Students Collaboration">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop"
+                        class="rounded-[32px] shadow-2xl relative z-10 w-full object-cover aspect-[4/3] group-hover:scale-[1.02] transition-transform duration-500" alt="Students Collaboration">
                     <div class="absolute -top-10 -left-10 w-40 h-40 bg-indigo-50 rounded-full -z-10 blur-2xl"></div>
                     <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-50 rounded-full -z-10 blur-2xl"></div>
                 </div>
-                
+
                 <div>
                     <h5 class="text-indigo-600 font-bold uppercase tracking-[0.2em] text-xs mb-4">Our Legacy</h5>
                     <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-8 leading-tight">Elevating Potential <br> Since 2002</h2>
                     <div class="space-y-6 text-slate-600 text-lg leading-relaxed">
                         <p>
-                            Starting as a specialized laboratory for technical excellence, Rk Learning Hub has consistently pushed the boundaries of traditional education for over two decades.
+                            Starting as a specialized laboratory for technical excellence, Rk Institute has consistently pushed the boundaries of traditional education for over two decades.
                         </p>
                         <p>
                             We believe that education should be as dynamic as the industries it serves. Our methodology centers on <strong>practical application</strong>, ensuring that every concept mastered is directly translatable to real-world success.
                         </p>
                     </div>
-                    
+
                     <div class="mt-12 flex items-center p-6 bg-slate-50 rounded-2xl border border-slate-100">
                         <div class="flex -space-x-3 mr-6">
                             <img src="https://i.pravatar.cc/100?u=1" class="w-12 h-12 rounded-full border-4 border-white shadow-sm" alt="">
@@ -202,8 +204,8 @@
                 <!-- Member 1 -->
                 <div class="faculty-card group">
                     <div class="faculty-image-container relative overflow-hidden rounded-3xl mb-6 aspect-[4/5] bg-slate-200">
-                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1974&auto=format&fit=crop" 
-                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dr. Robert K.">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1974&auto=format&fit=crop"
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dr. Robert K.">
                         <div class="absolute bottom-6 left-6 right-6 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <div class="flex gap-3">
                                 <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-indigo-600 transition"><i class="fab fa-linkedin-in"></i></a>
@@ -218,8 +220,8 @@
                 <!-- Member 2 -->
                 <div class="faculty-card group">
                     <div class="faculty-image-container relative overflow-hidden rounded-3xl mb-6 aspect-[4/5] bg-slate-200">
-                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop" 
-                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Sarah Johnson">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop"
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Sarah Johnson">
                         <div class="absolute bottom-6 left-6 right-6 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <div class="flex gap-3">
                                 <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-indigo-600 transition"><i class="fab fa-linkedin-in"></i></a>
@@ -234,8 +236,8 @@
                 <!-- Member 3 -->
                 <div class="faculty-card group">
                     <div class="faculty-image-container relative overflow-hidden rounded-3xl mb-6 aspect-[4/5] bg-slate-200">
-                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1974&auto=format&fit=crop" 
-                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Marcus Chen">
+                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1974&auto=format&fit=crop"
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Marcus Chen">
                         <div class="absolute bottom-6 left-6 right-6 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <div class="flex gap-3">
                                 <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-indigo-600 transition"><i class="fab fa-linkedin-in"></i></a>
@@ -250,8 +252,8 @@
                 <!-- Member 4 -->
                 <div class="faculty-card group">
                     <div class="faculty-image-container relative overflow-hidden rounded-3xl mb-6 aspect-[4/5] bg-slate-200">
-                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop" 
-                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Elena Rodriguez">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop"
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Elena Rodriguez">
                         <div class="absolute bottom-6 left-6 right-6 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <div class="flex gap-3">
                                 <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-indigo-600 transition"><i class="fab fa-linkedin-in"></i></a>
@@ -287,7 +289,7 @@
                 <!-- Abstract BG Accents -->
                 <div class="absolute -top-20 -left-20 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl"></div>
                 <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-black opacity-10 rounded-full blur-3xl"></div>
-                
+
                 <h2 class="text-4xl md:text-6xl font-black text-white mb-8 tracking-tight">Begin Your <br> Evolution Today.</h2>
                 <p class="text-indigo-100 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">Join 50,000+ students already reshaping their careers with our award-winning curriculum.</p>
                 <div class="flex flex-wrap justify-center gap-6 relative z-10">

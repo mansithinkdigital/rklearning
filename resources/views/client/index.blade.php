@@ -1,5 +1,5 @@
 @extends('layouts.client')
-@section('title', 'Home - Rk Learning Hub - Transform Your Future')
+@section('title', 'Home - Rk Institute - Transform Your Future')
 @section('styles')
 <style>
     :root {

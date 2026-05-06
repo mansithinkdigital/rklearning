@@ -24,7 +24,7 @@ public/
 │   │   ├── certificate-assets.zip
 │   │   ├── certificate.png
 │   │   ├── digital-india-IAF-Org-stamp.jpg
-│   │   └── rk learning certificate.pdf
+│   │   └──  certificate.pdf
 │   └── images/
 │       ├── course1.png
 │       ├── hero.png

@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title', 'Verify Certificate - RK Learning Hub')
+@section('title', 'Verify Certificate - Rk Institute')
 
 @section('styles')
 <style>
@@ -342,7 +342,7 @@
             <div class="search-section">
                 <h1 class="text-4xl font-bold text-white mb-3">Certificate Verification</h1>
                 <p class="text-indigo-100 text-lg opacity-90">
-                    Verify the authenticity of RK Learning Hub certificates
+                    Verify the authenticity of Rk Institute certificates
                 </p>
             </div>
             <div class="search-box-wrapper">
@@ -446,7 +446,7 @@
                                 <div>
                                     <span class="text-slate-400 text-[10px] font-black uppercase tracking-widest block mb-1">Authorized Center</span>
                                     <p class="font-black text-slate-900 tracking-tight">{{ strtoupper(optional($user->branch)->branch_name ?? 'GANGAPUR ROAD, NASHIK') }}</p>
-                                    <p class="text-xs text-slate-500">RK Learning Hub - Official Training Provider</p>
+                                    <p class="text-xs text-slate-500">Rk Institute - Official Training Provider</p>
                                 </div>
                             </div>
                             <div class="px-6 py-4 bg-white border border-slate-200 rounded-2xl flex items-center gap-4">

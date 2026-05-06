@@ -1,5 +1,5 @@
 @extends('layouts.client')
-@section('title', $course->name . ' - Course Overview | RK Learning Hub')
+@section('title', $course->name . ' - Course Overview | RK Institute')
 @section('content')
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -266,7 +266,7 @@
 
                     <div class="mt-8 p-8 bg-blue-600 rounded-[2.5rem] text-white shadow-xl shadow-blue-100">
                         <h4 class="text-lg font-black mb-2 uppercase leading-tight italic">Enroll with Confidence</h4>
-                        <p class="text-blue-100 text-xs font-medium leading-relaxed">Join thousands of students who have transformed their careers with RK Learning Hub.</p>
+                        <p class="text-blue-100 text-xs font-medium leading-relaxed">Join thousands of students who have transformed their careers with RK Institute.</p>
                     </div>
                 </div>
             </div>

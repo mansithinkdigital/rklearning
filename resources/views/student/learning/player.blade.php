@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $course->name }} - Academic Player | RK Learning Hub</title>
+    <title>{{ $course->name }} - Academic Player | Rk Institute</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
@@ -270,7 +270,7 @@
                 <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
                     <i data-lucide="graduation-cap" class="w-5 h-5"></i>
                 </div>
-                <span class="text-xs font-black uppercase tracking-[0.3em] text-slate-900">RK Learning Hub</span>
+                <span class="text-xs font-black uppercase tracking-[0.3em] text-slate-900">Rk Institute</span>
             </div>
 
             <h3 class="text-xl font-black tracking-tight text-slate-900 mb-6">{{ $course->name }}</h3>
@@ -434,7 +434,7 @@
         let seekCheckInterval = null;
         const ALL_VIDEOS = @json($allVideos);
         let COMPLETED_VIDS = @json($completedVideoIds);
-        const COURSE_ID = @json($course->id);
+        const COURSE_ID = @json($course - > id);
         // ─── YOUTUBE API ─────────────────────────────────────
         function onYouTubeIframeAPIReady() {
             // Player will be initialized when playVideo is called
@@ -654,6 +654,7 @@
             }
             lucide.createIcons();
         }
+
         function showLockedMsg() {
             alert("🔒 Lesson Locked: Please complete the previous video lessons in sequence to unlock this module.");
         }
@@ -733,7 +734,7 @@
         // Initialize Progress and Auto-play on load
         document.addEventListener('DOMContentLoaded', () => {
             updateProgressUI();
-            
+
             // Auto-play first video if available and unlocked
             const firstVideoLink = document.querySelector('.material-link:not(.cursor-not-allowed)[data-video]');
             if (firstVideoLink) {

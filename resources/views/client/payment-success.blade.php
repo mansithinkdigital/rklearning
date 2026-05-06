@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title', 'Payment Successful - RK Learning Hub')
+@section('title', 'Payment Successful - Rk Institute')
 
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-slate-50 py-20 px-6">
