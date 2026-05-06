@@ -7,6 +7,8 @@
     <title>Student Registration - Rk Institute</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Scripts & Styles -->
+    <link rel="icon" type="image/png" href="{{ asset('admin/asset/favicons/favicon.png') }}">
     <style>
         body {
             font-family: 'Outfit', sans-serif;
