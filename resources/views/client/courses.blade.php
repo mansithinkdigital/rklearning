@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title', 'Academic Courses - RK Learning Hub')
+@section('title', 'Academic Courses - RK Institute')
 @section('content')
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -24,8 +24,8 @@
     /* Hero Section with Mesh Gradient */
     .hero-section {
         background: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-                    radial-gradient(at 100% 100%, rgba(244, 63, 94, 0.1) 0px, transparent 50%),
-                    #ffffff;
+            radial-gradient(at 100% 100%, rgba(244, 63, 94, 0.1) 0px, transparent 50%),
+            #ffffff;
         padding: 100px 0 120px;
         border-bottom: 1px solid rgba(226, 232, 240, 0.8);
     }
@@ -146,11 +146,56 @@
     </section>
 
     <div class="container mx-auto px-6">
+<<<<<<< Updated upstream
         <div class="search-container p-3 rounded-3xl shadow-2xl border border-white flex flex-col md:flex-row gap-3 items-center">
             <div class="relative flex-1 w-full">
                 <i class="fa fa-search absolute left-6 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" placeholder="What do you want to learn today?" 
-                       class="w-full pl-14 pr-6 py-4 bg-transparent border-none focus:ring-0 text-lg font-medium">
+                <input type="text" placeholder="What do you want to learn today?"
+                    class="w-full pl-14 pr-6 py-4 bg-transparent border-none focus:ring-0 text-lg font-medium">
+=======
+        @php
+            $enrolledCourseIds = Auth::check() ? auth()->user()->courses->modelKeys() : [];
+        @endphp
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            @forelse($courses as $course)
+            <div class="course-card">
+                <div class="relative">
+                    <img src="{{ $course->image }}" alt="{{ $course->name }}" class="course-img">
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="rating-badge"><i class="fa fa-star text-[10px] mr-1"></i> 4.{{ rand(5,9) }}</span>
+                        <span class="text-primary font-bold">
+                            @if($course->price > 0)
+                                ₹{{ number_format($course->price, 2) }}
+                            @else
+                                Free
+                            @endif
+                        </span>
+                    </div>
+                    <h3 class="text-lg mb-3 Outfit line-clamp-2">{{ $course->name }}</h3>
+                    <p class="text-slate-500 text-sm mb-4">{{ \Illuminate\Support\Str::limit($course->description, 90) }}</p>
+                    <div class="flex items-center text-slate-500 text-[10px] space-x-3 mb-6">
+                        <span><i class="fa fa-book-open mr-1"></i> {{ $course->subjects->count() }} Lessons</span>
+                        <span><i class="fa fa-users mr-1"></i> {{ max(1, $course->students->count()) }}k Students</span>
+                    </div>
+                    <div class="border-t pt-4 space-y-3">
+                        <a href="{{ route('courses.show', $course->id) }}" class="block text-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">View Details</a>
+                        @auth
+                            @if(in_array($course->id, $enrolledCourseIds))
+                                <a href="{{ route('student.learning', $course->id) }}" class="btn-primary w-full text-center block py-2 text-sm">Go to Course</a>
+                            @else
+                                <form action="{{ route('student.courses.purchase', $course->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn-primary w-full text-center block py-2 text-sm">Purchase Now</button>
+                                </form>
+                            @endif
+                        @else
+                            <a href="{{ route('student.login') }}" class="btn-primary w-full text-center block py-2 text-sm">Login to Purchase</a>
+                        @endauth
+                    </div>
+                </div>
+>>>>>>> Stashed changes
             </div>
             <div class="flex gap-3 w-full md:w-auto">
                 <button class="flex-1 md:flex-none px-8 py-4 rounded-2xl font-bold text-slate-700 hover:bg-slate-50 transition">
@@ -160,6 +205,18 @@
                     Search
                 </button>
             </div>
+<<<<<<< Updated upstream
+=======
+            @endforelse
+        </div>
+        <div class="mt-16 flex justify-center space-x-2">
+            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white border text-slate-600 hover:bg-primary hover:text-white transition">1</a>
+            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-white">2</a>
+            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white border text-slate-600 hover:bg-primary hover:text-white transition">3</a>
+            <span class="w-10 h-10 flex items-center justify-center text-slate-400">...</span>
+            <hr class="hidden sm:block">
+            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white border text-slate-600 hover:bg-primary hover:text-white transition"><i class="fa fa-chevron-right"></i></a>
+>>>>>>> Stashed changes
         </div>
     </div>
 
@@ -182,13 +239,13 @@
                         <img src="{{ asset('admin/uploads/courseimg/'.($course->image)) }}" alt="{{ $course->name }}" class="course-image">
                         <div class="price-tag">
                             @if($course->price > 0)
-                                ₹{{ number_format($course->price) }}
+                            ₹{{ number_format($course->price) }}
                             @else
-                                FREE
+                            FREE
                             @endif
                         </div>
                     </div>
-                    
+
                     <div class="px-7 pb-7 pt-2 flex-1 flex flex-col">
                         <div class="flex items-center gap-2 mb-4">
                             <span class="stat-badge"><i class="fa fa-star text-amber-400"></i> 4.9</span>
@@ -198,7 +255,7 @@
                         <h3 class="text-xl font-bold text-slate-900 mb-3 line-clamp-title">
                             {{ $course->name }}
                         </h3>
-                        
+
                         <p class="text-slate-500 text-sm font-medium mb-8 line-clamp-2">
                             {{ strip_tags($course->description) }}
                         </p>

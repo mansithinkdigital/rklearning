@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin Dashboard') | RK Learning Hub</title>
+    <title>@yield('title', 'Admin Dashboard') | RK Institute</title>
 
     <link rel="icon" type="image/png" href="{{ asset('admin/asset/favicons/favicon.png') }}">
 
@@ -94,7 +94,7 @@
         </main>
 
         <footer class="p-10 text-center border-t border-slate-100 dark:border-slate-900">
-            <p class="text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.4em]">RK LEARNING HUB &bull; POWERED BY GOVERNANCE V2.0 &bull; &copy; 2026</p>
+            <p class="text-[10px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.4em]">RK Institute &bull; POWERED BY GOVERNANCE V2.0 &bull; &copy; 2026</p>
         </footer>
     </div>
     <script>

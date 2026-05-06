@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title', 'Complete Enrollment - RK Learning Hub')
+@section('title', 'Complete Enrollment - RK Institute')
 
 @section('content')
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -178,7 +178,6 @@
                             <p class="text-slate-500 font-medium text-sm leading-relaxed">{{ \Illuminate\Support\Str::limit($course->description, 120) }}</p>
                         </div>
                     </div>
-
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-10 pt-10 border-t border-slate-50">
                         <div>
                             <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Modules</p>
@@ -226,7 +225,6 @@
             <div class="lg:col-span-5">
                 <div class="checkout-card p-10 md:p-12 sticky top-10 animate-reveal" style="animation-delay: 0.3s">
                     <h3 class="text-lg font-black text-slate-900 mb-8 tracking-tight">Investment Summary</h3>
-
                     <div class="space-y-2 mb-10">
                         <div class="summary-item">
                             <span class="text-sm font-bold text-slate-500">Academic Tuition</span>

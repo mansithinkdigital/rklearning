@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title', 'Academic Support - RK Learning Hub')
+@section('title', 'Academic Support - RK Institute')
 
 @section('styles')
 <style>

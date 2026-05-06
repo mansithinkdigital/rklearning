@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Rk Learning Hub - Transform Your Future')</title>
+    <title>@yield('title', 'Rk Institute - Transform Your Future')</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('admin/asset/favicons/favicon.png') }}">
     <!-- Google Fonts -->
@@ -160,7 +160,7 @@
                 <div class="lg:col-span-4">
                     <div class="flex items-center mb-6">
                         <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}"
-                            class="h-12 w-auto object-contain" alt="Rk Learning Hub Logo">
+                            class="h-12 w-auto object-contain" alt="Rk Institute Logo">
                     </div>
                     <p class="mb-8 text-base leading-relaxed text-slate-500 max-w-sm">
                         Empowering learners worldwide through high-quality, project-based education. Join our community and start your journey today.
@@ -237,7 +237,7 @@
 
             <div class="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center text-sm font-medium">
                 <p class="text-slate-400">
-                    &copy; {{ date('Y') }} <span class="text-slate-900">Rk Learning Hub</span>. All rights reserved.
+                    &copy; {{ date('Y') }} <span class="text-slate-900">Rk Institute</span>. All rights reserved.
                 </p>
 
                 <div class="mt-4 md:mt-0 px-6 py-2 bg-slate-50 rounded-full">

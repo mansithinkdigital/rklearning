@@ -8,18 +8,21 @@ $uri = urldecode(
     parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)
 );
 
+// Add global CORS headers for all requests
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With, X-XSRF-TOKEN');
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Private-Network: true');
+
+// Handle preflight requests
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    header('HTTP/1.1 204 No Content');
+    exit;
+}
+
 // If the requested file exists in the public directory, serve it directly
 if ($uri !== '/' && file_exists(__DIR__.'/public'.$uri)) {
-    // Add CORS headers for static files so Flutter Web can read them
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With, X-XSRF-TOKEN');
-    
-    // Handle preflight requests
-    if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-        exit;
-    }
-
     // Set basic MIME types
     $ext = strtolower(pathinfo($uri, PATHINFO_EXTENSION));
     $mimes = [

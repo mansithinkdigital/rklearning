@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Registration - RK Learning Hub</title>
+    <title>Student Registration - Rk Institute</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Scripts & Styles -->
+    <link rel="icon" type="image/png" href="{{ asset('admin/asset/favicons/favicon.png') }}">
     <style>
         body {
             font-family: 'Outfit', sans-serif;
@@ -28,7 +30,7 @@
         <div class="hidden md:flex bg-blue-600 p-12 flex-col justify-between text-white relative">
             <div class="relative z-10">
                 <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}" class="h-12 mb-8 w-[350px] object-contain">
-                <h2 class="text-4xl font-bold mb-6">Join the RK Learning Community</h2>
+                <h2 class="text-4xl font-bold mb-6">Join the Rk Institute Community</h2>
                 <p class="text-blue-100 text-lg">Start your journey from Classroom to Cloud today. Get access to premium
                     courses and expert mentorship.</p>
             </div>
@@ -44,9 +46,9 @@
                 @csrf
                 <input type="hidden" name="redirect_to" value="{{ request('redirect_to') }}">
                 @if($errors->any())
-                    <div class="px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm font-medium">
-                        {{ $errors->first() }}
-                    </div>
+                <div class="px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm font-medium">
+                    {{ $errors->first() }}
+                </div>
                 @endif
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
