@@ -29,7 +29,7 @@
         <!-- Decoration -->
         <div class="hidden md:flex bg-blue-600 p-12 flex-col justify-between text-white relative">
             <div class="relative z-10">
-                <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}" class="h-12 mb-8 w-[350px] object-contain">
+                <img src="{{ asset('assets/RK LOGO.png') }}" class="h-25 mb-8 w-[370px] object-contain">
                 <h2 class="text-4xl font-bold mb-6">Join the Rk Institute Community</h2>
                 <p class="text-blue-100 text-lg">Start your journey from Classroom to Cloud today. Get access to premium
                     courses and expert mentorship.</p>

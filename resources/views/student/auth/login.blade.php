@@ -20,7 +20,7 @@
 <body class="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-indigo-50 to-blue-100">
     <div class="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl p-10 md:p-12 border border-blue-50">
         <div class="text-center mb-10">
-            <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}" class="h-12 mx-auto mb-6">
+            <img src="{{ asset('assets/RK LOGO.png') }}" class="mx-auto mb-6" style="width: 300px;height: 80px">
             <h2 class="text-3xl font-bold text-slate-800">Student Login</h2>
             <p class="text-slate-500 mt-2">Welcome back! Please enter your details.</p>
         </div>

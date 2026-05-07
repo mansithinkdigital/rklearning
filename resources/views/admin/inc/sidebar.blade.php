@@ -11,8 +11,8 @@
                 <img
                     src="{{ asset('assets/RK LOGO.png') }}"
                     alt="Logo"
-                    class="w-30 md:w-34 h-auto object-contain transition-all duration-300
-               group-[.sidebar-collapsed]:w-12">
+                    class="w-40 md:w-44 h-auto object-contain transition-all duration-300
+               group-[.sidebar-collapsed]:w-10">
             </a>
         </div>
         <!-- Navigation Menu -->
@@ -58,9 +58,9 @@
                             <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Exam Results</span>
                         </div>
                         @if($reattemptRequestsCount > 0)
-                            <span class="flex items-center justify-center w-5 h-5 rounded-full bg-red-500 text-[10px] font-black text-white group-[.sidebar-collapsed]:absolute group-[.sidebar-collapsed]:top-0 group-[.sidebar-collapsed]:right-0 group-[.sidebar-collapsed]:-translate-y-1 group-[.sidebar-collapsed]:translate-x-1 animate-pulse">
-                                {{ $reattemptRequestsCount }}
-                            </span>
+                        <span class="flex items-center justify-center w-5 h-5 rounded-full bg-red-500 text-[10px] font-black text-white group-[.sidebar-collapsed]:absolute group-[.sidebar-collapsed]:top-0 group-[.sidebar-collapsed]:right-0 group-[.sidebar-collapsed]:-translate-y-1 group-[.sidebar-collapsed]:translate-x-1 animate-pulse">
+                            {{ $reattemptRequestsCount }}
+                        </span>
                         @endif
                     </a>
                 </div>
@@ -134,7 +134,7 @@
                         <span class="text-[13px] font-bold group-[.sidebar-collapsed]:hidden">Gallery</span>
                     </a>
                 </div>
-                 <div class="space-y-1">
+                <div class="space-y-1">
                     <a href="{{ route('admin.testimonial.index') }}"
                         class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
                         {{ request()->is('admin/testimonial*') ? 'bg-[#0062ff] text-white shadow-lg shadow-blue-500/20' : 'text-[#64748b] dark:text-[#94a3b8] hover:bg-slate-50 dark:hover:bg-slate-800' }}">

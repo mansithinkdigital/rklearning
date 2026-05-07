@@ -56,8 +56,8 @@
             <div class="flex justify-center mb-5">
                 <div class="relative group">
                     <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                    <div class="relative bg-white p-5 rounded-3xl shadow-2xl">
-                        <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}" alt="RK Logo" class="h-16 w-auto object-contain">
+                    <div class="relative bg-white p-4 rounded-3xl shadow-2xl">
+                        <img src="{{ asset('assets/RK LOGO.png') }}" alt="RK Logo" class="h-16 w-68 object-contain">
                     </div>
                 </div>
             </div>
@@ -72,7 +72,6 @@
                 {{ session('error') }}
             </div>
             @endif
-
             <form action="{{ route('admin.login.submit') }}" method="POST" class="space-y-6">
                 @csrf
                 <div>
