@@ -561,10 +561,22 @@ class DashboardController extends Controller
             return back()->with('error', 'Complete all lessons and subject exams first.');
         }
 
-        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->with('subject')->get();
+        // Get ALL subjects linked to this course
+        $subjects = \App\Models\Subject::where('course_id', $course->id)->get()->map(function($s) use ($course) {
+            $cs = \App\Models\CourseSubject::where('course_id', $course->id)
+                ->where('subject_id', $s->id)
+                ->first();
+            
+            return (object)[
+                'id' => $cs ? $cs->id : 0,
+                'total_marks' => $cs ? $cs->total_marks : 100,
+                'pass_marks' => $cs ? $cs->pass_marks : 40,
+                'subject' => $s
+            ];
+        });
 
         $results = ExamResult::where('user_id', $user->id)
-            ->whereIn('course_subject_id', $subjects->pluck('id'))
+            ->whereIn('course_subject_id', $subjects->pluck('id')->filter()->toArray())
             ->get()
             ->keyBy('course_subject_id');
 
@@ -616,10 +628,22 @@ class DashboardController extends Controller
             return back()->with('error', 'Complete all lessons and subject exams first.');
         }
 
-        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)->with('subject')->get();
+        // Get ALL subjects linked to this course
+        $subjects = \App\Models\Subject::where('course_id', $course->id)->get()->map(function($s) use ($course) {
+            $cs = \App\Models\CourseSubject::where('course_id', $course->id)
+                ->where('subject_id', $s->id)
+                ->first();
+            
+            return (object)[
+                'id' => $cs ? $cs->id : 0,
+                'total_marks' => $cs ? $cs->total_marks : 100,
+                'pass_marks' => $cs ? $cs->pass_marks : 40,
+                'subject' => $s
+            ];
+        });
 
         $results = ExamResult::where('user_id', $user->id)
-            ->whereIn('course_subject_id', $subjects->pluck('id'))
+            ->whereIn('course_subject_id', $subjects->pluck('id')->filter()->toArray())
             ->get()
             ->keyBy('course_subject_id');
 

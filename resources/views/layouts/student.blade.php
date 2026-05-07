@@ -108,7 +108,7 @@
         <!-- Sidebar -->
         <aside id="student-sidebar" class="sidebar border-r border-slate-100">
             <div class="mb-10 flex items-center px-2">
-                <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}" alt="Logo" class="h-10 mr-3">
+                <img src="{{ asset('assets/RK LOGO.png') }}" alt="Logo" class="h-16 mr-3">
             </div>
             <nav>
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 px-2">Menu</p>

@@ -80,7 +80,7 @@
     <aside class="sidebar">
         <div class="px-6 py-8">
             <div class="flex flex-col items-center mb-10">
-                <img src="/logo.png" alt="Logo" class="h-16 mb-2" onerror="this.src='https://via.placeholder.com/150x50?text=RK+LEARNING'">
+                <img src="{{ asset('assets/RK LOGO.png') }}" alt="Logo" class="h-24 mb-2">
                 <p class="text-xs text-orange-600 font-semibold tracking-widest uppercase">Way to success</p>
             </div>
             <nav class="space-y-1">

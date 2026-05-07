@@ -114,10 +114,10 @@
     </div>
 
     <!-- Header / Navbar -->
-    <header class="navbar sticky top-0 z-50 py-5 border-b border-slate-50">
+    <header class="navbar sticky top-0 z-50 py-2 border-b border-slate-50">
         <div class="container mx-auto px-6 flex items-center justify-between">
             <a href="/" class="flex items-center">
-                <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}" alt="Logo" class="h-10 w-auto mr-2">
+                <img src="{{ asset('assets/RK LOGO.png') }}" alt="Logo" class="h-20 w-auto mr-2">
             </a>
             <nav class="hidden lg:flex items-center space-x-10">
                 <a href="{{ route('home') }}" class="nav-link">Home</a>
@@ -159,8 +159,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
                 <div class="lg:col-span-4">
                     <div class="flex items-center mb-6">
-                        <img src="{{ asset('admin/asset/logo/rk_logo.webp') }}"
-                            class="h-12 w-auto object-contain" alt="Rk Institute Logo">
+                        <img src="{{ asset('assets/RK LOGO.png') }}"
+                            class="h-16 w-auto object-contain" alt="Rk Institute Logo">
                     </div>
                     <p class="mb-8 text-base leading-relaxed text-slate-500 max-w-sm">
                         Empowering learners worldwide through high-quality, project-based education. Join our community and start your journey today.
