@@ -269,24 +269,15 @@
                 </p>
 
                 <div class="flex flex-wrap gap-6 opacity-0 animate-fade-up items-center" style="animation-delay: 0.4s">
-<<<<<<< Updated upstream
-                    @auth
-                    <a href="{{ route('student.dashboard') }}"
-                        class="btn-glow group relative bg-indigo-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-indigo-200 hover:-translate-y-1">
-                        <span class="flex items-center">
-                            Go to Dashboard
-=======
                     <a href="{{ route('student.register') }}"
                         class="btn-glow group relative bg-indigo-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-indigo-200 hover:-translate-y-1">
                         <span class="flex items-center">
                             Start Your Journey
->>>>>>> Stashed changes
                             <svg class="w-5 h-5 ml-3 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                             </svg>
                         </span>
                     </a>
-<<<<<<< Updated upstream
                     @else
                     <a href="{{ route('student.login') }}"
                         class="btn-glow group relative bg-indigo-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-indigo-200 hover:-translate-y-1">
@@ -298,8 +289,6 @@
                         </span>
                     </a>
                     @endauth
-=======
->>>>>>> Stashed changes
                     <a href="{{ route('courses') }}"
                         class="group bg-white text-slate-900 px-10 py-5 rounded-2xl font-bold text-lg border border-slate-200 hover:bg-slate-50 hover:border-indigo-200 transition-all">
                         Browse Courses
