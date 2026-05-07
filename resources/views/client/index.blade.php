@@ -269,31 +269,40 @@
                 </p>
 
                 <div class="flex flex-wrap gap-6 opacity-0 animate-fade-up items-center" style="animation-delay: 0.4s">
+
                     @auth
                     <a href="{{ route('student.dashboard') }}"
                         class="btn-glow group relative bg-indigo-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-indigo-200 hover:-translate-y-1">
                         <span class="flex items-center">
                             Go to Dashboard
-                            <svg class="w-5 h-5 ml-3 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
-                        </span>
-                    </a>
-                    @else
-                    <a href="{{ route('student.register') }}"
-                        class="btn-glow group relative bg-indigo-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-indigo-200 hover:-translate-y-1">
-                        <span class="flex items-center">
-                            Start Your Journey
-                            <svg class="w-5 h-5 ml-3 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
-                        </span>
-                    </a>
-                    @endauth
-                    <a href="{{ route('courses') }}"
-                        class="group bg-white text-slate-900 px-10 py-5 rounded-2xl font-bold text-lg border border-slate-200 hover:bg-slate-50 hover:border-indigo-200 transition-all">
-                        Browse Courses
-                    </a>
+
+                            <a href="{{ route('student.register') }}"
+                                class="btn-glow group relative bg-indigo-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-indigo-200 hover:-translate-y-1">
+                                <span class="flex items-center">
+                                    Start Your Journey
+                                    >>>>>>> Stashed changes
+                                    <svg class="w-5 h-5 ml-3 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    </svg>
+                                </span>
+                            </a>
+
+                            @else
+                            <a href="{{ route('student.login') }}"
+                                class="btn-glow group relative bg-indigo-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-indigo-200 hover:-translate-y-1">
+                                <span class="flex items-center">
+                                    Start Your Journey
+                                    <svg class="w-5 h-5 ml-3 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    </svg>
+                                </span>
+                            </a>
+                            @endauth
+
+                            <a href="{{ route('courses') }}"
+                                class="group bg-white text-slate-900 px-10 py-5 rounded-2xl font-bold text-lg border border-slate-200 hover:bg-slate-50 hover:border-indigo-200 transition-all">
+                                Browse Courses
+                            </a>
                 </div>
 
                 <div class="mt-20 flex items-center space-x-8 opacity-0 animate-fade-up" style="animation-delay: 0.5s">
@@ -360,10 +369,8 @@
                     <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop"
                         alt="Modern Learning"
                         class="w-full h-auto rounded-[56px] transition-all duration-1000 group-hover:scale-110">
-
                     <!-- Overlay Gradient -->
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent"></div>
-
                     <!-- Video Play Button (Fake) -->
                     <div class="absolute inset-0 flex items-center justify-center">
                         <div class="w-24 h-24 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:scale-110 transition-transform cursor-pointer">
@@ -378,7 +385,6 @@
     </div>
     </div>
 </section>
-
 
 <!-- Features section -->
 <section class="py-16 bg-white">
@@ -492,7 +498,6 @@
 <!-- Courses Section -->
 <section class="py-24 bg-slate-50">
     <div class="container mx-auto px-6">
-
         <!-- Header -->
         <div class="text-center mb-16">
             <span class="text-zilom-blue font-semibold uppercase tracking-widest text-sm">
@@ -505,7 +510,6 @@
                 Learn practical skills with real content. Start free and upgrade anytime.
             </p>
         </div>
-
         <!-- Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             @foreach($courses as $course)
@@ -538,6 +542,7 @@
                     <!-- Footer -->
                     <div class="flex items-center justify-between pt-4 border-t border-slate-100">
                         <span class="text-zilom-blue font-bold text-lg">
+
                             {{ $course->price > 0 ? '₹'.number_format($course->price, 2) : 'Free' }}
                         </span>
                         <div class="flex items-center text-xs text-slate-500">

@@ -9,13 +9,12 @@
         <div class="flex items-center justify-center mb-8 px-2">
             <a href="{{ route('admin.dashboard') }}">
                 <img
-                    src="{{ asset('admin/asset/logo/rk_logo.webp') }}"
+                    src="{{ asset('assets/RK LOGO.png') }}"
                     alt="Logo"
                     class="w-30 md:w-34 h-auto object-contain transition-all duration-300
                group-[.sidebar-collapsed]:w-12">
             </a>
         </div>
-
         <!-- Navigation Menu -->
         <nav class="flex-grow space-y-7">
             <!-- Main -->

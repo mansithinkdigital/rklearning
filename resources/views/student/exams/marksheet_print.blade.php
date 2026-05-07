@@ -1,23 +1,24 @@
 @php
 function getBase64($path) {
-    if (file_exists(public_path($path))) {
-        $data = file_get_contents(public_path($path));
-        $type = pathinfo(public_path($path), PATHINFO_EXTENSION);
-        return 'data:image/' . $type . ';base64,' . base64_encode($data);
-    }
-    return null;
+if (file_exists(public_path($path))) {
+$data = file_get_contents(public_path($path));
+$type = pathinfo(public_path($path), PATHINFO_EXTENSION);
+return 'data:image/' . $type . ';base64,' . base64_encode($data);
+}
+return null;
 }
 $background = getBase64('assets/certificate/marksheet.jpeg');
 
 // For student photo
 $userPhotoBase64 = null;
 if (isset($user->profile_photo_path)) {
-    $userPhotoBase64 = getBase64('storage/' . $user->profile_photo_path);
+$userPhotoBase64 = getBase64('storage/' . $user->profile_photo_path);
 }
 @endphp
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Official Marksheet - {{ $user->name }}</title>
@@ -67,13 +68,47 @@ if (isset($user->profile_photo_path)) {
         }
 
         /* Positioning specific fields - Adjust these to match your background image */
-        #marksheet-no { top: 66.5mm; left: 43mm; color: #d41a1a; }
-        #issued-year  { top: 78.5mm; left: 104mm; text-align: center; width: 40mm; font-size: 10pt; }
-        
-        #student-name { top: 112.4mm; left: 72mm; width: 100mm; text-transform: uppercase; }
-        #mother-name  { top: 119.5mm; left: 43mm; width: 100mm; text-transform: uppercase; }
-        #course-name  { top: 127mm; left: 67mm; width: 100mm; text-transform: uppercase; }
-        #centre-name  { top: 134mm; left: 43mm; width: 130mm; text-transform: uppercase; }
+        #marksheet-no {
+            top: 66.5mm;
+            left: 43mm;
+            color: #d41a1a;
+        }
+
+        #issued-year {
+            top: 78.5mm;
+            left: 104mm;
+            text-align: center;
+            width: 40mm;
+            font-size: 10pt;
+        }
+
+        #student-name {
+            top: 112.4mm;
+            left: 72mm;
+            width: 100mm;
+            text-transform: uppercase;
+        }
+
+        #mother-name {
+            top: 119.5mm;
+            left: 43mm;
+            width: 100mm;
+            text-transform: uppercase;
+        }
+
+        #course-name {
+            top: 127mm;
+            left: 67mm;
+            width: 100mm;
+            text-transform: uppercase;
+        }
+
+        #centre-name {
+            top: 134mm;
+            left: 43mm;
+            width: 130mm;
+            text-transform: uppercase;
+        }
 
         .photo-area {
             position: absolute;
@@ -82,6 +117,7 @@ if (isset($user->profile_photo_path)) {
             width: 30mm;
             height: 38mm;
         }
+
         .student-photo {
             width: 100%;
             height: 100%;
@@ -103,8 +139,10 @@ if (isset($user->profile_photo_path)) {
             background-color: transparent;
         }
 
-        .marks-table th, .marks-table td {
-            border: 1.5px solid #000; /* Slightly thicker borders like in the image */
+        .marks-table th,
+        .marks-table td {
+            border: 1.5px solid #000;
+            /* Slightly thicker borders like in the image */
             padding: 1.5mm;
             font-size: 11pt;
             text-align: center;
@@ -132,16 +170,16 @@ if (isset($user->profile_photo_path)) {
             font-weight: bold;
             font-size: 11pt;
         }
-
     </style>
 </head>
+
 <body>
     <div class="wrapper">
         <div class="overlay">
             <!-- Dynamic Values -->
             <div id="marksheet-no" class="field">RK{{ date('Y') }}{{ str_pad($user->id, 4, '0', STR_PAD_LEFT) }}</div>
             <div id="issued-year" class="field">{{ date('Y') }}</div>
-            
+
             <div id="student-name" class="field">{{ strtoupper($user->name) }}</div>
             <div id="mother-name" class="field">{{ strtoupper($user->mother_name ?? 'N/A') }}</div>
             <div id="course-name" class="field">{{ strtoupper($course->name) }}</div>
@@ -200,16 +238,17 @@ if (isset($user->profile_photo_path)) {
                         </tr>
                     </tbody>
                 </table>
-
                 <!-- Footer Stats -->
                 @php
                 $pct = $totalMax ? round(($totalObt / $totalMax) * 100) : 0;
-                $grade = 'F';
-                if($pct >= 85) $grade = 'O';
+                $grade = 'D'; // User wants to hide Fail, and they must pass to see this
+                if($pct >= 90) $grade = 'O';
                 elseif($pct >= 75) $grade = 'A+';
                 elseif($pct >= 60) $grade = 'A';
+                elseif($pct >= 55) $grade = 'B+';
                 elseif($pct >= 50) $grade = 'B';
-                elseif($pct >= 40) $grade = 'C';
+                elseif($pct >= 45) $grade = 'C';
+                elseif($pct >= 40) $grade = 'D';
                 @endphp
 
                 <div class="footer-stats">
@@ -221,4 +260,5 @@ if (isset($user->profile_photo_path)) {
         </div>
     </div>
 </body>
+
 </html>

@@ -556,30 +556,17 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
-
         if (!$user->checkCourseCompletion($course)) {
             return back()->with('error', 'Complete all lessons and subject exams first.');
         }
-
         // Get ALL subjects linked to this course
-        $subjects = \App\Models\Subject::where('course_id', $course->id)->get()->map(function($s) use ($course) {
-            $cs = \App\Models\CourseSubject::where('course_id', $course->id)
-                ->where('subject_id', $s->id)
-                ->first();
-            
-            return (object)[
-                'id' => $cs ? $cs->id : 0,
-                'total_marks' => $cs ? $cs->total_marks : 100,
-                'pass_marks' => $cs ? $cs->pass_marks : 40,
-                'subject' => $s
-            ];
-        });
-
+        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)
+            ->with('subject')
+            ->get();
         $results = ExamResult::where('user_id', $user->id)
-            ->whereIn('course_subject_id', $subjects->pluck('id')->filter()->toArray())
+            ->whereIn('course_subject_id', $subjects->pluck('id')->toArray())
             ->get()
             ->keyBy('course_subject_id');
-
         // Base64 Photo
         $userPhotoBase64 = null;
         if ($user->image && file_exists(public_path($user->image))) {
@@ -588,9 +575,7 @@ class DashboardController extends Controller
             $data = file_get_contents($path);
             $userPhotoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         }
-
         $enrollDate = optional($course->pivot->created_at)->format('d/m/Y') ?? 'N/A';
-
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('student.exams.marksheet_print', compact('user', 'course', 'subjects', 'results', 'enrollDate', 'userPhotoBase64'));
         $pdf->setPaper('a4', 'portrait');
         return $pdf->download("Marksheet_{$course->name}.pdf");
@@ -600,11 +585,9 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
-
         if (!$user->checkCourseCompletion($course)) {
             return back()->with('error', 'Complete all lessons and subject exams first.');
         }
-
         $userPhotoBase64 = null;
         if ($user->image && file_exists(public_path($user->image))) {
             $path = public_path($user->image);
@@ -612,10 +595,8 @@ class DashboardController extends Controller
             $data = file_get_contents($path);
             $userPhotoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         }
-
         $enrollDate = optional($course->pivot->created_at)->format('d/m/Y') ?? 'N/A';
         $certificateNo = $this->ensureCertificateNo($user, $course);
-
         return view('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate', 'certificateNo'));
     }
 
@@ -623,30 +604,17 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
-
         if (!$user->checkCourseCompletion($course)) {
             return back()->with('error', 'Complete all lessons and subject exams first.');
         }
-
         // Get ALL subjects linked to this course
-        $subjects = \App\Models\Subject::where('course_id', $course->id)->get()->map(function($s) use ($course) {
-            $cs = \App\Models\CourseSubject::where('course_id', $course->id)
-                ->where('subject_id', $s->id)
-                ->first();
-            
-            return (object)[
-                'id' => $cs ? $cs->id : 0,
-                'total_marks' => $cs ? $cs->total_marks : 100,
-                'pass_marks' => $cs ? $cs->pass_marks : 40,
-                'subject' => $s
-            ];
-        });
-
+        $subjects = \App\Models\CourseSubject::where('course_id', $course->id)
+            ->with('subject')
+            ->get();
         $results = ExamResult::where('user_id', $user->id)
-            ->whereIn('course_subject_id', $subjects->pluck('id')->filter()->toArray())
+            ->whereIn('course_subject_id', $subjects->pluck('id')->toArray())
             ->get()
             ->keyBy('course_subject_id');
-
         $userPhotoBase64 = null;
         if ($user->image && file_exists(public_path($user->image))) {
             $path = public_path($user->image);
@@ -654,9 +622,7 @@ class DashboardController extends Controller
             $data = file_get_contents($path);
             $userPhotoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         }
-
         $enrollDate = optional($course->pivot->created_at)->format('d/m/Y') ?? 'N/A';
-
         return view('student.exams.marksheet_print', compact('user', 'course', 'subjects', 'results', 'enrollDate', 'userPhotoBase64'));
     }
 
@@ -664,7 +630,6 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $completedCourses = collect();
-
         foreach ($user->courses()->wherePivot('status', 'approved')->get() as $course) {
             if ($user->checkCourseCompletion($course)) {
                 // Get Video Progress
@@ -712,15 +677,12 @@ class DashboardController extends Controller
     public function downloadReceipt($reference)
     {
         $user = Auth::user();
-
         // Extract pivot ID from reference (RK-PAY-XXXXX)
         $pivotId = (int) str_replace('RK-PAY-', '', $reference);
-
         $enrollment = DB::table('course_user')
             ->where('id', $pivotId)
             ->where('user_id', $user->id)
             ->first();
-
         if (!$enrollment || !$enrollment->receipt_file) {
             // Fallback: If no PDF yet, generate one on the fly if approved
             if ($enrollment && $enrollment->status === 'approved') {
@@ -731,13 +693,10 @@ class DashboardController extends Controller
             }
             abort(404, 'Receipt not available yet.');
         }
-
         $filePath = public_path($enrollment->receipt_file);
-
         if (!file_exists($filePath)) {
             abort(404, 'Receipt file physically missing.');
         }
-
         return response()->download($filePath, "Receipt-{$enrollment->receipt_no}.pdf");
     }
 
@@ -749,7 +708,6 @@ class DashboardController extends Controller
             'subjects.units.topics',
             'subjects.units.paidVideos',
         ])->findOrFail($course_id);
-
         $allVideos = collect();
         foreach ($course->subjects as $subject) {
             foreach ($subject->units as $unit) {
@@ -773,15 +731,11 @@ class DashboardController extends Controller
     private function calculateExpiryDate($startDate, $duration)
     {
         if (!$startDate) return null;
-
         $date = \Carbon\Carbon::parse($startDate);
-
         if (!$duration) return $date->addYears(1);
-
         $durationLower = strtolower($duration);
         $amount = (int) filter_var($duration, FILTER_SANITIZE_NUMBER_INT);
         if ($amount <= 0) $amount = 1;
-
         if (str_contains($durationLower, 'month')) {
             return $date->addMonths($amount);
         } elseif (str_contains($durationLower, 'year')) {
@@ -789,7 +743,6 @@ class DashboardController extends Controller
         } elseif (str_contains($durationLower, 'day')) {
             return $date->addDays($amount);
         }
-
         return $date->addYears(1);
     }
 
@@ -798,11 +751,9 @@ class DashboardController extends Controller
         $query = $user->courses()
             ->withPivot('id', 'payment_method', 'amount', 'status', 'created_at')
             ->orderBy('course_user.created_at', 'desc');
-
         if ($limit) {
             $query->take($limit);
         }
-
         return $query->get()->map(function ($course) {
             $startDate = $course->pivot->updated_at ?? $course->pivot->created_at;
             $expiryDate = $this->calculateExpiryDate($startDate, $course->duration);

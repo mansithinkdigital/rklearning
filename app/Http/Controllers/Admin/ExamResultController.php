@@ -14,6 +14,47 @@ class ExamResultController extends Controller
      */
     public function index(Request $request)
     {
+        $allCourses = \App\Models\Course::all();
+
+        // 1. Fetch Reattempt Requests (Separate section)
+        $reattemptRequests = ExamResult::with(['user', 'courseSubject.course', 'courseSubject.subject'])
+            ->where('reattempt_status', 'requested')
+            ->latest()
+            ->get();
+
+        // 2. Fetch Completed Academic Portfolios (Course-wise completion)
+        // We find all approved enrollments and filter by checkCourseCompletion
+        $completedPortfolios = [];
+        $enrollments = \DB::table('course_user')
+            ->where('status', 'approved')
+            ->get();
+
+        foreach ($enrollments as $enrollment) {
+            $user = User::find($enrollment->user_id);
+            $course = \App\Models\Course::find($enrollment->course_id);
+            
+            if ($user && $course && $user->checkCourseCompletion($course)) {
+                // Fetch the latest exam date for this course
+                $lastExam = ExamResult::where('user_id', $user->id)
+                    ->whereHas('courseSubject', function($q) use ($course) {
+                        $q->where('course_id', $course->id);
+                    })
+                    ->latest()
+                    ->first();
+
+                $completedPortfolios[] = (object)[
+                    'user' => $user,
+                    'course' => $course,
+                    'completed_at' => $lastExam ? $lastExam->created_at : $enrollment->created_at,
+                    'enrollment_id' => $enrollment->id
+                ];
+            }
+        }
+        
+        // Sort portfolios by completion date
+        usort($completedPortfolios, fn($a, $b) => $b->completed_at <=> $a->completed_at);
+
+        // 3. All Individual Results (History)
         $query = ExamResult::with(['user', 'courseSubject.course', 'courseSubject.subject']);
 
         if ($request->filled('search')) {
@@ -39,9 +80,8 @@ class ExamResultController extends Controller
         }
 
         $results = $query->latest()->paginate(15)->withQueryString();
-        $allCourses = \App\Models\Course::all();
 
-        return view('admin.pages.exam_results.index', compact('results', 'allCourses'));
+        return view('admin.pages.exam_results.index', compact('results', 'allCourses', 'reattemptRequests', 'completedPortfolios'));
     }
 
     /**

@@ -19,7 +19,6 @@ class DashboardController extends Controller
         $activeCoursesCount = Course::where('status', 'Active')->count();
         $studentsCount = User::where('role', 'student')->count();
         $vacanciesCount = Vacancy::count();
-
         return view('admin.pages.dashboard', compact(
             'departmentsCount',
             'facultyCount',

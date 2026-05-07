@@ -48,6 +48,7 @@
 
     <!-- Questions Detailed Analysis -->
     <div class="space-y-8">
+        @if(!$result->reattempt_status || $result->reattempt_status === 'none')
         <div class="flex items-center justify-between">
             <h4 class="text-lg font-black text-slate-900 dark:text-black uppercase tracking-tight">Question-wise Breakdown</h4>
             <div class="flex items-center gap-4 text-xs font-bold">
@@ -122,6 +123,15 @@
             </div>
         </div>
         @endforeach
+        @else
+        <div class="p-12 bg-amber-50 border border-amber-100 rounded-[3rem] text-center">
+            <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i data-lucide="lock" class="w-10 h-10"></i>
+            </div>
+            <h4 class="text-2xl font-black text-amber-900 uppercase tracking-tight mb-2">Answer Sheet Hidden</h4>
+            <p class="text-amber-700 font-medium max-w-md mx-auto">Detailed analysis is hidden while a reattempt is requested or authorized to maintain examination integrity.</p>
+        </div>
+        @endif
     </div>
 
     @if($isCourseCompleted)

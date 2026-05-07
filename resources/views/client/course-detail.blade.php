@@ -1,5 +1,4 @@
 @extends('layouts.client')
-<<<<<<< Updated upstream
 @section('title', $course->name . ' - Course Overview | RK Institute')
 @section('content')
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -107,7 +106,6 @@
                 <i class="fa fa-chevron-right text-[8px]"></i>
                 <span class="text-white">{{ $course->name }}</span>
             </nav>
-
             <div class="max-w-4xl">
                 <div class="flex items-center gap-3 mb-6">
                     <span class="badge-premium">Official Certification</span>
@@ -163,27 +161,25 @@
                                         <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Module</p>
                                         <h4 class="text-lg font-bold text-slate-800 tracking-tight uppercase">{{ $subject->name }}</h4>
                                     </div>
-=======
-@section('title', $course->name . ' - Course Detail')
-@section('content')
-<section class="py-20 bg-slate-50">
-    <div class="container mx-auto px-6">
-        <div class="grid gap-12 lg:grid-cols-3">
-            <div class="lg:col-span-2 space-y-10">
-                <div class="rounded-[2rem] overflow-hidden shadow-xl">
-                    <img src="{{ asset('admin/uploads/courseimg/'.$course->image) }}" alt="{{ $course->name }}" class="w-full h-[420px] object-cover">
-                </div>
-                <div class="bg-white rounded-[2rem] p-10 shadow-lg">
-                    <h2 class="text-3xl font-black text-slate-900 mb-6">Course Curriculum & Resources</h2>
-                    <div class="space-y-6">
-                        @forelse($course->paidVideos as $index => $video)
-                        <div class="flex items-center justify-between p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-200 transition-all">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-xl bg-blue-600/10 flex items-center justify-center text-blue-600 font-bold">
-                                    {{ $index + 1 }}
->>>>>>> Stashed changes
-                                </div>
-                                <i id="icon-subject-{{ $subject->id }}" class="fa fa-chevron-down text-slate-300 transition-transform"></i>
+                                    @section('title', $course->name . ' - Course Detail')
+                                    @section('content')
+                                    <section class="py-20 bg-slate-50">
+                                        <div class="container mx-auto px-6">
+                                            <div class="grid gap-12 lg:grid-cols-3">
+                                                <div class="lg:col-span-2 space-y-10">
+                                                    <div class="rounded-[2rem] overflow-hidden shadow-xl">
+                                                        <img src="{{ asset('admin/uploads/courseimg/'.$course->image) }}" alt="{{ $course->name }}" class="w-full h-[420px] object-cover">
+                                                    </div>
+                                                    <div class="bg-white rounded-[2rem] p-10 shadow-lg">
+                                                        <h2 class="text-3xl font-black text-slate-900 mb-6">Course Curriculum & Resources</h2>
+                                                        <div class="space-y-6">
+                                                            @forelse($course->paidVideos as $index => $video)
+                                                            <div class="flex items-center justify-between p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-200 transition-all">
+                                                                <div class="flex items-center gap-4">
+                                                                    <div class="w-12 h-12 rounded-xl bg-blue-600/10 flex items-center justify-center text-blue-600 font-bold">
+                                                                        {{ $index + 1 }}
+                                                                    </div>
+                                                                    <i id="icon-subject-{{ $subject->id }}" class="fa fa-chevron-down text-slate-300 transition-transform"></i>
                             </button>
 
                             <div id="subject-{{ $subject->id }}" class="hidden px-6 pt-4 pb-8 border-x border-b border-slate-50 rounded-b-2xl animate-in slide-in-from-top-2">

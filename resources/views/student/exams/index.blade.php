@@ -116,9 +116,11 @@
                     Access Expired
                 </span>
                 @elseif($attempted)
-                <span class="px-3 py-1 {{ $passed ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600' }} rounded-lg text-[10px] font-black uppercase tracking-widest">
-                    {{ $passed ? 'Passed' : 'Failed' }}
+                @if($passed)
+                <span class="px-3 py-1 bg-emerald-100 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest">
+                    Passed
                 </span>
+                @endif
                 @elseif($hasMcqs)
                 <span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg text-[10px] font-black uppercase tracking-widest">Active Exam</span>
                 @else
@@ -202,8 +204,8 @@
             </button>
             @elseif($attempted)
             <div class="space-y-3">
-                <div class="w-full py-4 {{ $passed ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600' }} rounded-2xl font-black text-[11px] uppercase tracking-widest text-center border {{ $passed ? 'border-emerald-200' : 'border-red-200' }}">
-                    {{ $passed ? '✓ Exam Passed' : '✗ Exam Failed' }} — {{ $result->correct_answers }}/{{ $result->total_questions }} Correct
+                <div class="w-full py-4 {{ $passed ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600' }} rounded-2xl font-black text-[11px] uppercase tracking-widest text-center border {{ $passed ? 'border-emerald-200' : 'border-amber-200' }}">
+                    {{ $passed ? '✓ Exam Passed' : 'Exam Attempted' }} — {{ $result->correct_answers }}/{{ $result->total_questions }} Correct
                 </div>
                 
                 <div class="flex flex-col gap-2">
