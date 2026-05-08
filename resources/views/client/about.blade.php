@@ -4,118 +4,118 @@
 
 @section('styles')
 <style>
-    :root{
-        --rk-primary:#0f2d62;
-        --rk-secondary:#0f172a;
-        --rk-accent:#d4a437;
-        --rk-light:#f8fafc;
-        --rk-border:#e2e8f0;
+    :root {
+        --rk-primary: #0f2d62;
+        --rk-secondary: #0f172a;
+        --rk-accent: #d4a437;
+        --rk-light: #f8fafc;
+        --rk-border: #e2e8f0;
     }
 
-    html{
-        scroll-behavior:smooth;
+    html {
+        scroll-behavior: smooth;
     }
 
-    body{
-        font-family:'Inter',sans-serif;
-        background:#fff;
-        color:#0f172a;
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #fff;
+        color: #0f172a;
     }
 
-    .hero-section{
+    .hero-section {
         background:
-            linear-gradient(rgba(2,6,23,.88),rgba(15,23,42,.92)),
+            linear-gradient(rgba(2, 6, 23, .88), rgba(15, 23, 42, .92)),
             url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1600&q=80');
-        background-size:cover;
-        background-position:center;
+        background-size: cover;
+        background-position: center;
     }
 
-    .section-tag{
-        letter-spacing:.18em;
+    .section-tag {
+        letter-spacing: .18em;
     }
 
-    .section-heading{
-        position:relative;
-        display:inline-block;
-        padding-bottom:16px;
+    .section-heading {
+        position: relative;
+        display: inline-block;
+        padding-bottom: 16px;
     }
 
-    .section-heading::after{
-        content:'';
-        position:absolute;
-        left:0;
-        bottom:0;
-        width:70px;
-        height:5px;
-        border-radius:999px;
-        background:var(--rk-accent);
+    .section-heading::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 70px;
+        height: 5px;
+        border-radius: 999px;
+        background: var(--rk-accent);
     }
 
-    .rk-card{
-        border:1px solid var(--rk-border);
-        transition:.35s ease;
+    .rk-card {
+        border: 1px solid var(--rk-border);
+        transition: .35s ease;
     }
 
-    .rk-card:hover{
-        transform:translateY(-8px);
-        box-shadow:0 25px 60px rgba(15,23,42,.08);
+    .rk-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 25px 60px rgba(15, 23, 42, .08);
     }
 
-    .icon-box{
-        width:70px;
-        height:70px;
-        border-radius:24px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-size:28px;
+    .icon-box {
+        width: 70px;
+        height: 70px;
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
     }
 
-    .course-card{
-        transition:.3s ease;
-        border:1px solid #e2e8f0;
+    .course-card {
+        transition: .3s ease;
+        border: 1px solid #e2e8f0;
         color: var(--rk-primary);
     }
 
-    .course-card:hover{
-        background:#0f172a;
+    .course-card:hover {
+        background: #0f172a;
         color: var(--rk-primary);
-        transform:translateY(-8px);
-        
+        transform: translateY(-8px);
+
     }
 
-    .course-card:hover p{
-        color:#cbd5e1;
+    .course-card:hover p {
+        color: #cbd5e1;
     }
 
-    .course-card:hover h4{
-        color:#fff;
+    .course-card:hover h4 {
+        color: #fff;
     }
 
-    .stats-card{
-        background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);
+    .stats-card {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     }
 
-    .vision-list li{
-        position:relative;
-        padding-left:34px;
+    .vision-list li {
+        position: relative;
+        padding-left: 34px;
     }
 
-    .vision-list li::before{
-        content:'✓';
-        position:absolute;
-        left:0;
-        top:0;
-        color:#d4a437;
-        font-weight:900;
+    .vision-list li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: #d4a437;
+        font-weight: 900;
     }
 
-    .cta-section{
+    .cta-section {
         background:
-            linear-gradient(rgba(15,23,42,.92),rgba(15,23,42,.92)),
+            linear-gradient(rgba(15, 23, 42, .92), rgba(15, 23, 42, .92)),
             url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80');
-        background-size:cover;
-        background-position:center;
+        background-size: cover;
+        background-position: center;
     }
 </style>
 @endsection
@@ -126,31 +126,31 @@
 
     <!-- HERO -->
     <section class="hero-section py-32 flex justify-center items-center">
-    <div class="container mx-auto px-6 text-center">
+        <div class="container mx-auto px-6 text-center">
 
-        <!-- mx-auto on the wrapper div keeps the content width constrained but centered -->
-        <div class="max-w-4xl mx-auto">
+            <!-- mx-auto on the wrapper div keeps the content width constrained but centered -->
+            <div class="max-w-4xl mx-auto">
 
-            <p class="section-tag text-sm uppercase font-black text-amber-400 mb-5">
-                About RK Institute of Commerce
-            </p>
+                <p class="section-tag text-sm uppercase font-black text-amber-400 mb-5">
+                    About RK Institute of Commerce
+                </p>
 
-            <h1 class="text-5xl md:text-7xl font-black text-white leading-tight mb-8">
-                Empowering Minds.<br>
-                <span class="text-amber-400">Building Futures.</span>
-            </h1>
+                <h1 class="text-5xl md:text-7xl font-black text-white leading-tight mb-8">
+                    Empowering Minds.<br>
+                    <span class="text-amber-400">Building Futures.</span>
+                </h1>
 
-            <!-- mx-auto here ensures the paragraph text stays centered within its max-width -->
-            <p class="text-xl text-slate-300 leading-relaxed max-w-4xl mx-auto">
-                RK Institute of Commerce is committed to delivering practical,
-                affordable, and career-oriented education in Commerce,
-                Management, Taxation, and Computerized Accounting.
-            </p>
+                <!-- mx-auto here ensures the paragraph text stays centered within its max-width -->
+                <p class="text-xl text-slate-300 leading-relaxed max-w-4xl mx-auto">
+                    RK Institute of Commerce is committed to delivering practical,
+                    affordable, and career-oriented education in Commerce,
+                    Management, Taxation, and Computerized Accounting.
+                </p>
+
+            </div>
 
         </div>
-
-    </div>
-</section>
+    </section>
 
     <!-- ABOUT -->
     <section class="py-28 bg-white">
@@ -326,13 +326,13 @@
             </div>
 
             @php
-                $courses = [
-                    ['title'=>'Accounting','icon'=>'fa-calculator'],
-                    ['title'=>'Costing','icon'=>'fa-wallet'],
-                    ['title'=>'Income Tax','icon'=>'fa-percent'],
-                    ['title'=>'GST','icon'=>'fa-file-invoice'],
-                    ['title'=>'Computerized Accounting','icon'=>'fa-desktop'],
-                ];
+            $courses = [
+            ['title'=>'Accounting','icon'=>'fa-calculator'],
+            ['title'=>'Costing','icon'=>'fa-wallet'],
+            ['title'=>'Income Tax','icon'=>'fa-percent'],
+            ['title'=>'GST','icon'=>'fa-file-invoice'],
+            ['title'=>'Computerized Accounting','icon'=>'fa-desktop'],
+            ];
             @endphp
 
             <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
@@ -494,12 +494,12 @@
             <div class="flex flex-wrap justify-center gap-6">
 
                 <a href="{{ route('student.register') }}"
-                   class="px-10 py-5 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black rounded-2xl transition">
+                    class="px-10 py-5 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black rounded-2xl transition">
                     Enroll Now
                 </a>
 
                 <a href="{{ route('contact') }}"
-                   class="px-10 py-5 border border-white/20 hover:bg-white/10 text-white font-black rounded-2xl transition">
+                    class="px-10 py-5 border border-white/20 hover:bg-white/10 text-white font-black rounded-2xl transition">
                     Contact Us
                 </a>
 

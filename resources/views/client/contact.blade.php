@@ -4,96 +4,96 @@
 
 @section('styles')
 <style>
-    :root{
-        --rk-primary:#0f2d62;
-        --rk-secondary:#0f172a;
-        --rk-accent:#d4a437;
-        --rk-border:#e2e8f0;
+    :root {
+        --rk-primary: #0f2d62;
+        --rk-secondary: #0f172a;
+        --rk-accent: #d4a437;
+        --rk-border: #e2e8f0;
     }
 
-    .contact-hero{
+    .contact-hero {
         background:
-            linear-gradient(rgba(2,6,23,.88),rgba(15,23,42,.92)),
+            linear-gradient(rgba(2, 6, 23, .88), rgba(15, 23, 42, .92)),
             url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80');
-        background-size:cover;
-        background-position:center;
-        position:relative;
+        background-size: cover;
+        background-position: center;
+        position: relative;
     }
 
-    .contact-hero::before{
-        content:'';
-        position:absolute;
-        inset:0;
+    .contact-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
         background:
-            radial-gradient(circle at top left, rgba(59,130,246,.18), transparent 30%),
-            radial-gradient(circle at bottom right, rgba(245,158,11,.18), transparent 25%);
+            radial-gradient(circle at top left, rgba(59, 130, 246, .18), transparent 30%),
+            radial-gradient(circle at bottom right, rgba(245, 158, 11, .18), transparent 25%);
     }
 
-    .contact-card{
-        transition:all .35s ease;
-        border:1px solid var(--rk-border);
+    .contact-card {
+        transition: all .35s ease;
+        border: 1px solid var(--rk-border);
     }
 
-    .contact-card:hover{
-        transform:translateY(-10px);
-        box-shadow:0 25px 60px rgba(15,23,42,.08);
-        border-color:#1e3a8a;
+    .contact-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 60px rgba(15, 23, 42, .08);
+        border-color: #1e3a8a;
     }
 
-    .input-field{
-        width:100%;
-        padding:16px 20px;
-        background:#f8fafc;
-        border:1px solid #e2e8f0;
-        border-radius:16px;
-        font-weight:500;
-        transition:.3s ease;
+    .input-field {
+        width: 100%;
+        padding: 16px 20px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        font-weight: 500;
+        transition: .3s ease;
     }
 
-    .input-field:focus{
-        background:#fff;
-        border-color:#1e3a8a;
-        box-shadow:0 0 0 4px rgba(30,58,138,.08);
-        outline:none;
+    .input-field:focus {
+        background: #fff;
+        border-color: #1e3a8a;
+        box-shadow: 0 0 0 4px rgba(30, 58, 138, .08);
+        outline: none;
     }
 
-    .social-btn{
-        width:58px;
-        height:58px;
-        border-radius:18px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        background:rgba(255,255,255,.06);
-        color:#fff;
-        transition:.3s ease;
-        border:1px solid rgba(255,255,255,.08);
+    .social-btn {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, .06);
+        color: #fff;
+        transition: .3s ease;
+        border: 1px solid rgba(255, 255, 255, .08);
     }
 
-    .social-btn:hover{
-        background:#d4a437;
-        color:#0f172a;
-        transform:translateY(-5px);
+    .social-btn:hover {
+        background: #d4a437;
+        color: #0f172a;
+        transform: translateY(-5px);
     }
 
-    .section-tag{
-        letter-spacing:.18em;
+    .section-tag {
+        letter-spacing: .18em;
     }
 
-    .glass-card{
-        background:rgba(255,255,255,.05);
-        border:1px solid rgba(255,255,255,.08);
-        backdrop-filter:blur(14px);
+    .glass-card {
+        background: rgba(255, 255, 255, .05);
+        border: 1px solid rgba(255, 255, 255, .08);
+        backdrop-filter: blur(14px);
     }
 
-    .info-icon{
-        width:72px;
-        height:72px;
-        border-radius:24px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-size:30px;
+    .info-icon {
+        width: 72px;
+        height: 72px;
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
     }
 </style>
 @endsection
@@ -148,7 +148,7 @@
                     </p>
 
                     <a href="tel:+918888937680"
-                       class="text-2xl font-black text-slate-900 hover:text-blue-700 transition">
+                        class="text-2xl font-black text-slate-900 hover:text-blue-700 transition">
                         +91 88 88 93 76 80
                     </a>
 
@@ -170,7 +170,7 @@
                     </p>
 
                     <a href="mailto:Rkinstitute.cm@gmail.com"
-                       class="text-lg font-black text-slate-900 hover:text-blue-700 transition break-all">
+                        class="text-lg font-black text-slate-900 hover:text-blue-700 transition break-all">
                         Rkinstitute.cm@gmail.com
                     </a>
 
@@ -240,8 +240,8 @@
                                     </label>
 
                                     <input type="text"
-                                           class="input-field"
-                                           placeholder="Enter your name">
+                                        class="input-field"
+                                        placeholder="Enter your name">
                                 </div>
 
                                 <div>
@@ -250,8 +250,8 @@
                                     </label>
 
                                     <input type="text"
-                                           class="input-field"
-                                           placeholder="+91 00000 00000">
+                                        class="input-field"
+                                        placeholder="+91 00000 00000">
                                 </div>
 
                             </div>
@@ -262,8 +262,8 @@
                                 </label>
 
                                 <input type="email"
-                                       class="input-field"
-                                       placeholder="Enter your email">
+                                    class="input-field"
+                                    placeholder="Enter your email">
                             </div>
 
                             <div>
@@ -288,14 +288,14 @@
                                 </label>
 
                                 <textarea rows="5"
-                                          class="input-field"
-                                          placeholder="Write your message here..."></textarea>
+                                    class="input-field"
+                                    placeholder="Write your message here..."></textarea>
                             </div>
 
                             <div class="pt-4">
 
                                 <button type="submit"
-                                        class="w-full py-5 bg-slate-900 hover:bg-blue-700 text-white font-black rounded-2xl transition shadow-xl shadow-slate-200">
+                                    class="w-full py-5 bg-slate-900 hover:bg-blue-700 text-white font-black rounded-2xl transition shadow-xl shadow-slate-200">
                                     Submit Inquiry
                                 </button>
 
@@ -332,8 +332,8 @@
                                 <div class="flex items-center gap-6">
 
                                     <a href="https://www.instagram.com/rk_institute_1"
-                                       target="_blank"
-                                       class="social-btn text-2xl">
+                                        target="_blank"
+                                        class="social-btn text-2xl">
                                         <i class="fab fa-instagram"></i>
                                     </a>
 
@@ -353,7 +353,7 @@
                                 <div class="flex items-center gap-6">
 
                                     <a href="https://www.facebook.com/share/1CLCuBEQKz/"
-                                       class="social-btn text-2xl">
+                                        class="social-btn text-2xl">
                                         <i class="fab fa-facebook-f"></i>
                                     </a>
 

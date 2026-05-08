@@ -125,6 +125,9 @@ class CheckoutController extends Controller
                 'course_id' => $course->id,
                 'payment_method' => 'online',
                 'amount' => $course->price,
+                'total_payable' => $course->price,
+                'paid_amount' => $course->price,
+                'balance_amount' => 0,
                 'status' => 'approved',
                 'razorpay_payment_id' => $request->razorpay_payment_id,
                 'razorpay_order_id' => $request->razorpay_order_id,
@@ -149,5 +152,15 @@ class CheckoutController extends Controller
         $courseId = $request->course_id;
         $course = Course::findOrFail($courseId);
         return view('client.payment-success', compact('course'));
+    }
+
+    /**
+     * Handle payment failure callback.
+     */
+    public function paymentFailed(Request $request)
+    {
+        $courseId = $request->course_id;
+        $course = Course::findOrFail($courseId);
+        return view('client.payment-failed', compact('course'));
     }
 }

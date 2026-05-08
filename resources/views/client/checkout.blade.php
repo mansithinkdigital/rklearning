@@ -421,7 +421,7 @@
                         };
                         const rzp1 = new Razorpay(options);
                         rzp1.on('payment.failed', function (response){
-                            Swal.fire('Payment Failed', response.error.description, 'error');
+                            window.location.href = "{{ route('student.courses.payment.failed', ['course_id' => $course->id]) }}?error=" + response.error.description;
                         });
                         rzp1.open();
                     } else {
@@ -475,4 +475,3 @@
     });
 </script>
 @endsection
-dsection
