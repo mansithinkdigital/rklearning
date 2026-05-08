@@ -11,7 +11,6 @@
             </div>
             <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-emerald-400 opacity-5 rounded-full blur-3xl"></div>
         </div>
-
         <h1 class="text-4xl font-black text-slate-900 mb-4 tracking-tight">Payment Successful!</h1>
         <p class="text-lg text-slate-500 font-medium mb-12">Congratulations! Your enrollment in <span class="text-slate-900 font-bold">"{{ $course->name }}"</span> has been confirmed. You now have full access to the course materials.</p>
 

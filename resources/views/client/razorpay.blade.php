@@ -1,7 +1,5 @@
 @extends('layouts.client')
-
 @section('title', 'Processing Payment - Rk Institute')
-
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-slate-50 py-20">
     <div class="max-w-md w-full p-10 bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 text-center">
@@ -12,7 +10,6 @@
             <h2 class="text-2xl font-black text-slate-900 mb-2">Secure Payment</h2>
             <p class="text-sm font-bold text-slate-500">Wait while we connect to Razorpay...</p>
         </div>
-
         <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 mb-10">
             <div class="flex items-center justify-between mb-2">
                 <span class="text-xs font-bold text-slate-400 uppercase">Course</span>
@@ -27,7 +24,6 @@
             <i class="fa fa-credit-card"></i>
             Pay with Razorpay
         </button>
-        
         <p class="mt-8 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
             <i class="fa fa-lock mr-1"></i> Powered by Razorpay Secure
         </p>
@@ -43,7 +39,7 @@
         "name": "Rk Institute",
         "description": "Enrollment for {{ $course->name }}",
         "image": "{{ asset('logo.png') }}",
-        "handler": function (response){
+        "handler": function(response) {
             // Success handler
             window.location.href = "{{ route('student.courses.payment.success') }}?payment_id=" + response.razorpay_payment_id + "&course_id={{ $course->id }}";
         },
@@ -60,11 +56,11 @@
         }
     };
     var rzp1 = new Razorpay(options);
-    document.getElementById('rzp-button1').onclick = function(e){
+    document.getElementById('rzp-button1').onclick = function(e) {
         rzp1.open();
         e.preventDefault();
     }
-    
+
     // Auto-open on load
     window.onload = function() {
         // rzp1.open(); 

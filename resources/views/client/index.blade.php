@@ -240,14 +240,11 @@
     <!-- Background Accents -->
     <div class="hero-bg-accent" style="top: -10%; right: -5%;"></div>
     <div class="hero-bg-accent" style="bottom: -10%; left: -5%;"></div>
-
     <!-- Animated Shapes -->
     <div class="absolute top-20 left-10 w-32 h-32 bg-yellow-400/20 rounded-full blur-2xl animate-pulse"></div>
     <div class="absolute bottom-20 right-20 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s"></div>
-
     <div class="container mx-auto px-6 relative z-10">
         <div class="flex flex-col lg:flex-row items-center gap-16 lg:min-h-[850px]">
-
             <!-- Content Left -->
             <div class="lg:w-1/2 mt-12 lg:mt-0">
                 <div class="inline-flex items-center space-x-3 bg-indigo-50 border border-indigo-100/50 px-5 py-2.5 rounded-full mb-10 opacity-0 animate-fade-up"
@@ -258,24 +255,19 @@
                     </span>
                     <span class="text-indigo-600 font-bold text-xs tracking-[0.2em] uppercase">The Future of Education</span>
                 </div>
-
                 <h1 class="text-6xl lg:text-[100px] font-black text-slate-900 mb-10 leading-[0.95] tracking-tight opacity-0 animate-fade-up" style="animation-delay: 0.2s">
                     Master your <br> <span class="text-gradient-premium">craft</span> <span class="text-underline-premium text-indigo-600">daily.</span>
                 </h1>
-
                 <p class="text-slate-500 text-xl lg:text-2xl mb-12 max-w-xl leading-relaxed opacity-0 animate-fade-up font-medium"
                     style="animation-delay: 0.3s">
                     Empower your journey with industry-leading courses. Join 50k+ students worldwide mastering new skills every day.
                 </p>
-
                 <div class="flex flex-wrap gap-6 opacity-0 animate-fade-up items-center" style="animation-delay: 0.4s">
-
                     @auth
                     <a href="{{ route('student.dashboard') }}"
                         class="btn-glow group relative bg-indigo-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-indigo-200 hover:-translate-y-1">
                         <span class="flex items-center">
                             Go to Dashboard
-
                             <a href="{{ route('student.register') }}"
                                 class="btn-glow group relative bg-indigo-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-indigo-200 hover:-translate-y-1">
                                 <span class="flex items-center">
@@ -286,7 +278,6 @@
                                     </svg>
                                 </span>
                             </a>
-
                             @else
                             <a href="{{ route('student.login') }}"
                                 class="btn-glow group relative bg-indigo-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-indigo-200 hover:-translate-y-1">
@@ -298,13 +289,11 @@
                                 </span>
                             </a>
                             @endauth
-
                             <a href="{{ route('courses') }}"
                                 class="group bg-white text-slate-900 px-10 py-5 rounded-2xl font-bold text-lg border border-slate-200 hover:bg-slate-50 hover:border-indigo-200 transition-all">
                                 Browse Courses
                             </a>
                 </div>
-
                 <div class="mt-20 flex items-center space-x-8 opacity-0 animate-fade-up" style="animation-delay: 0.5s">
                     <div class="flex -space-x-4">
                         @for($i = 20; $i < 24; $i++)
@@ -353,16 +342,13 @@
                     <p class="font-black text-slate-900 text-2xl leading-none font-outfit">12,400+</p>
                 </div>
             </div>
-
             <!-- Floating Icons -->
             <div class="hero-floating-element animate-float-3 flex items-center justify-center w-20 h-20 bg-white rounded-3xl" style="top: 50%; left: -20px;">
                 <i class="fa fa-code text-3xl text-indigo-600"></i>
             </div>
-
             <div class="hero-floating-element animate-float-1 flex items-center justify-center w-16 h-16 bg-yellow-400 rounded-2xl shadow-yellow-200" style="bottom: 40%; right: -30px;">
                 <i class="fa fa-bolt text-2xl text-slate-900"></i>
             </div>
-
             <!-- Main Image Container -->
             <div class="image-glass-container group">
                 <div class="relative rounded-[60px] overflow-hidden">

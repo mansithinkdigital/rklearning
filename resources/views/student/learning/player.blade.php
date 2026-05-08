@@ -434,7 +434,7 @@
         let seekCheckInterval = null;
         const ALL_VIDEOS = @json($allVideos);
         let COMPLETED_VIDS = @json($completedVideoIds);
-        const COURSE_ID = @json($course - > id);
+        const COURSE_ID = @json($course -> id);
         // ─── YOUTUBE API ─────────────────────────────────────
         function onYouTubeIframeAPIReady() {
             // Player will be initialized when playVideo is called

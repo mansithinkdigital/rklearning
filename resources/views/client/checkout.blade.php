@@ -316,8 +316,7 @@
                             <i class="fa fa-university text-lg"></i>
                             <i class="fa fa-shield-check text-lg"></i>
                         </div>
-                    </div>
-                </div>
+                                   </div>
             </div>
         </div>
     </div>
@@ -326,6 +325,7 @@
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.querySelector('form[action*="purchase"]');
@@ -337,7 +337,103 @@
 
             const paymentMethod = paymentMethodInput.value;
 
-            if (paymentMethod === 'offline') {
+            if (paymentMethod === 'online') {
+                e.preventDefault();
+
+                // Show loading
+                Swal.fire({
+                    title: 'Initializing Payment',
+                    text: 'Connecting to secure gateway...',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Create Razorpay Order via AJAX
+                const formData = new FormData(form);
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    Swal.close();
+                    if (data.success) {
+                        const options = {
+                            "key": "{{ env('RAZORPAY_KEY') }}",
+                            "amount": data.amount,
+                            "currency": "INR",
+                            "name": "RK Institute",
+                            "description": data.description,
+                            "image": "{{ asset('admin/assets/images/logo-sm.png') }}",
+                            "order_id": data.order_id,
+                            "handler": function (response){
+                                // Verify payment
+                                Swal.fire({
+                                    title: 'Verifying Payment',
+                                    text: 'Please wait while we confirm your transaction...',
+                                    allowOutsideClick: false,
+                                    showConfirmButton: false,
+                                    willOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                });
+
+                                fetch("{{ route('student.courses.verify-payment', $course->id) }}", {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                        'Accept': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        razorpay_payment_id: response.razorpay_payment_id,
+                                        razorpay_order_id: response.razorpay_order_id,
+                                        razorpay_signature: response.razorpay_signature
+                                    })
+                                })
+                                .then(res => res.json())
+                                .then(verifyData => {
+                                    if (verifyData.success) {
+                                        window.location.href = "{{ route('student.courses.payment.success', ['course_id' => $course->id]) }}";
+                                    } else {
+                                        Swal.fire('Payment Failed', verifyData.message || 'Verification failed', 'error');
+                                    }
+                                })
+                                .catch(err => {
+                                    Swal.fire('Error', 'Something went wrong during verification', 'error');
+                                });
+                            },
+                            "prefill": {
+                                "name": data.user_name,
+                                "email": data.user_email,
+                                "contact": data.user_phone
+                            },
+                            "theme": {
+                                "color": "#2563eb"
+                            }
+                        };
+                        const rzp1 = new Razorpay(options);
+                        rzp1.on('payment.failed', function (response){
+                            Swal.fire('Payment Failed', response.error.description, 'error');
+                        });
+                        rzp1.open();
+                    } else {
+                        Swal.fire('Error', data.message || 'Could not initialize payment', 'error');
+                    }
+                })
+                .catch(error => {
+                    Swal.close();
+                    Swal.fire('Error', 'Network error. Please try again.', 'error');
+                });
+
+            } else if (paymentMethod === 'offline') {
                 e.preventDefault();
 
                 Swal.fire({
@@ -379,3 +475,4 @@
     });
 </script>
 @endsection
+dsection

@@ -412,7 +412,7 @@
                             <div class="relative z-10">
                                 <span class="text-indigo-500 text-[10px] font-black uppercase tracking-[0.3em] mb-4 block">Academic Achievement</span>
                                 <h3 class="text-3xl font-black text-slate-900 mb-8 max-w-2xl leading-tight">{{ strtoupper($course->name) }}</h3>
-                                
+                        
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                                     <div class="flex items-center gap-4">
                                         <div class="w-10 h-10 bg-white text-indigo-600 rounded-xl flex items-center justify-center shadow-sm">

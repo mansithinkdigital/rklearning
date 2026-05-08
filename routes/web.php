@@ -49,6 +49,7 @@ Route::prefix('student')->name('student.')->group(function () {
         Route::get('/my-courses', [StudentDashboardController::class, 'courses'])->name('my-courses');
         Route::get('/courses/{course}/checkout', [CheckoutController::class, 'checkout'])->name('courses.checkout');
         Route::post('/courses/{course}/purchase', [CheckoutController::class, 'purchaseCourse'])->name('courses.purchase');
+        Route::post('/courses/{course}/verify-payment', [CheckoutController::class, 'verifyPayment'])->name('courses.verify-payment');
         Route::get('/payment-success', [CheckoutController::class, 'paymentSuccess'])->name('courses.payment.success');
         Route::get('/profile', [StudentDashboardController::class, 'profile'])->name('profile');
         Route::post('/profile', [StudentDashboardController::class, 'updateProfile'])->name('profile.update');
