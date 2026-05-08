@@ -4,245 +4,245 @@
 
 @section('styles')
 <style>
-    :root{
-        --primary:#2563EB;
-        --primary-dark:#1D4ED8;
-        --secondary:#0F172A;
-        --muted:#64748B;
-        --border:#E2E8F0;
-        --bg:#F8FAFC;
+    :root {
+        --primary: #2563EB;
+        --primary-dark: #1D4ED8;
+        --secondary: #0F172A;
+        --muted: #64748B;
+        --border: #E2E8F0;
+        --bg: #F8FAFC;
     }
 
-    html{
-        scroll-behavior:smooth;
+    html {
+        scroll-behavior: smooth;
     }
 
-    body{
-        background:#fff;
-        color:var(--secondary);
-        font-family:Inter,sans-serif;
+    body {
+        background: #fff;
+        color: var(--secondary);
+        font-family: Inter, sans-serif;
     }
 
-    .container-rk{
-        max-width:1280px;
+    .container-rk {
+        max-width: 1280px;
     }
 
-    .section-padding{
-        padding:110px 0;
+    .section-padding {
+        padding: 110px 0;
     }
 
-    .section-badge{
-        display:inline-flex;
-        align-items:center;
-        gap:10px;
-        padding:10px 18px;
-        border-radius:999px;
-        background:rgba(37,99,235,.06);
-        border:1px solid rgba(37,99,235,.08);
-        color:var(--primary);
-        font-size:12px;
-        font-weight:700;
-        letter-spacing:.12em;
-        text-transform:uppercase;
+    .section-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 18px;
+        border-radius: 999px;
+        background: rgba(37, 99, 235, .06);
+        border: 1px solid rgba(37, 99, 235, .08);
+        color: var(--primary);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
     }
 
-    .section-title{
-        font-size:56px;
-        line-height:1.05;
-        font-weight:900;
-        letter-spacing:-0.04em;
-        color:var(--secondary);
+    .section-title {
+        font-size: 56px;
+        line-height: 1.05;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        color: var(--secondary);
     }
 
-    .section-text{
-        color:var(--muted);
-        font-size:18px;
-        line-height:1.9;
+    .section-text {
+        color: var(--muted);
+        font-size: 18px;
+        line-height: 1.9;
     }
 
-    .hero-bg{
+    .hero-bg {
         background:
-            radial-gradient(circle at top left, rgba(37,99,235,.08), transparent 35%),
-            radial-gradient(circle at bottom right, rgba(59,130,246,.06), transparent 30%),
+            radial-gradient(circle at top left, rgba(37, 99, 235, .08), transparent 35%),
+            radial-gradient(circle at bottom right, rgba(59, 130, 246, .06), transparent 30%),
             #F8FAFC;
     }
 
-    .gradient-text{
-        background:linear-gradient(135deg,#2563EB 0%,#1D4ED8 100%);
-        -webkit-background-clip:text;
-        -webkit-text-fill-color:transparent;
+    .gradient-text {
+        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
 
-    .btn-primary{
-        background:var(--primary);
-        color:#fff;
-        border-radius:16px;
-        padding:16px 30px;
-        font-weight:700;
-        transition:.3s ease;
-        display:inline-flex;
-        align-items:center;
-        justify-content:center;
-        gap:12px;
-        box-shadow:0 10px 30px rgba(37,99,235,.18);
+    .btn-primary {
+        background: var(--primary);
+        color: #fff;
+        border-radius: 16px;
+        padding: 16px 30px;
+        font-weight: 700;
+        transition: .3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        box-shadow: 0 10px 30px rgba(37, 99, 235, .18);
     }
 
-    .btn-primary:hover{
-        background:var(--primary-dark);
-        transform:translateY(-2px);
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
     }
 
-    .btn-secondary{
-        background:#fff;
-        border:1px solid var(--border);
-        color:var(--secondary);
-        border-radius:16px;
-        padding:16px 30px;
-        font-weight:700;
-        transition:.3s ease;
+    .btn-secondary {
+        background: #fff;
+        border: 1px solid var(--border);
+        color: var(--secondary);
+        border-radius: 16px;
+        padding: 16px 30px;
+        font-weight: 700;
+        transition: .3s ease;
     }
 
-    .btn-secondary:hover{
-        border-color:var(--primary);
-        color:var(--primary);
+    .btn-secondary:hover {
+        border-color: var(--primary);
+        color: var(--primary);
     }
 
-    .hero-image-wrapper{
-        position:relative;
+    .hero-image-wrapper {
+        position: relative;
     }
 
-    .hero-image{
-        border-radius:36px;
-        overflow:hidden;
+    .hero-image {
+        border-radius: 36px;
+        overflow: hidden;
         box-shadow:
-            0 40px 100px rgba(15,23,42,.12),
-            0 10px 20px rgba(15,23,42,.05);
+            0 40px 100px rgba(15, 23, 42, .12),
+            0 10px 20px rgba(15, 23, 42, .05);
     }
 
-    .hero-image img{
-        width:100%;
-        height:700px;
-        object-fit:cover;
+    .hero-image img {
+        width: 100%;
+        height: 700px;
+        object-fit: cover;
     }
 
-    .floating-card{
-        position:absolute;
-        background:rgba(255,255,255,.96);
-        border:1px solid rgba(255,255,255,.4);
-        backdrop-filter:blur(14px);
-        border-radius:24px;
-        padding:22px;
-        box-shadow:0 20px 50px rgba(0,0,0,.08);
+    .floating-card {
+        position: absolute;
+        background: rgba(255, 255, 255, .96);
+        border: 1px solid rgba(255, 255, 255, .4);
+        backdrop-filter: blur(14px);
+        border-radius: 24px;
+        padding: 22px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, .08);
     }
 
-    .hero-stat{
-        background:#fff;
-        border:1px solid var(--border);
-        border-radius:24px;
-        padding:30px;
+    .hero-stat {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 30px;
     }
 
     .feature-card,
     .course-card,
     .testimonial-card,
-    .why-card{
-        background:#fff;
-        border:1px solid var(--border);
-        border-radius:28px;
-        transition:.35s ease;
+    .why-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 28px;
+        transition: .35s ease;
     }
 
     .feature-card:hover,
     .course-card:hover,
     .testimonial-card:hover,
-    .why-card:hover{
-        transform:translateY(-6px);
-        box-shadow:0 30px 60px rgba(15,23,42,.08);
+    .why-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 30px 60px rgba(15, 23, 42, .08);
     }
 
-    .icon-box{
-        width:70px;
-        height:70px;
-        border-radius:22px;
-        background:#EFF6FF;
-        color:var(--primary);
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-size:28px;
+    .icon-box {
+        width: 70px;
+        height: 70px;
+        border-radius: 22px;
+        background: #EFF6FF;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
     }
 
-    .course-card{
-        overflow:hidden;
+    .course-card {
+        overflow: hidden;
     }
 
-    .course-image{
-        overflow:hidden;
+    .course-image {
+        overflow: hidden;
     }
 
-    .course-image img{
-        width:100%;
-        height:240px;
-        object-fit:cover;
-        transition:.6s ease;
+    .course-image img {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+        transition: .6s ease;
     }
 
-    .course-card:hover .course-image img{
-        transform:scale(1.05);
+    .course-card:hover .course-image img {
+        transform: scale(1.05);
     }
 
-    .glass-card{
-        background:rgba(255,255,255,.7);
-        backdrop-filter:blur(14px);
-        border:1px solid rgba(255,255,255,.4);
+    .glass-card {
+        background: rgba(255, 255, 255, .7);
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, .4);
     }
 
-    .cta-box{
+    .cta-box {
         background:
-            radial-gradient(circle at top left, rgba(255,255,255,.08), transparent 30%),
-            linear-gradient(135deg,#0F172A 0%,#1E293B 100%);
-        border-radius:42px;
-        overflow:hidden;
-        position:relative;
+            radial-gradient(circle at top left, rgba(255, 255, 255, .08), transparent 30%),
+            linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+        border-radius: 42px;
+        overflow: hidden;
+        position: relative;
     }
 
-    .cta-box::before{
-        content:'';
-        position:absolute;
-        width:400px;
-        height:400px;
-        background:rgba(37,99,235,.18);
-        filter:blur(120px);
-        top:-120px;
-        right:-120px;
+    .cta-box::before {
+        content: '';
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        background: rgba(37, 99, 235, .18);
+        filter: blur(120px);
+        top: -120px;
+        right: -120px;
     }
 
-    .grid-pattern{
+    .grid-pattern {
         background-image:
-            linear-gradient(rgba(148,163,184,.08) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(148,163,184,.08) 1px, transparent 1px);
-        background-size:40px 40px;
+            linear-gradient(rgba(148, 163, 184, .08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(148, 163, 184, .08) 1px, transparent 1px);
+        background-size: 40px 40px;
     }
 
-    @media(max-width:1024px){
+    @media(max-width:1024px) {
 
-        .section-title{
-            font-size:44px;
+        .section-title {
+            font-size: 44px;
         }
 
-        .hero-image img{
-            height:500px;
+        .hero-image img {
+            height: 500px;
         }
     }
 
-    @media(max-width:640px){
+    @media(max-width:640px) {
 
-        .section-title{
-            font-size:36px;
+        .section-title {
+            font-size: 36px;
         }
 
-        .section-padding{
-            padding:80px 0;
+        .section-padding {
+            padding: 80px 0;
         }
     }
 </style>
@@ -282,15 +282,15 @@
                 <div class="flex flex-wrap gap-4 mb-14">
 
                     @auth
-                        <a href="{{ route('student.dashboard') }}" class="btn-primary">
-                            Go To Dashboard
-                            <i class="fa fa-arrow-right"></i>
-                        </a>
+                    <a href="{{ route('student.dashboard') }}" class="btn-primary">
+                        Go To Dashboard
+                        <i class="fa fa-arrow-right"></i>
+                    </a>
                     @else
-                        <a href="{{ route('student.register') }}" class="btn-primary">
-                            Start Learning
-                            <i class="fa fa-arrow-right"></i>
-                        </a>
+                    <a href="{{ route('student.register') }}" class="btn-primary">
+                        Start Learning
+                        <i class="fa fa-arrow-right"></i>
+                    </a>
                     @endauth
 
                     <a href="{{ route('courses') }}" class="btn-secondary">
@@ -383,64 +383,41 @@
 </section>
 
 <!-- FEATURES -->
-<section class="section-padding bg-white">
-
-    <div class="container-rk mx-auto px-6">
-
-        <div class="grid md:grid-cols-3 gap-8">
-
-            <div class="feature-card p-10">
-
-                <div class="icon-box mb-8">
-                    <i class="fa fa-laptop-code"></i>
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="flex items-center space-x-4 p-6 bg-white rounded-xl shadow-sm border border-slate-50">
+                <div
+                    class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-zilom-blue text-2xl">
+                    <i class="fa fa-book-open"></i>
                 </div>
-
-                <h3 class="text-2xl font-bold mb-5">
-                    Industry Focused Courses
-                </h3>
-
-                <p class="text-slate-600 leading-relaxed">
-                    Learn practical concepts designed around real-world industry needs and modern technologies.
-                </p>
-
-            </div>
-
-            <div class="feature-card p-10">
-
-                <div class="icon-box mb-8">
-                    <i class="fa fa-user-tie"></i>
+                <div>
+                    <h4 class="font-bold text-xl">Online Courses</h4>
+                    <p class="text-sm text-slate-500">Learn anything, anywhere.</p>
                 </div>
-
-                <h3 class="text-2xl font-bold mb-5">
-                    Expert Mentorship
-                </h3>
-
-                <p class="text-slate-600 leading-relaxed">
-                    Get guidance from experienced mentors and professionals throughout your learning journey.
-                </p>
-
             </div>
-
-            <div class="feature-card p-10">
-
-                <div class="icon-box mb-8">
-                    <i class="fa fa-certificate"></i>
+            <div class="flex items-center space-x-4 p-6 bg-white rounded-xl shadow-sm border border-slate-50">
+                <div
+                    class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-zilom-blue text-2xl">
+                    <i class="fa fa-chalkboard-teacher"></i>
                 </div>
-
-                <h3 class="text-2xl font-bold mb-5">
-                    Career Growth
-                </h3>
-
-                <p class="text-slate-600 leading-relaxed">
-                    Build valuable skills, strengthen your portfolio, and improve professional opportunities.
-                </p>
-
+                <div>
+                    <h4 class="font-bold text-xl">Expert Instructions</h4>
+                    <p class="text-sm text-slate-500">Learn from the best in world.</p>
+                </div>
             </div>
-
+            <div class="flex items-center space-x-4 p-6 bg-white rounded-xl shadow-sm border border-slate-50">
+                <div
+                    class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-zilom-blue text-2xl">
+                    <i class="fa fa-lock-open"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-xl">Certificates</h4>
+                    <p class="text-sm text-slate-500">value all over the world</p>
+                </div>
+            </div>
         </div>
-
     </div>
-
 </section>
 
 <!-- ABOUT -->
@@ -483,61 +460,41 @@
                     RK Institute focuses on helping students gain confidence through
                     real projects, mentorship, and structured learning experiences.
                 </p>
-
                 <div class="space-y-6">
-
                     <div class="why-card p-7">
-
                         <div class="flex gap-5">
-
                             <div class="icon-box shrink-0">
                                 <i class="fa fa-check"></i>
                             </div>
-
                             <div>
                                 <h4 class="font-bold text-xl mb-3">
                                     Practical Learning Approach
                                 </h4>
-
                                 <p class="text-slate-500 leading-relaxed">
                                     Courses include projects and assignments focused on real-world implementation.
                                 </p>
                             </div>
-
                         </div>
-
                     </div>
-
                     <div class="why-card p-7">
-
                         <div class="flex gap-5">
-
                             <div class="icon-box shrink-0">
                                 <i class="fa fa-check"></i>
                             </div>
-
                             <div>
                                 <h4 class="font-bold text-xl mb-3">
                                     Flexible Online Access
                                 </h4>
-
                                 <p class="text-slate-500 leading-relaxed">
                                     Learn anytime and continue your education at your own pace.
                                 </p>
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 </section>
 
 <!-- COURSES -->
@@ -629,23 +586,23 @@
         <div class="grid lg:grid-cols-3 gap-8">
 
             @php
-                $testimonials = [
-                    [
-                        'name' => 'Rahul Sharma',
-                        'role' => 'Frontend Developer',
-                        'text' => 'RK Institute provided a structured and professional learning experience that helped me improve my development skills significantly.'
-                    ],
-                    [
-                        'name' => 'Priya Verma',
-                        'role' => 'UI/UX Designer',
-                        'text' => 'The mentorship and practical projects made learning much easier and more career-focused.'
-                    ],
-                    [
-                        'name' => 'Amit Joshi',
-                        'role' => 'Software Engineer',
-                        'text' => 'Excellent platform with quality guidance, modern content, and practical assignments.'
-                    ]
-                ];
+            $testimonials = [
+            [
+            'name' => 'Rahul Sharma',
+            'role' => 'Frontend Developer',
+            'text' => 'RK Institute provided a structured and professional learning experience that helped me improve my development skills significantly.'
+            ],
+            [
+            'name' => 'Priya Verma',
+            'role' => 'UI/UX Designer',
+            'text' => 'The mentorship and practical projects made learning much easier and more career-focused.'
+            ],
+            [
+            'name' => 'Amit Joshi',
+            'role' => 'Software Engineer',
+            'text' => 'Excellent platform with quality guidance, modern content, and practical assignments.'
+            ]
+            ];
             @endphp
 
             @foreach($testimonials as $t)
@@ -706,9 +663,9 @@
             <div class="flex justify-center gap-5 flex-wrap relative z-10">
 
                 @guest
-                    <a href="{{ route('student.register') }}" class="btn-primary">
-                        Create Free Account
-                    </a>
+                <a href="{{ route('student.register') }}" class="btn-primary">
+                    Create Free Account
+                </a>
                 @endguest
 
                 <a href="{{ route('courses') }}" class="btn-secondary bg-white">
