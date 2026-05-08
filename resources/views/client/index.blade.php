@@ -1,487 +1,546 @@
 @extends('layouts.client')
-@section('title', 'Home - Rk Institute - Transform Your Future')
+
+@section('title', 'RK Institute — Modern Professional Education')
+
 @section('styles')
 <style>
-    :root {
-        --zilom-blue: #4F46E5;
-        --zilom-blue-dark: #3730A3;
-        --zilom-secondary: #0F172A;
-        --zilom-bg-light: #F8FAFC;
+    :root{
+        --primary:#2563EB;
+        --primary-dark:#1D4ED8;
+        --secondary:#0F172A;
+        --muted:#64748B;
+        --border:#E2E8F0;
+        --bg:#F8FAFC;
     }
 
-    .hero-section {
-        background-color: #F8FAFC;
+    html{
+        scroll-behavior:smooth;
+    }
+
+    body{
+        background:#fff;
+        color:var(--secondary);
+        font-family:Inter,sans-serif;
+    }
+
+    .container-rk{
+        max-width:1280px;
+    }
+
+    .section-padding{
+        padding:110px 0;
+    }
+
+    .section-badge{
+        display:inline-flex;
+        align-items:center;
+        gap:10px;
+        padding:10px 18px;
+        border-radius:999px;
+        background:rgba(37,99,235,.06);
+        border:1px solid rgba(37,99,235,.08);
+        color:var(--primary);
+        font-size:12px;
+        font-weight:700;
+        letter-spacing:.12em;
+        text-transform:uppercase;
+    }
+
+    .section-title{
+        font-size:56px;
+        line-height:1.05;
+        font-weight:900;
+        letter-spacing:-0.04em;
+        color:var(--secondary);
+    }
+
+    .section-text{
+        color:var(--muted);
+        font-size:18px;
+        line-height:1.9;
+    }
+
+    .hero-bg{
+        background:
+            radial-gradient(circle at top left, rgba(37,99,235,.08), transparent 35%),
+            radial-gradient(circle at bottom right, rgba(59,130,246,.06), transparent 30%),
+            #F8FAFC;
+    }
+
+    .gradient-text{
+        background:linear-gradient(135deg,#2563EB 0%,#1D4ED8 100%);
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+    }
+
+    .btn-primary{
+        background:var(--primary);
+        color:#fff;
+        border-radius:16px;
+        padding:16px 30px;
+        font-weight:700;
+        transition:.3s ease;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        gap:12px;
+        box-shadow:0 10px 30px rgba(37,99,235,.18);
+    }
+
+    .btn-primary:hover{
+        background:var(--primary-dark);
+        transform:translateY(-2px);
+    }
+
+    .btn-secondary{
+        background:#fff;
+        border:1px solid var(--border);
+        color:var(--secondary);
+        border-radius:16px;
+        padding:16px 30px;
+        font-weight:700;
+        transition:.3s ease;
+    }
+
+    .btn-secondary:hover{
+        border-color:var(--primary);
+        color:var(--primary);
+    }
+
+    .hero-image-wrapper{
+        position:relative;
+    }
+
+    .hero-image{
+        border-radius:36px;
+        overflow:hidden;
+        box-shadow:
+            0 40px 100px rgba(15,23,42,.12),
+            0 10px 20px rgba(15,23,42,.05);
+    }
+
+    .hero-image img{
+        width:100%;
+        height:700px;
+        object-fit:cover;
+    }
+
+    .floating-card{
+        position:absolute;
+        background:rgba(255,255,255,.96);
+        border:1px solid rgba(255,255,255,.4);
+        backdrop-filter:blur(14px);
+        border-radius:24px;
+        padding:22px;
+        box-shadow:0 20px 50px rgba(0,0,0,.08);
+    }
+
+    .hero-stat{
+        background:#fff;
+        border:1px solid var(--border);
+        border-radius:24px;
+        padding:30px;
+    }
+
+    .feature-card,
+    .course-card,
+    .testimonial-card,
+    .why-card{
+        background:#fff;
+        border:1px solid var(--border);
+        border-radius:28px;
+        transition:.35s ease;
+    }
+
+    .feature-card:hover,
+    .course-card:hover,
+    .testimonial-card:hover,
+    .why-card:hover{
+        transform:translateY(-6px);
+        box-shadow:0 30px 60px rgba(15,23,42,.08);
+    }
+
+    .icon-box{
+        width:70px;
+        height:70px;
+        border-radius:22px;
+        background:#EFF6FF;
+        color:var(--primary);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:28px;
+    }
+
+    .course-card{
+        overflow:hidden;
+    }
+
+    .course-image{
+        overflow:hidden;
+    }
+
+    .course-image img{
+        width:100%;
+        height:240px;
+        object-fit:cover;
+        transition:.6s ease;
+    }
+
+    .course-card:hover .course-image img{
+        transform:scale(1.05);
+    }
+
+    .glass-card{
+        background:rgba(255,255,255,.7);
+        backdrop-filter:blur(14px);
+        border:1px solid rgba(255,255,255,.4);
+    }
+
+    .cta-box{
+        background:
+            radial-gradient(circle at top left, rgba(255,255,255,.08), transparent 30%),
+            linear-gradient(135deg,#0F172A 0%,#1E293B 100%);
+        border-radius:42px;
+        overflow:hidden;
+        position:relative;
+    }
+
+    .cta-box::before{
+        content:'';
+        position:absolute;
+        width:400px;
+        height:400px;
+        background:rgba(37,99,235,.18);
+        filter:blur(120px);
+        top:-120px;
+        right:-120px;
+    }
+
+    .grid-pattern{
         background-image:
-            radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.08) 0px, transparent 50%),
-            radial-gradient(at 100% 0%, rgba(251, 191, 36, 0.08) 0px, transparent 50%),
-            url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234f46e5' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        position: relative;
-        overflow: hidden;
-        min-height: 850px;
-        display: flex;
-        align-items: center;
+            linear-gradient(rgba(148,163,184,.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(148,163,184,.08) 1px, transparent 1px);
+        background-size:40px 40px;
     }
 
-    .hero-bg-accent {
-        position: absolute;
-        width: 800px;
-        height: 800px;
-        background: radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, transparent 70%);
-        border-radius: 50%;
-        z-index: 0;
-        filter: blur(80px);
-        animation: move-accent 25s infinite alternate;
-    }
+    @media(max-width:1024px){
 
-    @keyframes move-accent {
-        0% {
-            transform: translate(-20%, -20%) scale(1);
+        .section-title{
+            font-size:44px;
         }
 
-        100% {
-            transform: translate(20%, 20%) scale(1.2);
+        .hero-image img{
+            height:500px;
         }
     }
 
-    .text-underline-premium {
-        position: relative;
-        display: inline-block;
-    }
+    @media(max-width:640px){
 
-    .text-underline-premium::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: 8px;
-        width: 100%;
-        height: 15px;
-        background: linear-gradient(90deg, rgba(79, 70, 229, 0.2) 0%, transparent 100%);
-        z-index: -1;
-        border-radius: 4px;
-        transform: skewX(-15deg);
-    }
-
-    .stat-badge-premium {
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        padding: 16px 28px;
-        border-radius: 24px;
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        position: absolute;
-        z-index: 30;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .stat-badge-premium:hover {
-        transform: translateY(-8px) scale(1.05) !important;
-        box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.15);
-    }
-
-    .hero-floating-element {
-        position: absolute;
-        z-index: 10;
-        filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.1));
-    }
-
-    @keyframes float-premium {
-
-        0%,
-        100% {
-            transform: translateY(0) rotate(0deg);
+        .section-title{
+            font-size:36px;
         }
 
-        33% {
-            transform: translateY(-30px) rotate(5deg);
+        .section-padding{
+            padding:80px 0;
         }
-
-        66% {
-            transform: translateY(-15px) rotate(-5deg);
-        }
-    }
-
-    .animate-float-1 {
-        animation: float-premium 8s ease-in-out infinite;
-    }
-
-    .animate-float-2 {
-        animation: float-premium 10s ease-in-out infinite 1s;
-    }
-
-    .animate-float-3 {
-        animation: float-premium 12s ease-in-out infinite 0.5s;
-    }
-
-    .image-glass-container {
-        position: relative;
-        padding: 15px;
-        background: rgba(255, 255, 255, 0.4);
-        backdrop-filter: blur(10px);
-        border-radius: 70px;
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.15);
-    }
-
-    .image-glass-container::before {
-        content: '';
-        position: absolute;
-        inset: -20px;
-        background: linear-gradient(225deg, #4F46E5 0%, #A855F7 100%);
-        border-radius: 80px;
-        z-index: -1;
-        opacity: 0.15;
-        filter: blur(30px);
-    }
-
-    .btn-glow {
-        position: relative;
-        transition: all 0.3s ease;
-    }
-
-    .btn-glow::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: inherit;
-        border-radius: inherit;
-        z-index: -1;
-        transition: all 0.3s ease;
-        filter: blur(0px);
-    }
-
-    .btn-glow:hover::before {
-        inset: -5px;
-        filter: blur(15px);
-        opacity: 0.6;
-    }
-
-    .text-gradient-premium {
-        background: linear-gradient(135deg, #0F172A 0%, #4F46E5 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    /* Animations */
-    @keyframes slideInLeft {
-        from {
-            opacity: 0;
-            transform: translateX(-50px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    @keyframes slideInRight {
-        from {
-            opacity: 0;
-            transform: translateX(50px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .animate-slide-left {
-        animation: slideInLeft 1s ease-out forwards;
-    }
-
-    .animate-slide-right {
-        animation: slideInRight 1s ease-out forwards;
-    }
-
-    .animate-fade-up {
-        animation: fadeInUp 1s ease-out forwards;
-    }
-
-    /* Other sections */
-    .course-card {
-        transition: all 0.3s ease;
-        border: 1px solid #E2E8F0;
-    }
-
-    .course-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-    }
-
-    .newsletter-section {
-        background-color: #4F46E5;
-        border-top-left-radius: 100px;
-        border-bottom-right-radius: 100px;
     }
 </style>
 @endsection
 
 @section('content')
-<!-- Hero Section -->
-<section class="hero-section pt-16 pb-24 lg:pt-0 lg:pb-0 overflow-visible">
-    <!-- Background Accents -->
-    <div class="hero-bg-accent" style="top: -10%; right: -5%;"></div>
-    <div class="hero-bg-accent" style="bottom: -10%; left: -5%;"></div>
-    <!-- Animated Shapes -->
-    <div class="absolute top-20 left-10 w-32 h-32 bg-yellow-400/20 rounded-full blur-2xl animate-pulse"></div>
-    <div class="absolute bottom-20 right-20 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s"></div>
-    <div class="container mx-auto px-6 relative z-10">
-        <div class="flex flex-col lg:flex-row items-center gap-16 lg:min-h-[850px]">
-            <!-- Content Left -->
-            <div class="lg:w-1/2 mt-12 lg:mt-0">
-                <div class="inline-flex items-center space-x-3 bg-indigo-50 border border-indigo-100/50 px-5 py-2.5 rounded-full mb-10 opacity-0 animate-fade-up"
-                    style="animation-delay: 0.1s">
-                    <span class="relative flex h-3 w-3">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+
+<!-- HERO -->
+<section class="hero-bg overflow-hidden">
+
+    <div class="container-rk mx-auto px-6 pt-28 pb-24">
+
+        <div class="grid lg:grid-cols-2 gap-20 items-center">
+
+            <!-- LEFT -->
+            <div>
+
+                <span class="section-badge mb-8">
+                    <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                    Modern Professional Learning
+                </span>
+
+                <h1 class="section-title mb-8">
+                    Build a Career With
+                    <span class="gradient-text">
+                        Practical Skills
                     </span>
-                    <span class="text-indigo-600 font-bold text-xs tracking-[0.2em] uppercase">The Future of Education</span>
-                </div>
-                <h1 class="text-6xl lg:text-[100px] font-black text-slate-900 mb-10 leading-[0.95] tracking-tight opacity-0 animate-fade-up" style="animation-delay: 0.2s">
-                    Master your <br> <span class="text-gradient-premium">craft</span> <span class="text-underline-premium text-indigo-600">daily.</span>
+                    That Actually Matter.
                 </h1>
-                <p class="text-slate-500 text-xl lg:text-2xl mb-12 max-w-xl leading-relaxed opacity-0 animate-fade-up font-medium"
-                    style="animation-delay: 0.3s">
-                    Empower your journey with industry-leading courses. Join 50k+ students worldwide mastering new skills every day.
+
+                <p class="section-text max-w-2xl mb-10">
+                    RK Institute helps students gain industry-focused knowledge through
+                    structured courses, mentorship, and hands-on learning experiences
+                    designed for real career growth.
                 </p>
-                <div class="flex flex-wrap gap-6 opacity-0 animate-fade-up items-center" style="animation-delay: 0.4s">
+
+                <div class="flex flex-wrap gap-4 mb-14">
+
                     @auth
-                    <a href="{{ route('student.dashboard') }}"
-                        class="btn-glow group relative bg-indigo-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-indigo-200 hover:-translate-y-1">
-                        <span class="flex items-center">
-                            Go to Dashboard
-                            <a href="{{ route('student.register') }}"
-                                class="btn-glow group relative bg-indigo-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-indigo-200 hover:-translate-y-1">
-                                <span class="flex items-center">
-                                    Start Your Journey
-                                    >>>>>>> Stashed changes
-                                    <svg class="w-5 h-5 ml-3 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                    </svg>
-                                </span>
-                            </a>
-                            @else
-                            <a href="{{ route('student.login') }}"
-                                class="btn-glow group relative bg-indigo-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-indigo-200 hover:-translate-y-1">
-                                <span class="flex items-center">
-                                    Start Your Journey
-                                    <svg class="w-5 h-5 ml-3 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                    </svg>
-                                </span>
-                            </a>
-                            @endauth
-                            <a href="{{ route('courses') }}"
-                                class="group bg-white text-slate-900 px-10 py-5 rounded-2xl font-bold text-lg border border-slate-200 hover:bg-slate-50 hover:border-indigo-200 transition-all">
-                                Browse Courses
-                            </a>
-                </div>
-                <div class="mt-20 flex items-center space-x-8 opacity-0 animate-fade-up" style="animation-delay: 0.5s">
-                    <div class="flex -space-x-4">
-                        @for($i = 20; $i < 24; $i++)
-                            <div class="relative group cursor-pointer">
-                            <img src="https://i.pravatar.cc/150?u={{$i}}"
-                                class="w-14 h-14 rounded-full border-4 border-white shadow-xl group-hover:scale-110 group-hover:z-10 transition-transform">
-                            <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-4 border-white rounded-full"></div>
-                    </div>
-                    @endfor
-                    <div class="w-14 h-14 rounded-full bg-indigo-600 border-4 border-white shadow-xl flex items-center justify-center font-black text-white text-[10px]">
-                        +50K
-                    </div>
-                </div>
-                <div>
-                    <div class="flex items-center space-x-1 mb-1">
-                        @for($i = 0; $i < 5; $i++)
-                            <i class="fa fa-star text-yellow-400 text-sm"></i>
-                            @endfor
-                            <span class="text-slate-900 font-bold ml-2">4.9/5.0</span>
-                    </div>
-                    <p class="text-sm text-slate-500 font-medium">Trusted by 25,000+ teams worldwide</p>
-                </div>
-            </div>
-        </div>
+                        <a href="{{ route('student.dashboard') }}" class="btn-primary">
+                            Go To Dashboard
+                            <i class="fa fa-arrow-right"></i>
+                        </a>
+                    @else
+                        <a href="{{ route('student.register') }}" class="btn-primary">
+                            Start Learning
+                            <i class="fa fa-arrow-right"></i>
+                        </a>
+                    @endauth
 
-        <!-- Content Right (Visuals) -->
-        <div class="lg:w-1/2 relative opacity-0 animate-fade-up" style="animation-delay: 0.3s">
+                    <a href="{{ route('courses') }}" class="btn-secondary">
+                        Browse Courses
+                    </a>
 
-            <!-- Premium Stat Badges -->
-            <div class="stat-badge-premium animate-float-1" style="top: 10%; right: -5%;">
-                <div class="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 shadow-inner">
-                    <i class="fa fa-graduation-cap text-2xl"></i>
                 </div>
-                <div>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Expert Mentors</p>
-                    <p class="font-black text-slate-900 text-2xl leading-none font-outfit">850+</p>
+
+                <!-- TRUST -->
+                <div class="grid grid-cols-3 gap-5">
+
+                    <div class="hero-stat">
+                        <h3 class="text-4xl font-black">
+                            {{ $totalStudents }}+
+                        </h3>
+
+                        <p class="text-slate-500 mt-2 text-sm">
+                            Active Students
+                        </p>
+                    </div>
+
+                    <div class="hero-stat">
+                        <h3 class="text-4xl font-black">
+                            {{ $totalCourses }}+
+                        </h3>
+
+                        <p class="text-slate-500 mt-2 text-sm">
+                            Courses
+                        </p>
+                    </div>
+
+                    <div class="hero-stat">
+                        <h3 class="text-4xl font-black">
+                            {{ $totalLessons }}+
+                        </h3>
+
+                        <p class="text-slate-500 mt-2 text-sm">
+                            Lessons
+                        </p>
+                    </div>
+
                 </div>
+
             </div>
 
-            <div class="stat-badge-premium animate-float-2" style="bottom: 15%; left: -10%;">
-                <div class="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-600 shadow-inner">
-                    <i class="fa fa-clock text-2xl"></i>
+            <!-- RIGHT -->
+            <div class="hero-image-wrapper">
+
+                <div class="hero-image">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop"
+                        alt="RK Institute">
+
                 </div>
-                <div>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Course Hours</p>
-                    <p class="font-black text-slate-900 text-2xl leading-none font-outfit">12,400+</p>
-                </div>
-            </div>
-            <!-- Floating Icons -->
-            <div class="hero-floating-element animate-float-3 flex items-center justify-center w-20 h-20 bg-white rounded-3xl" style="top: 50%; left: -20px;">
-                <i class="fa fa-code text-3xl text-indigo-600"></i>
-            </div>
-            <div class="hero-floating-element animate-float-1 flex items-center justify-center w-16 h-16 bg-yellow-400 rounded-2xl shadow-yellow-200" style="bottom: 40%; right: -30px;">
-                <i class="fa fa-bolt text-2xl text-slate-900"></i>
-            </div>
-            <!-- Main Image Container -->
-            <div class="image-glass-container group">
-                <div class="relative rounded-[60px] overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop"
-                        alt="Modern Learning"
-                        class="w-full h-auto rounded-[56px] transition-all duration-1000 group-hover:scale-110">
-                    <!-- Overlay Gradient -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent"></div>
-                    <!-- Video Play Button (Fake) -->
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="w-24 h-24 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:scale-110 transition-transform cursor-pointer">
-                            <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-2xl">
-                                <i class="fa fa-play text-indigo-600 ml-1"></i>
-                            </div>
+
+                <!-- FLOATING CARD -->
+                <div class="floating-card hidden lg:block -bottom-10 -left-10">
+
+                    <div class="flex items-center gap-5">
+
+                        <div class="icon-box">
+                            <i class="fa fa-graduation-cap"></i>
                         </div>
+
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 mb-2">
+                                Student Success
+                            </p>
+
+                            <h4 class="text-3xl font-black">
+                                95%
+                            </h4>
+
+                            <p class="text-sm text-slate-500 mt-1">
+                                Course completion rate
+                            </p>
+                        </div>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
-    </div>
+
 </section>
 
-<!-- Features section -->
-<section class="py-16 bg-white">
-    <div class="container mx-auto px-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="flex items-center space-x-4 p-6 bg-white rounded-xl shadow-sm border border-slate-50">
-                <div
-                    class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-zilom-blue text-2xl">
-                    <i class="fa fa-book-open"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-xl">Online Courses</h4>
-                    <p class="text-sm text-slate-500">Learn anything, anywhere.</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-4 p-6 bg-white rounded-xl shadow-sm border border-slate-50">
-                <div
-                    class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-zilom-blue text-2xl">
-                    <i class="fa fa-chalkboard-teacher"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-xl">Expert Instructions</h4>
-                    <p class="text-sm text-slate-500">Learn from the best in world.</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-4 p-6 bg-white rounded-xl shadow-sm border border-slate-50">
-                <div
-                    class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-zilom-blue text-2xl">
-                    <i class="fa fa-lock-open"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-xl">Certificates</h4>
-                    <p class="text-sm text-slate-500">value all over the world</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!-- FEATURES -->
+<section class="section-padding bg-white">
 
-<!-- About Section -->
-<section class="py-20 bg-slate-50">
-    <div class="container mx-auto px-6">
-        <div class="flex flex-col lg:flex-row items-center gap-16">
-            <div class="lg:w-1/2 flex gap-4">
-                <div class="w-1/2 pt-12">
-                    <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=2070&auto=format&fit=crop"
-                        class="rounded-2xl shadow-xl w-full h-[350px] object-cover" alt="Student Group">
+    <div class="container-rk mx-auto px-6">
+
+        <div class="grid md:grid-cols-3 gap-8">
+
+            <div class="feature-card p-10">
+
+                <div class="icon-box mb-8">
+                    <i class="fa fa-laptop-code"></i>
                 </div>
-                <div class="w-1/2">
-                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop"
-                        class="rounded-2xl shadow-xl w-full h-[350px] object-cover" alt="Learning Center">
-                    <div class="mt-4 bg-white p-6 rounded-2xl shadow-lg inline-block border-l-4 border-zilom-blue">
-                        <p class="font-bold text-zilom-blue text-2xl">100%</p>
-                        <p class="text-xs text-slate-500">Trusted Learning Center</p>
-                    </div>
-                </div>
-            </div>
-            <div class="lg:w-1/2">
-                <span class="text-zilom-blue font-semibold uppercase tracking-widest text-sm">Online Learning</span>
-                <h2 class="text-4xl font-bold text-slate-900 mt-4 mb-6 leading-tight">Welcome To The Online <br>
-                    Learning Center</h2>
-                <p class="text-slate-600 mb-8 leading-relaxed">
-                    There are many variations of passages of available but the majority have suffered alteration in some
-                    form, by injected humour, or randomised words which don't look even slightly believable.
+
+                <h3 class="text-2xl font-bold mb-5">
+                    Industry Focused Courses
+                </h3>
+
+                <p class="text-slate-600 leading-relaxed">
+                    Learn practical concepts designed around real-world industry needs and modern technologies.
                 </p>
-                <ul class="space-y-4 mb-10">
-                    <li class="flex items-center space-x-3">
-                        <i class="fa fa-check-circle text-zilom-blue"></i>
-                        <span class="text-slate-700">Explore a variety of fresh educational topics</span>
-                    </li>
-                    <li class="flex items-center space-x-3">
-                        <i class="fa fa-check-circle text-zilom-blue"></i>
-                        <span class="text-slate-700">Find the right instructor for you</span>
-                    </li>
-                    <li class="flex items-center space-x-3">
-                        <i class="fa fa-check-circle text-zilom-blue"></i>
-                        <span class="text-slate-700">Learn on your schedule everywhere</span>
-                    </li>
-                </ul>
-                <a href="#"
-                    class="bg-zilom-blue text-white px-8 py-3 rounded-md font-bold hover:bg-zilom-blue-dark transition-all">
-                    Read More
-                </a>
+
             </div>
+
+            <div class="feature-card p-10">
+
+                <div class="icon-box mb-8">
+                    <i class="fa fa-user-tie"></i>
+                </div>
+
+                <h3 class="text-2xl font-bold mb-5">
+                    Expert Mentorship
+                </h3>
+
+                <p class="text-slate-600 leading-relaxed">
+                    Get guidance from experienced mentors and professionals throughout your learning journey.
+                </p>
+
+            </div>
+
+            <div class="feature-card p-10">
+
+                <div class="icon-box mb-8">
+                    <i class="fa fa-certificate"></i>
+                </div>
+
+                <h3 class="text-2xl font-bold mb-5">
+                    Career Growth
+                </h3>
+
+                <p class="text-slate-600 leading-relaxed">
+                    Build valuable skills, strengthen your portfolio, and improve professional opportunities.
+                </p>
+
+            </div>
+
         </div>
+
     </div>
+
 </section>
 
-<section class="py-12 bg-slate-50">
-    <div class="container mx-auto px-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="rounded-3xl bg-white p-8 shadow-sm text-center">
-                <span class="text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Available Courses</span>
-                <h3 class="text-4xl font-black text-slate-900 mt-5">{{ $totalCourses }}</h3>
-                <p class="text-sm text-slate-500 mt-2">Active courses open for enrollment</p>
+<!-- ABOUT -->
+<section class="section-padding bg-slate-50 grid-pattern">
+
+    <div class="container-rk mx-auto px-6">
+
+        <div class="grid lg:grid-cols-2 gap-24 items-center">
+
+            <!-- IMAGES -->
+            <div class="relative">
+
+                <div class="grid grid-cols-2 gap-6">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=2070&auto=format&fit=crop"
+                        class="rounded-[32px] h-[520px] object-cover w-full mt-12 shadow-xl">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop"
+                        class="rounded-[32px] h-[520px] object-cover w-full shadow-xl">
+
+                </div>
+
             </div>
-            <div class="rounded-3xl bg-white p-8 shadow-sm text-center">
-                <span class="text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Total Students</span>
-                <h3 class="text-4xl font-black text-slate-900 mt-5">{{ $totalStudents }}</h3>
-                <p class="text-sm text-slate-500 mt-2">Learners currently enrolled</p>
+
+            <!-- CONTENT -->
+            <div>
+
+                <span class="section-badge mb-8">
+                    About RK Institute
+                </span>
+
+                <h2 class="section-title mb-8">
+                    Designed For Serious Learning & Career Growth
+                </h2>
+
+                <p class="section-text mb-12">
+                    We believe education should be practical, modern, and accessible.
+                    RK Institute focuses on helping students gain confidence through
+                    real projects, mentorship, and structured learning experiences.
+                </p>
+
+                <div class="space-y-6">
+
+                    <div class="why-card p-7">
+
+                        <div class="flex gap-5">
+
+                            <div class="icon-box shrink-0">
+                                <i class="fa fa-check"></i>
+                            </div>
+
+                            <div>
+                                <h4 class="font-bold text-xl mb-3">
+                                    Practical Learning Approach
+                                </h4>
+
+                                <p class="text-slate-500 leading-relaxed">
+                                    Courses include projects and assignments focused on real-world implementation.
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="why-card p-7">
+
+                        <div class="flex gap-5">
+
+                            <div class="icon-box shrink-0">
+                                <i class="fa fa-check"></i>
+                            </div>
+
+                            <div>
+                                <h4 class="font-bold text-xl mb-3">
+                                    Flexible Online Access
+                                </h4>
+
+                                <p class="text-slate-500 leading-relaxed">
+                                    Learn anytime and continue your education at your own pace.
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
-            <div class="rounded-3xl bg-white p-8 shadow-sm text-center">
-                <span class="text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Total Lessons</span>
-                <h3 class="text-4xl font-black text-slate-900 mt-5">{{ $totalLessons }}</h3>
-                <p class="text-sm text-slate-500 mt-2">Lessons available across all courses</p>
-            </div>
+
         </div>
+
     </div>
+
 </section>
 
-<!-- Courses Section -->
+<!-- COURSES -->
 <section class="py-24 bg-slate-50">
     <div class="container mx-auto px-6">
         <!-- Header -->
@@ -548,297 +607,120 @@
     </div>
 </section>
 
-<!-- Registration Section -->
-<section class="py-24 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
-    <!-- Decorative Blur -->
-    <div class="absolute -top-20 -left-20 w-72 h-72 bg-zilom-blue/30 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-0 right-0 w-72 h-72 bg-yellow-400/20 rounded-full blur-3xl"></div>
-    <div class="container mx-auto px-6 relative z-10">
-        <div class="flex flex-col lg:flex-row items-center gap-16">
-            <!-- LEFT CONTENT -->
-            <div class="lg:w-3/5 text-white">
-                <span class="text-blue-400 font-semibold uppercase tracking-widest text-sm">
-                    Register Now
-                </span>
-                <h2 class="text-4xl lg:text-5xl font-extrabold mt-4 mb-6 leading-tight">
-                    Start Learning Today <br>
-                    Get Access to <span class="text-yellow-400">60,000+</span> Courses
-                </h2>
-                <p class="text-slate-300 max-w-xl mb-8">
-                    Join thousands of learners upgrading their skills daily. Get free access to premium lectures and
-                    resources instantly.
-                </p>
-                <!-- Features -->
-                <div class="grid grid-cols-2 gap-4 mb-10 text-sm">
-                    <div class="flex items-center gap-2">
-                        <i class="fa fa-check-circle text-yellow-400"></i>
-                        <span>Free beginner courses</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <i class="fa fa-check-circle text-yellow-400"></i>
-                        <span>Expert instructors</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <i class="fa fa-check-circle text-yellow-400"></i>
-                        <span>Downloadable resources</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <i class="fa fa-check-circle text-yellow-400"></i>
-                        <span>Lifetime access</span>
-                    </div>
-                </div>
-                <!-- Testimonial -->
-                <div
-                    class="flex items-start gap-4 p-6 bg-white/10 rounded-2xl backdrop-blur-md border border-white/10 max-w-md">
-                    <div class="w-14 h-14 bg-zilom-blue rounded-full flex items-center justify-center text-xl shrink-0">
-                        <i class="fa fa-quote-left text-white"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm italic text-slate-200 mb-2">
-                            "Excellent platform! The free content helped me start my career in tech."
-                        </p>
-                        <p class="font-semibold text-white text-sm">Ronald Richards</p>
-                    </div>
-                </div>
-            </div>
-            <!-- RIGHT FORM -->
-            <div class="lg:w-2/5 w-full">
-                <div class="bg-white rounded-2xl shadow-2xl p-8">
 
-                    <h3 class="text-2xl font-bold text-slate-900 mb-2">
-                        Create Your Free Account
-                    </h3>
-                    <p class="text-slate-500 text-sm mb-6">
-                        Takes less than 1 minute
-                    </p>
 
-                    <form action="#" class="space-y-4">
+<!-- TESTIMONIALS -->
+<section class="section-padding bg-slate-50">
 
-                        <input type="text" placeholder="Full Name"
-                            class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-zilom-blue">
+    <div class="container-rk mx-auto px-6">
 
-                        <input type="email" placeholder="Email Address"
-                            class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-zilom-blue">
+        <div class="text-center mb-20">
 
-                        <input type="text" placeholder="Phone Number"
-                            class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-zilom-blue">
+            <span class="section-badge mb-7">
+                Student Feedback
+            </span>
 
-                        <textarea placeholder="What do you want to learn?" rows="3"
-                            class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-zilom-blue"></textarea>
-
-                        <button
-                            class="w-full bg-zilom-blue text-white py-3.5 rounded-lg font-semibold hover:bg-blue-700 transition shadow-lg">
-                            Get Free Access
-                        </button>
-                    </form>
-                    <!-- Trust Note -->
-                    <p class="text-xs text-slate-400 mt-4 text-center">
-                        No credit card required • 100% free courses available
-                    </p>
-                </div>
-            </div>
+            <h2 class="section-title">
+                What Students Say About RK Institute
+            </h2>
 
         </div>
-    </div>
-</section>
 
-<!-- Top Categories -->
-<!-- <section class="py-20 bg-white">
-                        <div class="container mx-auto px-6">
-                            <div class="text-center mb-16">
-                                <span class="text-zilom-blue font-semibold uppercase tracking-widest text-sm">Hot Categories</span>
-                                <h2 class="text-4xl font-bold text-slate-900 mt-3">Top Categories</h2>
-                            </div>
+        <div class="grid lg:grid-cols-3 gap-8">
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                @php
-                                    $cats = [
-                                        ['title' => 'Web Development', 'img' => 'https://images.unsplash.com/photo-1547658719-da2b51169166?q=80&w=1964&auto=format&fit=crop'],
-                                        ['title' => 'Graphic Design', 'img' => 'https://images.unsplash.com/photo-1561070791-2526d30994b5?q=80&w=2000&auto=format&fit=crop'],
-                                        ['title' => 'Business Admin', 'img' => 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2071&auto=format&fit=crop'],
-                                        ['title' => 'Product Design', 'img' => 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?q=80&w=2070&auto=format&fit=crop'],
-                                    ];
-                                @endphp
-                                @foreach($cats as $cat)
-                                    <div class="category-card group transition-all duration-500 cursor-pointer">
-                                        <img src="{{ $cat['img'] }}"
-                                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                            alt="{{ $cat['title'] }}">
-                                        <div class="category-overlay">
-                                            <h4 class="font-bold text-xl">{{ $cat['title'] }}</h4>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            <div class="text-center mt-12">
-                                <a href="#"
-                                    class="border border-slate-200 px-8 py-3 rounded-md font-bold text-slate-600 hover:bg-slate-50 transition-all inline-block">
-                                    View All Categories
-                                </a>
-                            </div>
-                        </div>
-                    </section> -->
-
-<!-- Testimonials Section -->
-<section class="py-24 w-full bg-gradient-to-br from-blue-900 to-blue-700 text-white relative">
-    <!-- Background accents -->
-    <div class="absolute top-0 right-0 w-96 h-96 bg-white opacity-10 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-0 left-0 w-72 h-72 bg-white opacity-10 rounded-full blur-2xl"></div>
-    <div class="container relative z-10">
-        <!-- Heading -->
-        <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold">What Our Students Say</h2>
-        </div>
-        <!-- Slider Wrapper -->
-        <div class="overflow-visible w-full">
-            <div class="flex space-x-8 animate-scroll">
-                @php
+            @php
                 $testimonials = [
-                [
-                'name' => 'Guy Hawkins',
-                'role' => 'Senior Developer',
-                'image' => 'https://i.pravatar.cc/150?u=1',
-                'text' => '"The platform is incredibly intuitive. I found exactly what I needed. Learning here has been a game-changer for my career path."'
-                ],
-                [
-                'name' => 'Jane Cooper',
-                'role' => 'UI/UX Designer',
-                'image' => 'https://i.pravatar.cc/150?u=2',
-                'text' => '"Amazing courses and very practical learning approach. The projects really helped me build a professional portfolio."'
-                ],
-                [
-                'name' => 'Robert Fox',
-                'role' => 'Marketing Lead',
-                'image' => 'https://i.pravatar.cc/150?u=3',
-                'text' => '"Perfect for switching careers. Loved every bit of it. The support from the instructors is unmatched."'
-                ],
-                [
-                'name' => 'Esther Howard',
-                'role' => 'Frontend Developer',
-                'image' => 'https://i.pravatar.cc/150?u=4',
-                'text' => '"Very engaging content and easy to understand. I was able to learn React from scratch and land my first job."'
-                ],
-                [
-                'name' => 'Wade Warren',
-                'role' => 'Backend Engineer',
-                'image' => 'https://i.pravatar.cc/150?u=5',
-                'text' => '"Support team is amazing and very responsive. Whenever I got stuck, I received help within hours."'
-                ]
+                    [
+                        'name' => 'Rahul Sharma',
+                        'role' => 'Frontend Developer',
+                        'text' => 'RK Institute provided a structured and professional learning experience that helped me improve my development skills significantly.'
+                    ],
+                    [
+                        'name' => 'Priya Verma',
+                        'role' => 'UI/UX Designer',
+                        'text' => 'The mentorship and practical projects made learning much easier and more career-focused.'
+                    ],
+                    [
+                        'name' => 'Amit Joshi',
+                        'role' => 'Software Engineer',
+                        'text' => 'Excellent platform with quality guidance, modern content, and practical assignments.'
+                    ]
                 ];
-                @endphp
+            @endphp
 
-                <!-- First Set of Cards -->
-                @foreach($testimonials as $t)
-                <div
-                    class="min-w-[350px] max-w-[350px] bg-white text-gray-800 rounded-2xl p-8 shadow-lg flex flex-col h-[280px]">
-                    <p class="italic mb-6 text-gray-600 leading-relaxed overflow-hidden line-clamp-4">
-                        {{ $t['text'] }}
-                    </p>
-                    <div class="flex items-center space-x-3 mt-auto pt-4 border-t border-gray-100">
-                        <img src="{{ $t['image'] }}" class="w-12 h-12 rounded-full border-2 border-blue-500 shadow-sm">
-                        <div>
-                            <h5 class="font-bold text-slate-900">{{ $t['name'] }}</h5>
-                            <span
-                                class="text-sm text-gray-500 uppercase tracking-wider text-[10px] font-bold">{{ $t['role'] }}</span>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
+            @foreach($testimonials as $t)
 
-                <!-- Duplicate Set for Seamless Scroll -->
-                @foreach($testimonials as $t)
-                <div
-                    class="min-w-[350px] max-w-[350px] bg-white text-gray-800 rounded-2xl p-8 shadow-lg flex flex-col h-[280px]">
-                    <p class="italic mb-6 text-gray-600 leading-relaxed overflow-hidden line-clamp-4">
-                        {{ $t['text'] }}
-                    </p>
-                    <div class="flex items-center space-x-3 mt-auto pt-4 border-t border-gray-100">
-                        <img src="{{ $t['image'] }}" class="w-12 h-12 rounded-full border-2 border-blue-500 shadow-sm">
-                        <div>
-                            <h5 class="font-bold text-slate-900">{{ $t['name'] }}</h5>
-                            <span
-                                class="text-sm text-gray-500 uppercase tracking-wider text-[10px] font-bold">{{ $t['role'] }}</span>
-                        </div>
-                    </div>
+            <div class="testimonial-card p-10">
+
+                <div class="flex gap-1 text-yellow-400 mb-8">
+
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+
                 </div>
-                @endforeach
+
+                <p class="text-slate-600 leading-relaxed text-lg mb-10">
+                    "{{ $t['text'] }}"
+                </p>
+
+                <div>
+
+                    <h4 class="font-bold text-xl">
+                        {{ $t['name'] }}
+                    </h4>
+
+                    <p class="text-slate-500 mt-1">
+                        {{ $t['role'] }}
+                    </p>
+
+                </div>
 
             </div>
+
+            @endforeach
+
         </div>
 
     </div>
+
 </section>
-<style>
-    @keyframes scroll {
-        0% {
-            transform: translateX(0);
-        }
 
-        100% {
-            transform: translateX(-50%);
-        }
-    }
+<!-- CTA -->
+<section class="section-padding bg-white">
 
-    .animate-scroll {
-        display: flex;
-        width: max-content;
-        animation: scroll 25s linear infinite;
-    }
-</style>
+    <div class="container-rk mx-auto px-6">
 
-<!-- Benefits Section -->
-<section class="py-20 bg-slate-50">
-    <div class="container mx-auto px-6">
-        <div class="flex flex-col lg:flex-row items-center gap-16">
-            <div class="lg:w-1/2">
-                <span class="text-zilom-blue font-semibold uppercase tracking-widest text-sm">Why Choose Us</span>
-                <h2 class="text-4xl font-bold text-slate-900 mt-4 mb-8 leading-tight">Benefits Of Learning <br> From
-                    Zilom</h2>
-                <div
-                    class="flex items-start space-x-6 mb-10 p-6 bg-white rounded-2xl shadow-sm border-l-4 border-zilom-blue">
-                    <div
-                        class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-zilom-blue flex-shrink-0">
-                        <i class="fa fa-chart-line"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-xl mb-2">Build your career with online courses</h4>
-                        <p class="text-slate-600 text-sm">There are many variations of passages of available but the
-                            majority have suffered alteration in some form.</p>
-                    </div>
-                </div>
-                <ul class="space-y-4">
-                    <li class="flex items-center space-x-3 benefit-item">
-                        <i class="fa fa-check-square"></i>
-                        <span class="text-slate-700 font-medium">Industry-standard curriculum</span>
-                    </li>
-                    <li class="flex items-center space-x-3 benefit-item">
-                        <i class="fa fa-check-square"></i>
-                        <span class="text-slate-700 font-medium">Hands-on projects and assignments</span>
-                    </li>
-                    <li class="flex items-center space-x-3 benefit-item">
-                        <i class="fa fa-check-square"></i>
-                        <span class="text-slate-700 font-medium">Direct mentorship from trainers</span>
-                    </li>
-                </ul>
+        <div class="cta-box p-14 lg:p-24 text-center text-white">
+
+            <h2 class="text-5xl font-black leading-tight mb-8 relative z-10">
+                Start Building Your Future Today
+            </h2>
+
+            <p class="text-slate-300 text-lg max-w-2xl mx-auto mb-12 relative z-10 leading-relaxed">
+                Join RK Institute and gain practical skills designed for real-world success and long-term career growth.
+            </p>
+
+            <div class="flex justify-center gap-5 flex-wrap relative z-10">
+
+                @guest
+                    <a href="{{ route('student.register') }}" class="btn-primary">
+                        Create Free Account
+                    </a>
+                @endguest
+
+                <a href="{{ route('courses') }}" class="btn-secondary bg-white">
+                    Explore Courses
+                </a>
+
             </div>
-            <div class="lg:w-1/2 relative">
-                <div class="absolute -top-10 -right-10 w-24 h-24 bg-yellow-400/20 rounded-full blur-2xl"></div>
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop"
-                    class="rounded-3xl shadow-2xl relative z-10" alt="Student Working">
-                <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-xl z-20">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white">
-                            <i class="fa fa-play"></i>
-                        </div>
-                        <div>
-                            <p class="text-[10px] text-slate-500 font-bold uppercase">Experience</p>
-                            <p class="font-bold text-slate-900">Virtual Learning</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
+
     </div>
+
 </section>
+
 @endsection
