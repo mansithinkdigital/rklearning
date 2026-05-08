@@ -1,307 +1,513 @@
 @extends('layouts.client')
 
-@section('title', 'About Us - Rk Institute')
+@section('title', 'About Us - RK Institute of Commerce')
 
 @section('styles')
 <style>
-    .section-spacing {
-        padding: 100px 0;
+    :root{
+        --rk-primary:#0f2d62;
+        --rk-secondary:#0f172a;
+        --rk-accent:#d4a437;
+        --rk-light:#f8fafc;
+        --rk-border:#e2e8f0;
     }
 
-    .stats-card {
-        background: white;
-        border-radius: 20px;
-        padding: 40px;
-        text-align: center;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-        transition: all 0.3s ease;
-        border: 1px solid #f1f5f9;
+    html{
+        scroll-behavior:smooth;
     }
 
-    .stats-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        border-color: #4f46e5;
+    body{
+        font-family:'Inter',sans-serif;
+        background:#fff;
+        color:#0f172a;
     }
 
-    .value-item {
-        padding: 40px;
-        border-radius: 24px;
-        background: white;
-        border: 1px solid #f1f5f9;
-        transition: all 0.3s ease;
+    .hero-section{
+        background:
+            linear-gradient(rgba(2,6,23,.88),rgba(15,23,42,.92)),
+            url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1600&q=80');
+        background-size:cover;
+        background-position:center;
     }
 
-    .value-item:hover {
-        border-color: #4f46e5;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    .section-tag{
+        letter-spacing:.18em;
     }
 
-    .faculty-image-container::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to top, rgba(15, 23, 42, 0.8), transparent);
-        opacity: 0;
-        transition: opacity 0.3s ease;
+    .section-heading{
+        position:relative;
+        display:inline-block;
+        padding-bottom:16px;
     }
 
-    .faculty-card:hover .faculty-image-container::after {
-        opacity: 1;
+    .section-heading::after{
+        content:'';
+        position:absolute;
+        left:0;
+        bottom:0;
+        width:70px;
+        height:5px;
+        border-radius:999px;
+        background:var(--rk-accent);
+    }
+
+    .rk-card{
+        border:1px solid var(--rk-border);
+        transition:.35s ease;
+    }
+
+    .rk-card:hover{
+        transform:translateY(-8px);
+        box-shadow:0 25px 60px rgba(15,23,42,.08);
+    }
+
+    .icon-box{
+        width:70px;
+        height:70px;
+        border-radius:24px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:28px;
+    }
+
+    .course-card{
+        transition:.3s ease;
+        border:1px solid #e2e8f0;
+        color: var(--rk-primary);
+    }
+
+    .course-card:hover{
+        background:#0f172a;
+        color: var(--rk-primary);
+        transform:translateY(-8px);
+        
+    }
+
+    .course-card:hover p{
+        color:#cbd5e1;
+    }
+
+    .course-card:hover h4{
+        color:#fff;
+    }
+
+    .stats-card{
+        background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);
+    }
+
+    .vision-list li{
+        position:relative;
+        padding-left:34px;
+    }
+
+    .vision-list li::before{
+        content:'✓';
+        position:absolute;
+        left:0;
+        top:0;
+        color:#d4a437;
+        font-weight:900;
+    }
+
+    .cta-section{
+        background:
+            linear-gradient(rgba(15,23,42,.92),rgba(15,23,42,.92)),
+            url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80');
+        background-size:cover;
+        background-position:center;
     }
 </style>
 @endsection
 
 @section('content')
-<main>
-    <!-- Hero Section -->
-    <section class="relative py-28 md:py-36 overflow-hidden bg-slate-900">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-indigo-900 via-slate-900 to-black"></div>
-        <div class="absolute -top-24 -left-24 w-96 h-96 bg-indigo-500/20 rounded-full blur-[120px] animate-pulse"></div>
 
-        <div class="container mx-auto px-6 relative z-10 text-center">
-            <nav class="inline-flex items-center space-x-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-10 transition-all hover:bg-white/10">
-                <a href="{{ route('home') }}" class="text-xs font-medium uppercase tracking-wider text-indigo-300 hover:text-white transition">Home</a>
-                <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-                <span class="text-xs font-medium uppercase tracking-wider text-slate-400">About Us</span>
-            </nav>
+<main class="overflow-hidden">
 
-            <h1 class="text-5xl md:text-7xl font-black text-white mb-8 tracking-tight leading-[1.1]">
-                Transforming Lives Through <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-400 to-teal-400">
-                    Quality Education
-                </span>
-            </h1>
+    <!-- HERO -->
+    <section class="hero-section py-32 flex justify-center items-center">
+    <div class="container mx-auto px-6 text-center">
 
-            <p class="text-slate-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed mb-10">
-                Empowering students with the skills and confidence they need to thrive in the modern professional landscape through innovative learning and expert mentorship.
+        <!-- mx-auto on the wrapper div keeps the content width constrained but centered -->
+        <div class="max-w-4xl mx-auto">
+
+            <p class="section-tag text-sm uppercase font-black text-amber-400 mb-5">
+                About RK Institute of Commerce
             </p>
 
-            <div class="flex items-center justify-center space-x-4">
-                <div class="h-[1px] w-12 bg-indigo-500/50"></div>
-                <span class="text-indigo-300 font-medium tracking-widest text-sm uppercase">Est. 2024</span>
-                <div class="h-[1px] w-12 bg-indigo-500/50"></div>
-            </div>
+            <h1 class="text-5xl md:text-7xl font-black text-white leading-tight mb-8">
+                Empowering Minds.<br>
+                <span class="text-amber-400">Building Futures.</span>
+            </h1>
+
+            <!-- mx-auto here ensures the paragraph text stays centered within its max-width -->
+            <p class="text-xl text-slate-300 leading-relaxed max-w-4xl mx-auto">
+                RK Institute of Commerce is committed to delivering practical,
+                affordable, and career-oriented education in Commerce,
+                Management, Taxation, and Computerized Accounting.
+            </p>
+
         </div>
 
-        <div class="absolute inset-0 opacity-20 mix-blend-overlay pointer-events-none"
-            style="background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');">
-        </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Our Journey Section -->
-    <section class="section-spacing bg-white">
+    <!-- ABOUT -->
+    <section class="py-28 bg-white">
         <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-                <div class="relative group">
-                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop"
-                        class="rounded-[32px] shadow-2xl relative z-10 w-full object-cover aspect-[4/3] group-hover:scale-[1.02] transition-transform duration-500" alt="Students Collaboration">
-                    <div class="absolute -top-10 -left-10 w-40 h-40 bg-indigo-50 rounded-full -z-10 blur-2xl"></div>
-                    <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-50 rounded-full -z-10 blur-2xl"></div>
-                </div>
+
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
 
                 <div>
-                    <h5 class="text-indigo-600 font-bold uppercase tracking-[0.2em] text-xs mb-4">Our Legacy</h5>
-                    <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-8 leading-tight">Elevating Potential <br> Since 2002</h2>
-                    <div class="space-y-6 text-slate-600 text-lg leading-relaxed">
+
+                    <p class="section-tag text-sm uppercase font-black text-amber-500 mb-4">
+                        About Institute
+                    </p>
+
+                    <h2 class="section-heading text-4xl md:text-5xl font-black text-slate-900 mb-10">
+                        Established With Strong Educational Values
+                    </h2>
+
+                    <div class="space-y-6 text-lg text-slate-600 leading-relaxed">
+
                         <p>
-                            Starting as a specialized laboratory for technical excellence, Rk Institute has consistently pushed the boundaries of traditional education for over two decades.
+                            RK Institute of Commerce was established in 2013 with
+                            the vision of creating strong character, practical
+                            knowledge, and career-focused education for students.
                         </p>
+
                         <p>
-                            We believe that education should be as dynamic as the industries it serves. Our methodology centers on <strong>practical application</strong>, ensuring that every concept mastered is directly translatable to real-world success.
+                            The institute is registered under Company Act 2013
+                            on 26th April 2023 as
+                            <strong>Ramesh Kolhe’s Learning Hub Pvt. Ltd.</strong>
                         </p>
+
+                        <p>
+                            We have a tradition of excellence in academics,
+                            practical training, and professional development
+                            with specialized focus on Commerce, Management,
+                            Taxation, GST, and Computerized Accounting.
+                        </p>
+
                     </div>
 
-                    <div class="mt-12 flex items-center p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                        <div class="flex -space-x-3 mr-6">
-                            <img src="https://i.pravatar.cc/100?u=1" class="w-12 h-12 rounded-full border-4 border-white shadow-sm" alt="">
-                            <img src="https://i.pravatar.cc/100?u=2" class="w-12 h-12 rounded-full border-4 border-white shadow-sm" alt="">
-                            <img src="https://i.pravatar.cc/100?u=3" class="w-12 h-12 rounded-full border-4 border-white shadow-sm" alt="">
+                </div>
+
+                <div class="grid gap-6">
+
+                    <div class="rk-card rounded-[2rem] p-8 bg-slate-50">
+                        <div class="flex gap-5">
+
+                            <div class="icon-box bg-indigo-100 text-indigo-700">
+                                <i class="fa fa-graduation-cap"></i>
+                            </div>
+
+                            <div>
+                                <h4 class="text-2xl font-black text-slate-900 mb-3">
+                                    Quality Education
+                                </h4>
+
+                                <p class="text-slate-600 leading-relaxed">
+                                    ISO 9001:2015 certified educational standards
+                                    focused on student excellence and growth.
+                                </p>
+                            </div>
+
                         </div>
-                        <p class="text-slate-600 font-medium">Trusted by <span class="text-indigo-600 font-bold">50,000+</span> graduates worldwide</p>
                     </div>
+
+                    <div class="rk-card rounded-[2rem] p-8 bg-slate-50">
+                        <div class="flex gap-5">
+
+                            <div class="icon-box bg-amber-100 text-amber-600">
+                                <i class="fa fa-laptop"></i>
+                            </div>
+
+                            <div>
+                                <h4 class="text-2xl font-black text-slate-900 mb-3">
+                                    Practical Knowledge
+                                </h4>
+
+                                <p class="text-slate-600 leading-relaxed">
+                                    Hands-on learning in accounting software,
+                                    GST systems, taxation workflows, and finance tools.
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="rk-card rounded-[2rem] p-8 bg-slate-50">
+                        <div class="flex gap-5">
+
+                            <div class="icon-box bg-green-100 text-green-600">
+                                <i class="fa fa-briefcase"></i>
+                            </div>
+
+                            <div>
+                                <h4 class="text-2xl font-black text-slate-900 mb-3">
+                                    Career Focused
+                                </h4>
+
+                                <p class="text-slate-600 leading-relaxed">
+                                    Career-oriented training programs designed
+                                    to prepare students for real industry demands.
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
+
             </div>
+
         </div>
     </section>
 
-    <!-- Essential Stats -->
-    <section class="py-20 bg-slate-50 border-y border-slate-100">
+    <!-- STATS -->
+    <section class="py-24 bg-slate-950">
         <div class="container mx-auto px-6">
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="stats-card">
-                    <h3 class="text-4xl font-black text-indigo-600 mb-2">50K+</h3>
-                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Active Learners</p>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+                <div class="stats-card rounded-[2rem] p-10 text-center">
+                    <h3 class="text-5xl font-black text-amber-400 mb-3">10+</h3>
+                    <p class="text-slate-300 uppercase tracking-[0.2em] text-sm font-bold">
+                        Years Experience
+                    </p>
                 </div>
-                <div class="stats-card">
-                    <h3 class="text-4xl font-black text-indigo-600 mb-2">120+</h3>
-                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Global Courses</p>
+
+                <div class="stats-card rounded-[2rem] p-10 text-center">
+                    <h3 class="text-5xl font-black text-white mb-3">5000+</h3>
+                    <p class="text-slate-300 uppercase tracking-[0.2em] text-sm font-bold">
+                        Students Trained
+                    </p>
                 </div>
-                <div class="stats-card">
-                    <h3 class="text-4xl font-black text-indigo-600 mb-2">24</h3>
-                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Years of Excellence</p>
+
+                <div class="stats-card rounded-[2rem] p-10 text-center">
+                    <h3 class="text-5xl font-black text-blue-400 mb-3">100%</h3>
+                    <p class="text-slate-300 uppercase tracking-[0.2em] text-sm font-bold">
+                        Practical Exposure
+                    </p>
                 </div>
-                <div class="stats-card">
-                    <h3 class="text-4xl font-black text-indigo-600 mb-2">4.9</h3>
-                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Student Rating</p>
+
+                <div class="stats-card rounded-[2rem] p-10 text-center">
+                    <h3 class="text-5xl font-black text-green-400 mb-3">ISO</h3>
+                    <p class="text-slate-300 uppercase tracking-[0.2em] text-sm font-bold">
+                        Certified Institute
+                    </p>
                 </div>
+
             </div>
+
         </div>
     </section>
 
-    <!-- Our Values Section -->
-    <section class="section-spacing bg-white">
+    <!-- COURSES -->
+    <section class="py-28 bg-slate-50">
         <div class="container mx-auto px-6">
-            <div class="text-center max-w-2xl mx-auto mb-20">
-                <h2 class="text-4xl font-black text-slate-900 mb-6 tracking-tight">Core Philosophies</h2>
-                <p class="text-slate-500 text-lg">The principles that guide our curriculum and support systems every single day.</p>
+
+            <div class="text-center max-w-3xl mx-auto mb-20">
+
+                <p class="section-tag text-sm uppercase font-black text-amber-500 mb-4">
+                    Our Courses
+                </p>
+
+                <h2 class="text-5xl font-black text-slate-900 mb-6">
+                    Online & Offline Programs
+                </h2>
+
+                <p class="text-lg text-slate-500 leading-relaxed">
+                    Industry-oriented training designed to develop technical,
+                    analytical, and professional commerce skills.
+                </p>
+
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="value-item">
-                    <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-8 text-2xl">
-                        <i class="fa fa-lightbulb"></i>
-                    </div>
-                    <h4 class="text-2xl font-bold text-slate-900 mb-4">Radical Innovation</h4>
-                    <p class="text-slate-500 leading-relaxed font-medium">We don't settle for "good enough." Our team constantly updates content to reflect the absolute latest in industry standards.</p>
-                </div>
+            @php
+                $courses = [
+                    ['title'=>'Accounting','icon'=>'fa-calculator'],
+                    ['title'=>'Costing','icon'=>'fa-wallet'],
+                    ['title'=>'Income Tax','icon'=>'fa-percent'],
+                    ['title'=>'GST','icon'=>'fa-file-invoice'],
+                    ['title'=>'Computerized Accounting','icon'=>'fa-desktop'],
+                ];
+            @endphp
 
-                <div class="value-item">
-                    <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-8 text-2xl">
-                        <i class="fa fa-handshake"></i>
-                    </div>
-                    <h4 class="text-2xl font-bold text-slate-900 mb-4">Unwavering Integrity</h4>
-                    <p class="text-slate-500 leading-relaxed font-medium">Trust is our foundation. We maintain complete transparency with our students regarding their progress and career roadmaps.</p>
-                </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
 
-                <div class="value-item">
-                    <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-8 text-2xl">
-                        <i class="fa fa-rocket"></i>
+                @foreach($courses as $course)
+                <div class="course-card bg-white rounded-[2rem] p-10 text-center">
+
+                    <div class="w-20 h-20 mx-auto rounded-3xl bg-slate-100 flex items-center justify-center text-3xl mb-8 group-hover:color-blue">
+                        <i class="fa {{ $course['icon'] }}"></i>
                     </div>
-                    <h4 class="text-2xl font-bold text-slate-900 mb-4">Student Velocity</h4>
-                    <p class="text-slate-500 leading-relaxed font-medium">We optimize for your time. Every lesson is engineered to provide maximum knowledge density and actionable results.</p>
+
+                    <h4 class="text-xl font-black mb-3">
+                        {{ $course['title'] }}
+                    </h4>
+
+                    <p class="text-slate-500 text-sm leading-relaxed">
+                        Professional practical training with modern tools and concepts.
+                    </p>
+
                 </div>
+                @endforeach
+
             </div>
+
         </div>
     </section>
 
-    <!-- Faculty Section (Clean & Professional) -->
-    <section class="section-spacing bg-slate-50">
+    <!-- MISSION & VISION -->
+    <section class="py-28 bg-white">
         <div class="container mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-                <div class="max-w-xl">
-                    <h2 class="text-4xl font-black text-slate-900 mb-6 tracking-tight">Our Academic Council</h2>
-                    <p class="text-slate-500 text-lg">Guided by a team of industry veterans dedicated to your professional journey.</p>
+
+            <div class="grid lg:grid-cols-2 gap-16">
+
+                <!-- Mission -->
+                <div class="rk-card rounded-[2.5rem] p-12 bg-slate-50">
+
+                    <div class="flex items-center gap-5 mb-8">
+                        <div class="w-16 h-16 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-3xl">
+                            <i class="fa fa-bullseye"></i>
+                        </div>
+
+                        <h2 class="text-4xl font-black text-slate-900">
+                            Our Mission
+                        </h2>
+                    </div>
+
+                    <p class="text-lg text-slate-600 leading-relaxed mb-8">
+                        Our mission is to provide students with high-quality,
+                        affordable education that builds confidence, practical
+                        skills, ethical values, and career opportunities.
+                    </p>
+
+                    <p class="text-lg text-slate-600 leading-relaxed">
+                        We aim to develop knowledgeable professionals and
+                        open-minded future leaders who think globally and
+                        contribute positively to society.
+                    </p>
+
                 </div>
-                <a href="{{ route('contact') }}" class="px-8 py-4 bg-white text-slate-900 font-bold rounded-xl border border-slate-200 hover:border-indigo-600 hover:text-indigo-600 transition shadow-sm">
-                    Connect with Faculty
+
+                <!-- Vision -->
+                <div class="rk-card rounded-[2.5rem] p-12 bg-slate-50">
+
+                    <div class="flex items-center gap-5 mb-8">
+                        <div class="w-16 h-16 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-3xl">
+                            <i class="fa fa-eye"></i>
+                        </div>
+
+                        <h2 class="text-4xl font-black text-slate-900">
+                            Our Vision
+                        </h2>
+                    </div>
+
+                    <ul class="vision-list space-y-5 text-lg text-slate-600 leading-relaxed">
+                        <li>To provide affordable quality education.</li>
+
+                        <li>
+                            To teach important life values like honesty,
+                            discipline, and humanity.
+                        </li>
+
+                        <li>
+                            To help students realize their full potential
+                            and become future leaders and entrepreneurs.
+                        </li>
+
+                        <li>
+                            To develop positive thinking and confidence in students.
+                        </li>
+
+                        <li>
+                            To create strong career paths through practical learning.
+                        </li>
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- DIRECTOR MESSAGE -->
+    <section class="py-28 bg-slate-950">
+        <div class="container mx-auto px-6">
+
+            <div class="max-w-4xl mx-auto text-center">
+
+                <p class="section-tag text-sm uppercase font-black text-amber-400 mb-5">
+                    Director Message
+                </p>
+
+                <h2 class="text-5xl font-black text-white mb-10">
+                    Education That Creates Opportunities
+                </h2>
+
+                <blockquote class="text-slate-300 text-2xl leading-relaxed italic mb-12">
+                    “Our goal is to empower students with practical knowledge,
+                    professional skills, and strong values that help them build
+                    successful careers and meaningful lives.”
+                </blockquote>
+
+                <div class="inline-flex items-center gap-5">
+
+                    <div class="w-16 h-16 rounded-full bg-amber-500 flex items-center justify-center text-white font-black text-xl">
+                        RK
+                    </div>
+
+                    <div class="text-left">
+                        <h4 class="text-2xl font-black text-white">
+                            Mr. Ramesh Kolhe
+                        </h4>
+
+                        <p class="text-amber-400 uppercase tracking-[0.2em] text-xs font-bold">
+                            Director
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section py-28 text-center">
+        <div class="container mx-auto px-6">
+
+            <h2 class="text-5xl md:text-6xl font-black text-white leading-tight mb-8">
+                Start Your Professional Journey Today
+            </h2>
+
+            <p class="text-slate-300 text-xl max-w-3xl mx-auto leading-relaxed mb-12">
+                Join RK Institute of Commerce and gain practical skills,
+                confidence, and industry knowledge for long-term success.
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-6">
+
+                <a href="{{ route('student.register') }}"
+                   class="px-10 py-5 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black rounded-2xl transition">
+                    Enroll Now
                 </a>
+
+                <a href="{{ route('contact') }}"
+                   class="px-10 py-5 border border-white/20 hover:bg-white/10 text-white font-black rounded-2xl transition">
+                    Contact Us
+                </a>
+
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Member 1 -->
-                <div class="faculty-card group">
-                    <div class="faculty-image-container relative overflow-hidden rounded-3xl mb-6 aspect-[4/5] bg-slate-200">
-                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1974&auto=format&fit=crop"
-                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dr. Robert K.">
-                        <div class="absolute bottom-6 left-6 right-6 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div class="flex gap-3">
-                                <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-indigo-600 transition"><i class="fab fa-linkedin-in"></i></a>
-                                <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-indigo-600 transition"><i class="fab fa-twitter"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <h4 class="text-xl font-bold text-slate-900 mb-1">Dr. Robert K.</h4>
-                    <p class="text-indigo-600 font-bold text-xs uppercase tracking-widest">Founder & Dean</p>
-                </div>
-
-                <!-- Member 2 -->
-                <div class="faculty-card group">
-                    <div class="faculty-image-container relative overflow-hidden rounded-3xl mb-6 aspect-[4/5] bg-slate-200">
-                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop"
-                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Sarah Johnson">
-                        <div class="absolute bottom-6 left-6 right-6 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div class="flex gap-3">
-                                <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-indigo-600 transition"><i class="fab fa-linkedin-in"></i></a>
-                                <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-indigo-600 transition"><i class="fab fa-twitter"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <h4 class="text-xl font-bold text-slate-900 mb-1">Sarah Johnson</h4>
-                    <p class="text-indigo-600 font-bold text-xs uppercase tracking-widest">Head of Education</p>
-                </div>
-
-                <!-- Member 3 -->
-                <div class="faculty-card group">
-                    <div class="faculty-image-container relative overflow-hidden rounded-3xl mb-6 aspect-[4/5] bg-slate-200">
-                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1974&auto=format&fit=crop"
-                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Marcus Chen">
-                        <div class="absolute bottom-6 left-6 right-6 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div class="flex gap-3">
-                                <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-indigo-600 transition"><i class="fab fa-linkedin-in"></i></a>
-                                <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-indigo-600 transition"><i class="fab fa-twitter"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <h4 class="text-xl font-bold text-slate-900 mb-1">Marcus Chen</h4>
-                    <p class="text-indigo-600 font-bold text-xs uppercase tracking-widest">Technical Lead</p>
-                </div>
-
-                <!-- Member 4 -->
-                <div class="faculty-card group">
-                    <div class="faculty-image-container relative overflow-hidden rounded-3xl mb-6 aspect-[4/5] bg-slate-200">
-                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop"
-                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Elena Rodriguez">
-                        <div class="absolute bottom-6 left-6 right-6 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div class="flex gap-3">
-                                <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-indigo-600 transition"><i class="fab fa-linkedin-in"></i></a>
-                                <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-indigo-600 transition"><i class="fab fa-twitter"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <h4 class="text-xl font-bold text-slate-900 mb-1">Elena Rodriguez</h4>
-                    <p class="text-indigo-600 font-bold text-xs uppercase tracking-widest">Lead Instructor</p>
-                </div>
-            </div>
         </div>
     </section>
 
-    <!-- Partners Logo Section -->
-    <section class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <p class="text-center text-slate-400 font-bold uppercase tracking-[0.3em] text-[10px] mb-12">Institutional Synergies</p>
-            <div class="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2560px-Google_2015_logo.svg.png" class="h-6 w-auto" alt="Google">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/IBM_logo.svg/2560px-IBM_logo.svg.png" class="h-8 w-auto" alt="IBM">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/2560px-Amazon_logo.svg.png" class="h-6 w-auto" alt="Amazon">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/2560px-Netflix_2015_logo.svg.png" class="h-6 w-auto" alt="Netflix">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Microsoft_logo_%282012%29.svg/2560px-Microsoft_logo_%282012%29.svg.png" class="h-6 w-auto" alt="Microsoft">
-            </div>
-        </div>
-    </section>
-
-    <!-- Final CTA -->
-    <section class="section-spacing bg-white">
-        <div class="container mx-auto px-6">
-            <div class="bg-indigo-600 rounded-[3rem] p-12 md:p-24 text-center relative overflow-hidden shadow-2xl shadow-indigo-200">
-                <!-- Abstract BG Accents -->
-                <div class="absolute -top-20 -left-20 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl"></div>
-                <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-black opacity-10 rounded-full blur-3xl"></div>
-
-                <h2 class="text-4xl md:text-6xl font-black text-white mb-8 tracking-tight">Begin Your <br> Evolution Today.</h2>
-                <p class="text-indigo-100 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">Join 50,000+ students already reshaping their careers with our award-winning curriculum.</p>
-                <div class="flex flex-wrap justify-center gap-6 relative z-10">
-                    <a href="{{ route('courses') }}" class="px-12 py-5 bg-white text-indigo-600 font-extrabold rounded-2xl hover:scale-[1.05] transition-transform shadow-xl">
-                        Explore Curriculum
-                    </a>
-                    <a href="{{ route('contact') }}" class="px-12 py-5 bg-indigo-700 text-white font-extrabold rounded-2xl hover:bg-indigo-800 transition-colors border border-indigo-400/30">
-                        Contact Admissions
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
 </main>
+
 @endsection

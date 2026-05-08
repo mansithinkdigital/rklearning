@@ -1,230 +1,428 @@
 @extends('layouts.client')
 
-@section('title', 'Academic Support - RK Institute')
+@section('title', 'Contact Us - RK Institute of Commerce')
 
 @section('styles')
 <style>
-    @keyframes revealUp {
-        from { opacity: 0; transform: translateY(40px); }
-        to { opacity: 1; transform: translateY(0); }
+    :root{
+        --rk-primary:#0f2d62;
+        --rk-secondary:#0f172a;
+        --rk-accent:#d4a437;
+        --rk-border:#e2e8f0;
     }
 
-    @keyframes grain {
-        0%, 100% { transform: translate(0, 0); }
-        10% { transform: translate(-5%, -10%); }
-        30% { transform: translate(3%, -15%); }
-        50% { transform: translate(12%, 9%); }
-        70% { transform: translate(-9%, 4%); }
-        90% { transform: translate(2%, -3%); }
+    .contact-hero{
+        background:
+            linear-gradient(rgba(2,6,23,.88),rgba(15,23,42,.92)),
+            url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80');
+        background-size:cover;
+        background-position:center;
+        position:relative;
     }
 
-    .reveal {
-        animation: revealUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        opacity: 0;
+    .contact-hero::before{
+        content:'';
+        position:absolute;
+        inset:0;
+        background:
+            radial-gradient(circle at top left, rgba(59,130,246,.18), transparent 30%),
+            radial-gradient(circle at bottom right, rgba(245,158,11,.18), transparent 25%);
     }
 
-    .grain-overlay::before {
-        content: "";
-        position: absolute;
-        top: -100%;
-        left: -100%;
-        width: 300%;
-        height: 300%;
-        background-image: url("https://grainy-gradients.vercel.app/noise.svg");
-        opacity: 0.05;
-        pointer-events: none;
-        animation: grain 8s steps(10) infinite;
-        z-index: 1;
+    .contact-card{
+        transition:all .35s ease;
+        border:1px solid var(--rk-border);
     }
 
-    .contact-input {
-        width: 100%;
-        padding: 20px;
-        background: #f8fafc;
-        border: 2px solid transparent;
-        border-radius: 0px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        border-bottom: 2px solid #0f172a;
+    .contact-card:hover{
+        transform:translateY(-10px);
+        box-shadow:0 25px 60px rgba(15,23,42,.08);
+        border-color:#1e3a8a;
     }
 
-    .contact-input:focus {
-        background: white;
-        border-color: #4f46e5;
-        outline: none;
-        padding-left: 24px;
+    .input-field{
+        width:100%;
+        padding:16px 20px;
+        background:#f8fafc;
+        border:1px solid #e2e8f0;
+        border-radius:16px;
+        font-weight:500;
+        transition:.3s ease;
     }
 
-    .neo-card {
-        background: white;
-        border: 2px solid #0f172a;
-        box-shadow: 12px 12px 0px #0f172a;
-        transition: all 0.3s ease;
+    .input-field:focus{
+        background:#fff;
+        border-color:#1e3a8a;
+        box-shadow:0 0 0 4px rgba(30,58,138,.08);
+        outline:none;
     }
 
-    .method-card {
-        border-left: 4px solid #4f46e5;
-        padding-left: 24px;
-        transition: all 0.3s ease;
+    .social-btn{
+        width:58px;
+        height:58px;
+        border-radius:18px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background:rgba(255,255,255,.06);
+        color:#fff;
+        transition:.3s ease;
+        border:1px solid rgba(255,255,255,.08);
     }
 
-    .method-card:hover {
-        transform: translateX(8px);
+    .social-btn:hover{
+        background:#d4a437;
+        color:#0f172a;
+        transform:translateY(-5px);
+    }
+
+    .section-tag{
+        letter-spacing:.18em;
+    }
+
+    .glass-card{
+        background:rgba(255,255,255,.05);
+        border:1px solid rgba(255,255,255,.08);
+        backdrop-filter:blur(14px);
+    }
+
+    .info-icon{
+        width:72px;
+        height:72px;
+        border-radius:24px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:30px;
     }
 </style>
 @endsection
 
 @section('content')
-<main class="overflow-x-hidden">
-    <!-- Hero Section -->
-    <section class="relative bg-slate-900 pt-32 pb-48 grain-overlay">
-        <div class="container mx-auto px-6 relative z-10">
-            <div class="max-w-4xl">
-                <span class="inline-block px-4 py-1.5 bg-indigo-500/10 text-indigo-400 rounded-full text-xs font-black uppercase tracking-[0.2em] mb-8 reveal" style="animation-delay: 0.1s">
-                    Direct Liaison
-                </span>
-                <h1 class="text-6xl md:text-8xl font-black text-white leading-[0.9] mb-12 reveal" style="animation-delay: 0.2s">
-                    Connect with the <br> 
-                    <span class="text-indigo-500">Academic</span> <br>
-                    <span class="text-white opacity-20">Registrar.</span>
-                </h1>
-                <p class="text-slate-400 text-xl font-medium max-w-2xl leading-relaxed reveal" style="animation-delay: 0.3s">
-                    Technical inquiries, institutional partnerships, or curriculum guidance. Our specialists provide direct, high-fidelity support for your academic journey.
-                </p>
-            </div>
+
+<main class="overflow-hidden">
+
+    <!-- HERO -->
+    <section class="contact-hero py-28 md:py-36 overflow-hidden">
+
+        <div class="container mx-auto px-6 relative z-10 text-center">
+
+            <p class="section-tag text-sm uppercase font-black text-amber-400 mb-5">
+                Contact RK Institute
+            </p>
+
+            <h1 class="text-5xl md:text-7xl font-black text-white leading-tight mb-8">
+                Get In
+                <span class="text-amber-400">Touch</span>
+            </h1>
+
+            <p class="text-slate-300 text-xl max-w-3xl mx-auto leading-relaxed">
+                Have questions about admissions, courses, fees, or career guidance?
+                Our team is here to help you begin your professional journey.
+            </p>
+
         </div>
+
     </section>
 
-    <!-- Contact Matrix -->
-    <section class="py-24 bg-white relative -mt-32 z-20">
+    <!-- CONTACT INFO -->
+    <section class="py-24 bg-white relative -mt-16 z-20">
+
         <div class="container mx-auto px-6">
-            <div class="neo-card flex flex-col lg:flex-row overflow-hidden reveal">
-                <!-- Contact Info -->
-                <div class="lg:w-1/3 bg-slate-900 p-12 lg:p-16 text-white flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-2xl font-black mb-12 uppercase tracking-widest text-indigo-400">The Hub HQ</h3>
-                        
-                        <div class="space-y-12">
-                            <div class="method-card">
-                                <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-2">Voice Dispatch</p>
-                                <p class="text-xl font-bold">+1 (234) 567 890</p>
-                                <p class="text-xs text-slate-500 mt-1">Available 09:00 — 18:00 IST</p>
-                            </div>
-                            
-                            <div class="method-card">
-                                <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-2">Electronic Mail</p>
-                                <p class="text-xl font-bold">hello@rk-learning.com</p>
-                                <p class="text-xs text-slate-500 mt-1">Response within 12 academic hours</p>
-                            </div>
 
-                            <div class="method-card">
-                                <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-2">Main Lab</p>
-                                <p class="text-xl font-bold">123 Knowledge City, <br>NY 10001, USA</p>
-                            </div>
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                <!-- PHONE -->
+                <div class="contact-card bg-white rounded-[2rem] p-10 text-center shadow-xl shadow-slate-100">
+
+                    <div class="info-icon bg-blue-50 text-blue-700 mx-auto mb-8">
+                        <i class="fa fa-phone-volume"></i>
                     </div>
 
-                    <div class="mt-16 pt-12 border-t border-slate-800">
-                        <div class="flex gap-8">
-                            <a href="#" class="text-slate-400 hover:text-indigo-400 transition-colors"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#" class="text-slate-400 hover:text-indigo-400 transition-colors"><i class="fab fa-instagram"></i></a>
-                            <a href="#" class="text-slate-400 hover:text-indigo-400 transition-colors"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
+                    <h3 class="text-2xl font-black text-slate-900 mb-4">
+                        Call Us
+                    </h3>
+
+                    <p class="text-slate-500 mb-6 font-medium">
+                        Mon - Sat : 9:00 AM to 7:00 PM
+                    </p>
+
+                    <a href="tel:+918888937680"
+                       class="text-2xl font-black text-slate-900 hover:text-blue-700 transition">
+                        +91 88 88 93 76 80
+                    </a>
+
+                </div>
+
+                <!-- EMAIL -->
+                <div class="contact-card bg-white rounded-[2rem] p-10 text-center shadow-xl shadow-slate-100">
+
+                    <div class="info-icon bg-amber-50 text-amber-500 mx-auto mb-8">
+                        <i class="fa fa-envelope-open-text"></i>
                     </div>
+
+                    <h3 class="text-2xl font-black text-slate-900 mb-4">
+                        Email Us
+                    </h3>
+
+                    <p class="text-slate-500 mb-6 font-medium">
+                        We usually respond within 24 hours
+                    </p>
+
+                    <a href="mailto:Rkinstitute.cm@gmail.com"
+                       class="text-lg font-black text-slate-900 hover:text-blue-700 transition break-all">
+                        Rkinstitute.cm@gmail.com
+                    </a>
+
                 </div>
 
-                <!-- Contact Form -->
-                <div class="lg:w-2/3 p-12 lg:p-24 bg-white">
-                    <form action="#" method="POST" class="space-y-12">
-                        <div class="grid md:grid-cols-2 gap-12">
-                            <div class="space-y-4">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Formal Name</label>
-                                <input type="text" class="contact-input" placeholder="e.g. Alexander Thorne">
-                            </div>
-                            <div class="space-y-4">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Academic Identity</label>
-                                <input type="email" class="contact-input" placeholder="e.g. alex@university.edu">
-                            </div>
-                        </div>
+                <!-- LOCATION -->
+                <div class="contact-card bg-white rounded-[2rem] p-10 text-center shadow-xl shadow-slate-100">
 
-                        <div class="space-y-4">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Inquiry Classification</label>
-                            <select class="contact-input cursor-pointer appearance-none bg-no-repeat bg-[right_20px_center]" style="background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'><path stroke=\'%230f172a\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'M6 8l4 4 4-4\'/></svg>');">
-                                <option>Curriculum Specialization Inquiry</option>
-                                <option>Institutional Strategic Partnership</option>
-                                <option>Technical Platform Architecture</option>
-                                <option>Career Acceleration Guidance</option>
-                            </select>
-                        </div>
+                    <div class="info-icon bg-green-50 text-green-600 mx-auto mb-8">
+                        <i class="fa fa-location-dot"></i>
+                    </div>
 
-                        <div class="space-y-4">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Detailed Brief</label>
-                            <textarea rows="4" class="contact-input" placeholder="Explain your requirements in detail..."></textarea>
-                        </div>
+                    <h3 class="text-2xl font-black text-slate-900 mb-4">
+                        Visit Institute
+                    </h3>
 
-                        <div class="pt-8">
-                            <button type="submit" class="px-12 py-6 bg-slate-900 text-white font-black uppercase tracking-widest text-sm hover:bg-indigo-600 transition-all rounded-full">
-                                Transmit Dispatch
-                            </button>
-                        </div>
-                    </form>
+                    <p class="text-slate-500 mb-6 font-medium">
+                        RK Institute of Commerce
+                    </p>
+
+                    <p class="text-lg font-bold text-slate-900 leading-relaxed">
+                        Maharashtra, India
+                    </p>
+
                 </div>
+
             </div>
+
         </div>
+
     </section>
 
-    <!-- Secondary Info -->
-    <section class="py-24 bg-slate-50">
-        <div class="container mx-auto px-6 grid md:grid-cols-3 gap-12">
-            <div class="reveal" style="animation-delay: 0.1s">
-                <div class="w-12 h-12 bg-indigo-600 text-white flex items-center justify-center text-xl mb-6">
-                    <i class="fa fa-life-ring"></i>
+    <!-- CONTACT FORM -->
+    <section class="py-28 bg-slate-50">
+
+        <div class="container mx-auto px-6">
+
+            <div class="bg-white rounded-[3rem] overflow-hidden border border-slate-100 shadow-2xl shadow-slate-200">
+
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+
+                    <!-- FORM SIDE -->
+                    <div class="p-10 md:p-20">
+
+                        <p class="section-tag text-sm uppercase font-black text-amber-500 mb-4">
+                            Admission Inquiry
+                        </p>
+
+                        <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-6">
+                            Send Us A Message
+                        </h2>
+
+                        <p class="text-slate-500 text-lg leading-relaxed mb-12">
+                            Fill out the form below and our admissions team
+                            will contact you shortly with complete details.
+                        </p>
+
+                        <form action="#" method="POST" class="space-y-6">
+
+                            @csrf
+
+                            <div class="grid md:grid-cols-2 gap-6">
+
+                                <div>
+                                    <label class="text-sm font-bold text-slate-900 block mb-3">
+                                        Full Name
+                                    </label>
+
+                                    <input type="text"
+                                           class="input-field"
+                                           placeholder="Enter your name">
+                                </div>
+
+                                <div>
+                                    <label class="text-sm font-bold text-slate-900 block mb-3">
+                                        Phone Number
+                                    </label>
+
+                                    <input type="text"
+                                           class="input-field"
+                                           placeholder="+91 00000 00000">
+                                </div>
+
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-bold text-slate-900 block mb-3">
+                                    Email Address
+                                </label>
+
+                                <input type="email"
+                                       class="input-field"
+                                       placeholder="Enter your email">
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-bold text-slate-900 block mb-3">
+                                    Interested Course
+                                </label>
+
+                                <select class="input-field cursor-pointer">
+
+                                    <option>Accounting</option>
+                                    <option>Costing</option>
+                                    <option>Income Tax</option>
+                                    <option>GST</option>
+                                    <option>Computerized Accounting</option>
+
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-bold text-slate-900 block mb-3">
+                                    Message
+                                </label>
+
+                                <textarea rows="5"
+                                          class="input-field"
+                                          placeholder="Write your message here..."></textarea>
+                            </div>
+
+                            <div class="pt-4">
+
+                                <button type="submit"
+                                        class="w-full py-5 bg-slate-900 hover:bg-blue-700 text-white font-black rounded-2xl transition shadow-xl shadow-slate-200">
+                                    Submit Inquiry
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                    <!-- RIGHT SIDE -->
+                    <div class="bg-slate-950 p-10 md:p-20 text-white flex flex-col justify-between relative overflow-hidden">
+
+                        <div class="absolute -top-20 -right-20 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl"></div>
+                        <div class="absolute bottom-0 left-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl"></div>
+
+                        <div class="relative z-10">
+
+                            <p class="section-tag text-sm uppercase font-black text-amber-400 mb-4">
+                                Stay Connected
+                            </p>
+
+                            <h2 class="text-4xl md:text-5xl font-black mb-8">
+                                Follow Us
+                            </h2>
+
+                            <p class="text-slate-400 text-lg leading-relaxed mb-14">
+                                Stay updated with course launches, results,
+                                student achievements, and institute updates.
+                            </p>
+
+                            <div class="space-y-10">
+
+                                <!-- INSTAGRAM -->
+                                <div class="flex items-center gap-6">
+
+                                    <a href="https://www.instagram.com/rk_institute_1"
+                                       target="_blank"
+                                       class="social-btn text-2xl">
+                                        <i class="fab fa-instagram"></i>
+                                    </a>
+
+                                    <div>
+                                        <h4 class="font-black text-lg">
+                                            Instagram
+                                        </h4>
+
+                                        <p class="text-slate-400">
+                                            @rk_institute_1
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                <!-- FACEBOOK -->
+                                <div class="flex items-center gap-6">
+
+                                    <a href="https://www.facebook.com/share/1CLCuBEQKz/"
+                                       class="social-btn text-2xl">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </a>
+
+                                    <div>
+                                        <h4 class="font-black text-lg">
+                                            Facebook
+                                        </h4>
+
+                                        <p class="text-slate-400">
+                                            RK Institute
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                <!-- YOUTUBE -->
+                                <!-- <div class="flex items-center gap-6">
+
+                                    <a href="#"
+                                       class="social-btn text-2xl">
+                                        <i class="fab fa-youtube"></i>
+                                    </a>
+
+                                    <div>
+                                        <h4 class="font-black text-lg">
+                                            YouTube
+                                        </h4>
+
+                                        <p class="text-slate-400">
+                                            RK Institute
+                                        </p>
+                                    </div>
+
+                                </div> -->
+
+                            </div>
+
+                        </div>
+
+                        <!-- SUPPORT CARD -->
+                        <div class="relative z-10 mt-20 glass-card rounded-[2rem] p-8">
+
+                            <div class="flex items-center mb-5">
+
+                                <span class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
+
+                                <h4 class="font-black text-lg">
+                                    Student Support Available
+                                </h4>
+
+                            </div>
+
+                            <p class="text-slate-300 leading-relaxed">
+                                Our admissions team is ready to assist you with
+                                course details, fees, career guidance, and enrollment support.
+                            </p>
+
+                        </div>
+
+                    </div>
+
                 </div>
-                <h4 class="text-xl font-black text-slate-900 mb-4 uppercase tracking-tight">24/7 Repository</h4>
-                <p class="text-slate-500 font-medium leading-relaxed">Most procedural questions are addressed in our exhaustive Knowledge Base. Explore documentation before initiating dispatch.</p>
-            </div>
-            
-            <div class="reveal" style="animation-delay: 0.2s">
-                <div class="w-12 h-12 bg-indigo-600 text-white flex items-center justify-center text-xl mb-6">
-                    <i class="fa fa-users-gear"></i>
-                </div>
-                <h4 class="text-xl font-black text-slate-900 mb-4 uppercase tracking-tight">Curriculum Clinic</h4>
-                <p class="text-slate-500 font-medium leading-relaxed">Stuck on a specific architectural module? Our instructional team hosts live code-review clinics every Tuesday and Thursday.</p>
+
             </div>
 
-            <div class="reveal" style="animation-delay: 0.3s">
-                <div class="w-12 h-12 bg-indigo-600 text-white flex items-center justify-center text-xl mb-6">
-                    <i class="fa fa-building-columns"></i>
-                </div>
-                <h4 class="text-xl font-black text-slate-900 mb-4 uppercase tracking-tight">Campus Visit</h4>
-                <p class="text-slate-500 font-medium leading-relaxed">Direct career counseling sessions are available at our physical lab. Appointments must be scheduled 72 hours in advance.</p>
-            </div>
         </div>
+
     </section>
+
 </main>
-@endsection
 
-@section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const reveals = document.querySelectorAll('.reveal');
-        
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.classList.add('animate-revealUp');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        reveals.forEach(el => observer.observe(el));
-    });
-</script>
 @endsection
