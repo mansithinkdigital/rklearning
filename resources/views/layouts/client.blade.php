@@ -100,13 +100,13 @@
                 <span class="text-slate-300">|</span>
                 <div class="flex items-center space-x-2">
                     <i class="fa fa-envelope text-primary"></i>
-                    <span>rklearninghub2023@gmail.com</span>
+                    <span>Rkinstitute.cm@gmail.com</span>
                 </div>
             </div>
             <div class="flex items-center space-x-6">
                 <div class="flex items-center space-x-2">
                     <i class="fa fa-phone-alt text-primary"></i>
-                    <span>+91 (234) 567 890</span>
+                    <span>+91 8888937680</span>
                 </div>
 
             </div>
@@ -172,11 +172,11 @@
                         <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
                             <i class="fab fa-twitter"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
+                        <a href="https://www.instagram.com/rk_institute_1?igsh=dGtnMjkzNXg4bm53" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
                             <i class="fab fa-instagram"></i>
                         </a>
                         <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
-                            <i class="fab fa-linkedin-in"></i>
+                            <i class="fab fa-facebook-f"></i>
                         </a>
                     </div>
                 </div>
@@ -217,19 +217,19 @@
                             <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm">
                                 <i class="fa fa-map-marker-alt text-indigo-600"></i>
                             </div>
-                            <span class="text-sm">25/B, Knowledge City, New York, USA</span>
+                            <span class="text-sm">Maharashtra, India</span>
                         </div>
                         <div class="flex items-center space-x-4">
                             <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm">
                                 <i class="fa fa-phone-alt text-indigo-600"></i>
                             </div>
-                            <span class="text-sm font-medium">+1 (234) 567 890</span>
+                            <span class="text-sm font-medium">+91 8888937680</span>
                         </div>
                         <div class="flex items-center space-x-4">
                             <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm">
                                 <i class="fa fa-envelope text-indigo-600"></i>
                             </div>
-                            <span class="text-sm font-medium text-indigo-600">info@rklearning.com</span>
+                            <span class="text-sm font-medium text-indigo-600">Rkinstitute.cm@gmail.com</span>
                         </div>
                     </div>
                 </div>
