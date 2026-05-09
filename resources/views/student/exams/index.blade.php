@@ -108,12 +108,16 @@
         <div class="group h-full flex flex-col bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 p-8 shadow-sm hover:shadow-2xl transition-all duration-500 {{ $cs->is_expired ? 'opacity-75 grayscale' : 'hover:-translate-y-2' }}">
             <!-- Header -->
             <div class="flex items-center justify-between mb-8">
-                <div class="w-14 h-14 bg-gradient-to-br {{ $cs->is_expired ? 'from-slate-400 to-slate-600' : ($passed ? 'from-emerald-500 to-emerald-700' : ($attempted ? 'from-red-400 to-red-600' : 'from-blue-500 to-blue-700')) }} rounded-2xl flex items-center justify-center text-white shadow-xl transition-transform group-hover:rotate-6">
-                    <i data-lucide="{{ $cs->is_expired ? 'lock' : ($passed ? 'award' : ($attempted ? 'rotate-ccw' : ($hasMcqs ? 'clipboard-list' : 'lock'))) }}" class="w-6 h-6"></i>
+                <div class="w-14 h-14 bg-gradient-to-br {{ ($cs->is_expired || $cs->is_inactive) ? 'from-slate-400 to-slate-600' : ($passed ? 'from-emerald-500 to-emerald-700' : ($attempted ? 'from-red-400 to-red-600' : 'from-blue-500 to-blue-700')) }} rounded-2xl flex items-center justify-center text-white shadow-xl transition-transform group-hover:rotate-6">
+                    <i data-lucide="{{ ($cs->is_expired || $cs->is_inactive) ? 'lock' : ($passed ? 'award' : ($attempted ? 'rotate-ccw' : ($hasMcqs ? 'clipboard-list' : 'lock'))) }}" class="w-6 h-6"></i>
                 </div>
                 @if($cs->is_expired)
                 <span class="px-3 py-1 bg-red-100 text-red-600 rounded-lg text-[10px] font-black uppercase tracking-widest">
                     Access Expired
+                </span>
+                @elseif($cs->is_inactive)
+                <span class="px-3 py-1 bg-rose-100 text-rose-600 rounded-lg text-[10px] font-black uppercase tracking-widest">
+                    Payment Pending
                 </span>
                 @elseif($attempted)
                 @if($passed)
@@ -234,13 +238,20 @@
                 </div>
             </div>
             @elseif(!$cs->videos_completed)
-            <div class="space-y-3">
-                <button disabled class="w-full py-4 bg-slate-50 text-slate-400 border border-slate-200 rounded-2xl font-black text-[11px] uppercase tracking-widest text-center cursor-not-allowed flex items-center justify-center gap-2">
-                    <i data-lucide="lock" class="w-3.5 h-3.5"></i> Complete Course to Unlock Exam
+            <div class="mt-auto">
+                @if($cs->is_expired)
+                <button disabled class="w-full py-4 bg-slate-100 dark:bg-slate-800 text-slate-400 rounded-2xl font-black text-xs uppercase tracking-widest cursor-not-allowed border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-2">
+                    <i data-lucide="lock" class="w-4 h-4"></i> Access Expired
                 </button>
+                @elseif($cs->is_inactive)
+                <a href="{{ route('student.financials') }}" class="w-full py-4 bg-rose-100 dark:bg-rose-900/20 text-rose-600 rounded-2xl font-black text-xs uppercase tracking-widest border border-rose-200 dark:border-rose-800 flex items-center justify-center gap-2 hover:bg-rose-600 hover:text-white transition-all">
+                    <i data-lucide="credit-card" class="w-4 h-4"></i> Pay Fees to Unlock
+                </a>
+                @else
                 <a href="{{ route('student.learning', $cs->course_id) }}" class="flex items-center justify-center gap-2 w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest transition-colors shadow-lg">
                     <i data-lucide="play" class="w-3.5 h-3.5"></i> Complete Course ({{ $cs->progress_percent }}%)
                 </a>
+                @endif
             </div>
             @elseif($hasMcqs)
             <a href="{{ route('student.exams.start', $cs->id) }}"

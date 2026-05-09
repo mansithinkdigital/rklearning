@@ -124,21 +124,27 @@
             </div>
             <div class="flex space-x-6 overflow-x-auto pb-6 scrollbar-hide px-2 items-stretch">
                 @forelse($enrolledCourses as $course)
-                <div class="w-80 flex-none group {{ $course->is_expired ? 'opacity-75 grayscale pointer-events-none' : 'cursor-pointer' }}"
-                    @if(!$course->is_expired) onclick="window.location='{{ route('student.learning', $course->id) }}'" @endif>
+                @php
+                    $isInactive = $course->pivot->status === 'inactive';
+                    $isDisabled = $course->is_expired || $isInactive;
+                @endphp
+                <div class="w-80 flex-none group {{ $isDisabled ? 'opacity-75 grayscale pointer-events-none' : 'cursor-pointer' }}"
+                    @if(!$isDisabled) onclick="window.location='{{ route('student.learning', $course->id) }}'" @endif>
                     <div class="h-full flex flex-col">
-                        <div class="relative rounded-3xl overflow-hidden aspect-video mb-4 shadow-sm {{ $course->is_expired ? '' : 'group-hover:shadow-xl group-hover:-translate-y-1' }} transition-all duration-300 shrink-0">
+                        <div class="relative rounded-3xl overflow-hidden aspect-video mb-4 shadow-sm {{ $isDisabled ? '' : 'group-hover:shadow-xl group-hover:-translate-y-1' }} transition-all duration-300 shrink-0">
                             <img src="{{ asset('admin/uploads/courseimg/' . $course->image) }}" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
                                 @if($course->is_expired)
-                                <span class="text-white text-xs font-bold px-2 py-1 bg-red-600 rounded">Expired</span>
+                                <span class="text-white text-xs font-bold px-2 py-1 bg-red-600 rounded uppercase tracking-widest">Expired</span>
+                                @elseif($isInactive)
+                                <span class="text-white text-xs font-bold px-2 py-1 bg-rose-600 rounded uppercase tracking-widest">Access Suspended</span>
                                 @else
-                                <span class="text-white text-xs font-bold px-2 py-1 bg-blue-600 rounded">Course</span>
+                                <span class="text-white text-xs font-bold px-2 py-1 bg-blue-600 rounded uppercase tracking-widest">Course</span>
                                 @endif
                             </div>
-                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 {{ $course->is_expired ? 'opacity-100' : 'opacity-0 group-hover:opacity-100' }} transition-opacity">
-                                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center {{ $course->is_expired ? 'text-slate-400' : 'text-blue-600' }} shadow-xl">
-                                    <i data-lucide="{{ $course->is_expired ? 'lock' : 'play' }}" class="w-6 h-6 {{ $course->is_expired ? '' : 'fill-current' }}"></i>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 {{ $isDisabled ? 'opacity-100' : 'opacity-0 group-hover:opacity-100' }} transition-opacity">
+                                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center {{ $isDisabled ? 'text-slate-400' : 'text-blue-600' }} shadow-xl">
+                                    <i data-lucide="{{ $isDisabled ? 'lock' : 'play' }}" class="w-6 h-6 {{ $isDisabled ? '' : 'fill-current' }}"></i>
                                 </div>
                             </div>
                         </div>
@@ -151,14 +157,14 @@
                         </div>
                         <div class="mt-auto">
                             <div class="flex items-center justify-between text-[11px] font-bold mt-3">
-                                <div class="flex items-center gap-1.5 {{ $course->is_expired ? 'text-red-500' : 'text-slate-400' }}">
+                                <div class="flex items-center gap-1.5 {{ $isDisabled ? 'text-red-500' : 'text-slate-400' }}">
                                     <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
                                     <span>Expiry Date: {{ $course->expiry_date ? $course->expiry_date->format('d M, Y') : 'N/A' }}</span>
                                 </div>
                                 <span class="text-blue-600">{{ $course->progress_percent }}%</span>
                             </div>
                             <div class="w-full bg-slate-200 h-1.5 rounded-full mt-2">
-                                <div class="bg-{{ $course->is_expired ? 'red-500' : 'blue-600' }} h-1.5 rounded-full transition-all duration-1000" style="width: {{ $course->progress_percent }}%"></div>
+                                <div class="bg-{{ $isDisabled ? 'red-500' : 'blue-600' }} h-1.5 rounded-full transition-all duration-1000" style="width: {{ $course->progress_percent }}%"></div>
                             </div>
                         </div>
                     </div>
@@ -180,30 +186,42 @@
                 <div class="card border-blue-100 bg-blue-50/30 flex flex-col justify-between">
                     <div>
                         <div class="flex items-center space-x-2 text-blue-600 mb-4 font-bold text-sm">
-                            <i data-lucide="{{ ($latestCourse && $latestCourse->videos_completed) ? 'unlock' : 'lock' }}" class="w-4 h-4"></i>
-                            <span>{{ ($latestCourse && $latestCourse->videos_completed) ? 'Exam Ready' : 'Exam Locked' }}</span>
+                            <i data-lucide="{{ ($latestCourse && $latestCourse->videos_completed && $latestCourse->pivot->status === 'approved') ? 'unlock' : 'lock' }}" class="w-4 h-4"></i>
+                            <span>
+                                @if($latestCourse && $latestCourse->pivot->status === 'inactive')
+                                    Payment Pending
+                                @elseif($latestCourse && $latestCourse->videos_completed)
+                                    Exam Ready
+                                @else
+                                    Exam Locked
+                                @endif
+                            </span>
                         </div>
                         <h4 class="text-lg font-bold text-slate-800 mb-2">{{ $latestCourse ? $latestCourse->name : 'No Active Course' }}</h4>
                         <p class="text-sm text-slate-500 mb-6">
                             @if($latestCourse)
-                            @if($latestCourse->videos_completed)
-                            Congratulations! You've completed the curriculum. You can now start your examination.
+                                @if($latestCourse->pivot->status === 'inactive')
+                                    Your access has been suspended due to pending fees. Please clear your balance to unlock the exam.
+                                @elseif($latestCourse->videos_completed)
+                                    Congratulations! You've completed the curriculum. You can now start your examination.
+                                @else
+                                    Complete all video lessons to unlock the exam. ({{ $latestCourse->completed_vids_count }}/{{ $latestCourse->total_vids_count }} Completed)
+                                @endif
                             @else
-                            Complete all video lessons to unlock the exam. ({{ $latestCourse->completed_vids_count }}/{{ $latestCourse->total_vids_count }} Completed)
-                            @endif
-                            @else
-                            Enroll in a course to unlock quizzes and exams.
+                                Enroll in a course to unlock quizzes and exams.
                             @endif
                         </p>
                     </div>
                     @if($latestCourse)
-                    @if($latestCourse->videos_completed)
-                    <a href="{{ route('student.exams') }}" class="btn-primary text-center">Start Exam Now</a>
+                        @if($latestCourse->pivot->status === 'inactive')
+                            <a href="{{ route('student.financials') }}" class="w-full py-3 bg-rose-100 text-rose-600 rounded-xl font-bold text-center hover:bg-rose-600 hover:text-white transition-all">Pay Fees to Unlock</a>
+                        @elseif($latestCourse->videos_completed)
+                            <a href="{{ route('student.exams') }}" class="btn-primary text-center">Start Exam Now</a>
+                        @else
+                            <a href="{{ route('student.learning', $latestCourse->id) }}" class="w-full py-3 bg-slate-200 text-slate-500 rounded-xl font-bold text-center">Complete Course to Unlock</a>
+                        @endif
                     @else
-                    <a href="{{ route('student.learning', $latestCourse->id) }}" class="w-full py-3 bg-slate-200 text-slate-500 rounded-xl font-bold text-center">Complete Course to Unlock</a>
-                    @endif
-                    @else
-                    <a href="{{ route('courses') }}" class="btn-primary text-center">Browse Courses</a>
+                        <a href="{{ route('courses') }}" class="btn-primary text-center">Browse Courses</a>
                     @endif
                 </div>
 

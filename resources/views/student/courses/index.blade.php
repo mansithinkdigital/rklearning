@@ -28,15 +28,21 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
     {{-- Approved Courses --}}
     @foreach($enrolledCourses as $course)
-    <div class="group {{ $course->is_expired ? 'opacity-75 grayscale' : '' }}">
-        <div class="card !p-0 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 {{ $course->is_expired ? '' : 'group-hover:-translate-y-1' }}">
+    @php
+        $isInactive = $course->pivot->status === 'inactive';
+        $isDisabled = $course->is_expired || $isInactive;
+    @endphp
+    <div class="group {{ $isDisabled ? 'opacity-75 grayscale' : '' }}">
+        <div class="card !p-0 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 {{ $isDisabled ? '' : 'group-hover:-translate-y-1' }}">
             <div class="relative aspect-video">
                 <img src="{{ asset('admin/uploads/courseimg/' . $course->image) }}" class="w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
                     @if($course->is_expired)
-                    <span class="text-white text-xs font-bold px-2 py-1 bg-red-500 rounded">Expired</span>
+                    <span class="text-white text-xs font-bold px-2 py-1 bg-red-600 rounded uppercase tracking-widest">Expired</span>
+                    @elseif($isInactive)
+                    <span class="text-white text-xs font-bold px-2 py-1 bg-rose-600 rounded uppercase tracking-widest">Suspended</span>
                     @else
-                    <span class="text-white text-xs font-bold px-2 py-1 bg-emerald-500 rounded">Active</span>
+                    <span class="text-white text-xs font-bold px-2 py-1 bg-emerald-500 rounded uppercase tracking-widest">Active</span>
                     @endif
                 </div>
             </div>
@@ -49,11 +55,19 @@
                 <div class="w-full bg-slate-200 h-1.5 rounded-full">
                     <div class="bg-blue-600 h-1.5 rounded-full transition-all duration-1000" style="width: {{ $course->progress_percent }}%"></div>
                 </div>
-                <div class="mt-4 flex items-center gap-2 text-[11px] font-bold">
-                    <div class="px-2 py-1 {{ $course->is_expired ? 'bg-red-50 text-red-700 border-red-100' : 'bg-amber-50 text-amber-700 border-amber-100' }} rounded-lg border flex items-center gap-1.5">
-                        <i data-lucide="clock" class="w-3 h-3"></i>
-                        Expires: {{ $course->expiry_date ? $course->expiry_date->format('d M, Y') : 'N/A' }}
+                <div class="mt-4 flex flex-col gap-2">
+                    <div class="flex items-center gap-2 text-[11px] font-bold">
+                        <div class="px-2 py-1 {{ $course->is_expired ? 'bg-red-50 text-red-700 border-red-100' : 'bg-amber-50 text-amber-700 border-amber-100' }} rounded-lg border flex items-center gap-1.5">
+                            <i data-lucide="clock" class="w-3 h-3"></i>
+                            Expires: {{ $course->expiry_date ? $course->expiry_date->format('d M, Y') : 'N/A' }}
+                        </div>
                     </div>
+                    @if($isInactive)
+                    <div class="p-2 bg-rose-50 text-rose-700 border border-rose-100 rounded-lg text-[10px] font-bold flex items-center gap-2">
+                        <i data-lucide="info" class="w-4 h-4"></i>
+                        Access suspended due to pending balance.
+                    </div>
+                    @endif
                 </div>
 
                 <!-- Syllabus Accordion -->
@@ -100,6 +114,12 @@
                         Access Expired
                         <i data-lucide="lock" class="w-3 h-3"></i>
                     </span>
+                    @elseif($isInactive)
+                    <a href="{{ route('student.financials') }}"
+                        class="inline-flex items-center justify-center gap-1 px-4 py-2 text-xs font-bold text-rose-600 bg-rose-50 border border-rose-200 rounded-md hover:bg-rose-600 hover:text-white transition duration-200">
+                        Clear Balance
+                        <i data-lucide="credit-card" class="w-3 h-3"></i>
+                    </a>
                     @else
                     <a href="{{ route('student.learning', $course->id) }}"
                         class="inline-flex items-center justify-center gap-1 px-4 py-2 text-xs font-bold text-blue-600 bg-white border border-blue-600 rounded-md hover:bg-blue-600 hover:text-white transition duration-200">

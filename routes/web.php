@@ -128,6 +128,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/payments/online', [\App\Http\Controllers\Admin\EnrollmentController::class, 'onlinePayments'])->name('payments.online');
         Route::get('/payments/offline', [\App\Http\Controllers\Admin\EnrollmentController::class, 'offlinePayments'])->name('payments.offline');
         Route::post('/payments/offline/{id}/update', [\App\Http\Controllers\Admin\EnrollmentController::class, 'updateOfflinePayment'])->name('payments.offline.update');
+        Route::post('/payments/offline/{id}/toggle-status', [\App\Http\Controllers\Admin\EnrollmentController::class, 'toggleStatus'])->name('payments.offline.toggle-status');
         Route::post('/enrollments/{user}/{course}/approve', [\App\Http\Controllers\Admin\EnrollmentController::class, 'approve'])->name('enrollments.approve');
         Route::delete('/enrollments/{user}/{course}', [\App\Http\Controllers\Admin\EnrollmentController::class, 'destroy'])->name('enrollments.destroy');
         // ------------------EXAM RESULTS-------------------------------//

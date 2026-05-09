@@ -31,9 +31,7 @@ class FreePdfController extends Controller
             'pdf_name' => 'required|string|max:255',
             'pdf_file' => 'required|mimes:pdf|max:20480',
         ]);
-
         $data = $request->only(['course_id', 'unit_id', 'pdf_name']);
-
         if ($request->hasFile('pdf_file')) {
             try {
                 $file = $request->file('pdf_file');

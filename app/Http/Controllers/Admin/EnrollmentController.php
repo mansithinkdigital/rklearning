@@ -8,6 +8,9 @@ use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\CourseStatusMail;
+
 class EnrollmentController extends Controller
 {
     /**
@@ -96,6 +99,39 @@ class EnrollmentController extends Controller
         $receiptService->generateAndSend($user, $course, $id, $paidAmount, $balanceAmount);
 
         return back()->with('success', 'Payment details updated successfully and receipt sent.');
+    }
+
+    /**
+     * Toggle enrollment status (Active/Inactive)
+     */
+    public function toggleStatus(Request $request, $id)
+    {
+        $enrollment = DB::table('course_user')->where('id', $id)->first();
+        
+        if (!$enrollment) {
+            return response()->json(['error' => 'Enrollment not found'], 404);
+        }
+
+        $newStatus = $enrollment->status === 'approved' ? 'inactive' : 'approved';
+
+        DB::table('course_user')
+            ->where('id', $id)
+            ->update(['status' => $newStatus, 'updated_at' => now()]);
+
+        // Send Email
+        $user = \App\Models\User::find($enrollment->user_id);
+        $course = \App\Models\Course::find($enrollment->course_id);
+        
+        if ($user && $course) {
+            try {
+                Mail::to($user->email)->send(new CourseStatusMail($user, $course, $newStatus));
+            } catch (\Exception $e) {
+                // Log error but don't fail the response
+                \Log::error('CourseStatusMail Error: ' . $e->getMessage());
+            }
+        }
+
+        return response()->json(['success' => true, 'status' => $newStatus]);
     }
 
     /**

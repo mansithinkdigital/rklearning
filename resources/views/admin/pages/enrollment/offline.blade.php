@@ -87,10 +87,23 @@
                         @endif
                     </td>
                     <td class="px-8 py-8 text-center">
-                        <span class="text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest 
-                            {{ $enrollment->status === 'approved' ? 'bg-emerald-100 text-emerald-600' : 'bg-orange-100 text-orange-600' }}">
-                            {{ $enrollment->status }}
-                        </span>
+                        @if($enrollment->balance_amount > 0)
+                            <div class="flex flex-col items-center gap-2">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" value="" class="sr-only peer" 
+                                        {{ $enrollment->status === 'approved' ? 'checked' : '' }}
+                                        onchange="toggleEnrollmentStatus({{ $enrollment->id }}, this)">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                </label>
+                                <span id="status-label-{{ $enrollment->id }}" class="text-[9px] font-black uppercase tracking-widest {{ $enrollment->status === 'approved' ? 'text-emerald-600' : 'text-rose-600' }}">
+                                    {{ $enrollment->status === 'approved' ? 'Active' : 'Inactive' }}
+                                </span>
+                            </div>
+                        @else
+                            <span class="text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest bg-emerald-100 text-emerald-600">
+                                Fully Paid
+                            </span>
+                        @endif
                     </td>
                     <td class="px-8 py-8 text-right">
                         <div class="flex items-center justify-end gap-2">
@@ -337,6 +350,47 @@
         document.getElementById('discountAmountDisplay').value = '₹' + discountAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
         document.getElementById('totalPayableDisplay').value = '₹' + totalPayable.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
         document.getElementById('balanceDisplay').value = '₹' + balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    }
+    function toggleEnrollmentStatus(id, checkbox) {
+        const label = document.getElementById(`status-label-${id}`);
+        const originalState = !checkbox.checked;
+        
+        // Optimistic UI update
+        if (checkbox.checked) {
+            label.innerText = 'Updating...';
+            label.className = 'text-[9px] font-black uppercase tracking-widest text-blue-600';
+        } else {
+            label.innerText = 'Updating...';
+            label.className = 'text-[9px] font-black uppercase tracking-widest text-slate-400';
+        }
+
+        fetch(`/admin/payments/offline/${id}/toggle-status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                if (data.status === 'approved') {
+                    label.innerText = 'Active';
+                    label.className = 'text-[9px] font-black uppercase tracking-widest text-emerald-600';
+                } else {
+                    label.innerText = 'Inactive';
+                    label.className = 'text-[9px] font-black uppercase tracking-widest text-rose-600';
+                }
+            } else {
+                checkbox.checked = originalState;
+                alert('Failed to update status');
+            }
+        })
+        .catch(error => {
+            checkbox.checked = originalState;
+            alert('An error occurred');
+            console.error(error);
+        });
     }
 </script>
 @endsection

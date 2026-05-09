@@ -22,9 +22,9 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        // Fetch approved courses
+        // Fetch approved and inactive courses
         $enrolledCourses = $user->courses()
-            ->wherePivot('status', 'approved')
+            ->wherePivotIn('status', ['approved', 'inactive'])
             ->withCount('subjects')
             ->latest()
             ->take(5)
@@ -136,9 +136,9 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Fetch approved courses
+        // Fetch approved and inactive courses
         $enrolledCourses = $user->courses()
-            ->wherePivot('status', 'approved')
+            ->wherePivotIn('status', ['approved', 'inactive'])
             ->withCount('subjects')
             ->with(['paidVideos', 'subjects.units.topics'])
             ->get()
@@ -234,9 +234,13 @@ class DashboardController extends Controller
             'subjects.units.freePdfs'
         ])->findOrFail($course_id);
 
-        // Access Control: Check Expiry
+        // Access Control: Check Expiry & Deactivation
         $enrollment = $user->courses()->where('course_id', $course_id)->first();
         if ($enrollment) {
+            if ($enrollment->pivot->status === 'inactive') {
+                return redirect()->route('student.dashboard')->with('error', 'Your access to this course is suspended due to pending fees.');
+            }
+
             $startDate = $enrollment->pivot->updated_at ?? $enrollment->pivot->created_at;
             $expiryDate = $this->calculateExpiryDate($startDate, $enrollment->duration);
             if ($expiryDate && $expiryDate->isPast()) {
@@ -279,6 +283,7 @@ class DashboardController extends Controller
             ->map(function ($cs) use ($enrolledCourses, $user) {
                 $parentCourse = $enrolledCourses->firstWhere('id', $cs->course_id);
                 $cs->is_expired = $parentCourse ? $parentCourse->is_expired : false;
+                $cs->is_inactive = $parentCourse ? ($parentCourse->pivot->status === 'inactive') : false;
 
                 // Check Video Progress
                 $paidVideoCount = \App\Models\PaidVideo::where('course_id', $cs->course_id)->count();
@@ -317,10 +322,11 @@ class DashboardController extends Controller
         $user = Auth::user();
         $courseSubject = CourseSubject::with(['course', 'subject', 'mcqs'])->findOrFail($course_subject_id);
 
-        // Security Check: Is student enrolled?
-        $isEnrolled = $user->courses()->where('courses.id', $courseSubject->course_id)->exists();
-        if (!$isEnrolled) {
-            return redirect()->route('student.exams')->with('error', 'Unauthorized access.');
+        // Security Check: Is student enrolled & active?
+        $enrollment = $user->courses()->where('courses.id', $courseSubject->course_id)->first();
+        if (!$enrollment || $enrollment->pivot->status !== 'approved') {
+            $msg = (!$enrollment) ? 'Unauthorized access.' : 'Access suspended due to pending fees.';
+            return redirect()->route('student.exams')->with('error', $msg);
         }
 
         // Check Video Completion
