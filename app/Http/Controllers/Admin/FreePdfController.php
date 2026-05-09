@@ -10,6 +10,7 @@ use App\Models\Unit;
 use App\Models\Subject;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class FreePdfController extends Controller
 {
@@ -24,37 +25,37 @@ class FreePdfController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'course_id' => 'required|exists:courses,id',
             'unit_id' => 'required|exists:units,id',
             'pdf_name' => 'required|string|max:255',
-            'pdf_file' => 'required|mimes:pdf|max:10240', // Max 10MB
+            'pdf_file' => 'required|mimes:pdf|max:20480',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['status' => 'error', 'errors' => $validator->errors()], 422);
-        }
-
-        $data = $request->all();
+        $data = $request->only(['course_id', 'unit_id', 'pdf_name']);
 
         if ($request->hasFile('pdf_file')) {
-            $file = $request->file('pdf_file');
-            $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $path = public_path('admin/uploads/freepdf/');
-            
-            if (!File::isDirectory($path)) {
-                File::makeDirectory($path, 0777, true, true);
+            try {
+                $file = $request->file('pdf_file');
+                $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $path = public_path('admin/uploads/freepdf/');
+
+                if (!File::isDirectory($path)) {
+                    File::makeDirectory($path, 0755, true, true);
+                }
+
+                $file->move($path, $fileName);
+                $data['pdf_file'] = $fileName;
+            } catch (\Exception $e) {
+                return back()->with('error', 'File upload failed: ' . $e->getMessage())->withInput();
             }
-            
-            $file->move($path, $fileName);
-            $data['pdf_file'] = $fileName;
         }
 
         try {
             Freepdf::create($data);
-            return response()->json(['status' => 'success', 'message' => 'Free PDF uploaded successfully!']);
+            return back()->with('success', 'Free PDF uploaded successfully!');
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => 'Something went wrong.'], 500);
+            return back()->with('error', 'Database error: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -68,45 +69,44 @@ class FreePdfController extends Controller
     {
         $freePdf = Freepdf::findOrFail($id);
 
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'course_id' => 'required|exists:courses,id',
             'unit_id' => 'required|exists:units,id',
             'pdf_name' => 'required|string|max:255',
-            'pdf_file' => 'nullable|mimes:pdf|max:10240',
+            'pdf_file' => 'nullable|mimes:pdf|max:20480',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['status' => 'error', 'errors' => $validator->errors()], 422);
-        }
-
-        $data = $request->all();
+        $data = $request->only(['course_id', 'unit_id', 'pdf_name']);
 
         if ($request->hasFile('pdf_file')) {
-            // Delete old file
-            $oldFilePath = public_path('admin/uploads/freepdf/') . $freePdf->pdf_file;
-            if (File::exists($oldFilePath)) {
-                File::delete($oldFilePath);
-            }
+            try {
+                if ($freePdf->pdf_file) {
+                    $oldFilePath = public_path('admin/uploads/freepdf/') . $freePdf->pdf_file;
+                    if (File::exists($oldFilePath)) {
+                        File::delete($oldFilePath);
+                    }
+                }
 
-            $file = $request->file('pdf_file');
-            $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $path = public_path('admin/uploads/freepdf/');
-            
-            if (!File::isDirectory($path)) {
-                File::makeDirectory($path, 0777, true, true);
+                $file = $request->file('pdf_file');
+                $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $path = public_path('admin/uploads/freepdf/');
+
+                if (!File::isDirectory($path)) {
+                    File::makeDirectory($path, 0755, true, true);
+                }
+
+                $file->move($path, $fileName);
+                $data['pdf_file'] = $fileName;
+            } catch (\Exception $e) {
+                return back()->with('error', 'Update failed: ' . $e->getMessage())->withInput();
             }
-            
-            $file->move($path, $fileName);
-            $data['pdf_file'] = $fileName;
-        } else {
-            unset($data['pdf_file']);
         }
 
         try {
             $freePdf->update($data);
-            return response()->json(['status' => 'success', 'message' => 'Free PDF updated successfully!']);
+            return back()->with('success', 'Free PDF updated successfully!');
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => 'Something went wrong.'], 500);
+            return back()->with('error', 'Database error: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -114,17 +114,16 @@ class FreePdfController extends Controller
     {
         try {
             $freePdf = Freepdf::findOrFail($id);
-            
-            // Delete file
+
             $filePath = public_path('admin/uploads/freepdf/') . $freePdf->pdf_file;
             if (File::exists($filePath)) {
                 File::delete($filePath);
             }
 
             $freePdf->delete();
-            return response()->json(['status' => 'success', 'message' => 'Free PDF deleted successfully!']);
+            return back()->with('success', 'Free PDF deleted successfully!');
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => 'Something went wrong.'], 500);
+            return back()->with('error', 'Something went wrong while deleting.');
         }
     }
 

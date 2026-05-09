@@ -8,23 +8,37 @@
     <p class="text-sm font-bold text-slate-400 dark:text-slate-500">Manage complimentary study materials and brochures</p>
 </div>
 
-<!-- Custom Alert Container -->
-<div id="alertContainer" class="hidden mb-6">
-    <div id="alertBox" class="p-5 rounded-[1.5rem] flex items-center justify-between border">
-        <div class="flex items-center gap-4">
-            <div id="alertIcon" class="w-10 h-9 rounded-xl flex items-center justify-center">
-                <i data-lucide="info" class="w-5 h-5"></i>
-            </div>
-            <div>
-                <p id="alertTitle" class="text-[11px] font-black uppercase tracking-widest leading-tight mb-0.5"></p>
-                <p id="alertMessage" class="text-sm font-bold opacity-80"></p>
-            </div>
+<!-- Session Alerts -->
+@if(session('success'))
+<div class="mb-6 p-5 rounded-[1.5rem] flex items-center justify-between border bg-emerald-50 border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-800/30 text-emerald-700 dark:text-emerald-400">
+    <div class="flex items-center gap-4">
+        <div class="w-10 h-9 rounded-xl flex items-center justify-center bg-emerald-100 dark:bg-emerald-900/20">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
         </div>
-        <button onclick="hideAlert()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 transition-all">
-            <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
+        <div>
+            <p class="text-[11px] font-black uppercase tracking-widest leading-tight mb-0.5">Success Operation</p>
+            <p class="text-sm font-bold opacity-80">{{ session('success') }}</p>
+        </div>
     </div>
 </div>
+@endif
+
+@if(session('error') || $errors->any())
+<div class="mb-6 p-5 rounded-[1.5rem] flex items-center justify-between border bg-red-50 border-red-100 dark:bg-red-900/10 dark:border-red-800/30 text-red-700 dark:text-red-400">
+    <div class="flex items-center gap-4">
+        <div class="w-10 h-9 rounded-xl flex items-center justify-center bg-red-100 dark:bg-red-900/20">
+            <i data-lucide="alert-circle" class="w-5 h-5"></i>
+        </div>
+        <div>
+            <p class="text-[11px] font-black uppercase tracking-widest leading-tight mb-0.5">Action Required</p>
+            <p class="text-sm font-bold opacity-80">
+                @if(session('error')) {{ session('error') }} @endif
+                @if($errors->any()) {{ $errors->first() }} @endif
+            </p>
+        </div>
+    </div>
+</div>
+@endif
 
 <div class="bg-white dark:bg-[#0b1120] rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
     <div class="p-8 lg:p-10 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
@@ -114,9 +128,9 @@
                 </button>
             </div>
 
-            <form id="freePdfForm" class="p-8 lg:p-10" enctype="multipart/form-data">
+            <form id="freePdfForm" action="{{ route('admin.free-pdf.store') }}" method="POST" class="p-8 lg:p-10" enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" id="pdf_id_pk" name="id">
+                <div id="method_field"></div>
                 <div class="grid grid-cols-1 gap-6">
                     <!-- PDF File Input -->
                     <div class="col-span-1">
@@ -236,7 +250,8 @@
         document.body.style.overflow = 'hidden';
         if (!isEdit) {
             form.reset();
-            document.getElementById('pdf_id_pk').value = '';
+            form.action = "{{ route('admin.free-pdf.store') }}";
+            document.getElementById('method_field').innerHTML = '';
             modalTitle.innerText = 'Upload PDF Document';
             btnText.innerText = 'Publish Document';
             fileNameDisplay.innerText = 'Drag & Drop or Click to Select PDF';
@@ -248,6 +263,7 @@
     function closeFreePdfModal() {
         modal.classList.add('hidden');
         document.body.style.overflow = 'auto';
+        window.location.hash = ''; // Clear hash if any
     }
 
     async function loadSubjects(courseId, targetId, selectedId = null) {
@@ -295,7 +311,9 @@
         btnText.innerText = 'Update Changes';
         document.getElementById('pdfFileInput').required = false;
 
-        document.getElementById('pdf_id_pk').value = pdf.id;
+        form.action = `/admin/free-pdf/${pdf.id}`;
+        document.getElementById('method_field').innerHTML = '<input type="hidden" name="_method" value="PUT">';
+
         document.getElementById('course_id').value = pdf.course_id;
         document.getElementById('pdf_name').value = pdf.pdf_name;
         fileNameDisplay.innerText = `Current File: ${pdf.pdf_file}`;
@@ -309,62 +327,23 @@
         }
     }
 
-    form.onsubmit = async (e) => {
-        e.preventDefault();
-        const id = document.getElementById('pdf_id_pk').value;
-        const url = id ? `/admin/free-pdf/${id}` : '/admin/free-pdf';
-
-        const formData = new FormData(form);
-        if (id) {
-            formData.append('_method', 'PUT');
-        }
-
+    form.onsubmit = () => {
         submitBtn.disabled = true;
         btnText.innerText = 'Processing...';
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST', // POST with _method PUT works for FormData
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-                },
-                body: formData
-            });
-
-            const result = await response.json();
-
-            if (result.status === 'success') {
-                showAlert('success', result.message);
-                closeFreePdfModal();
-                setTimeout(() => window.location.reload(), 1500);
-            } else {
-                showAlert('error', result.message || 'Validation failed.');
-            }
-        } catch (error) {
-            showAlert('error', 'Critical operational error.');
-        } finally {
-            submitBtn.disabled = false;
-        }
+        return true;
     };
 
     function deleteFreePdf(id) {
         if (confirm('Are you sure you want to delete this PDF document?')) {
-            fetch(`/admin/free-pdf/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        showAlert('success', data.message);
-                        setTimeout(() => window.location.reload(), 1500);
-                    } else {
-                        showAlert('error', 'Failed to delete PDF.');
-                    }
-                });
+            const deleteForm = document.createElement('form');
+            deleteForm.action = `/admin/free-pdf/${id}`;
+            deleteForm.method = 'POST';
+            deleteForm.innerHTML = `
+                @csrf
+                @method('DELETE')
+            `;
+            document.body.appendChild(deleteForm);
+            deleteForm.submit();
         }
     }
 </script>
