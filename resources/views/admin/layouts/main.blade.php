@@ -62,6 +62,91 @@
             }
         }
 
+        /* Sidebar collapsed state */
+        #sidebar.sidebar-collapsed {
+            width: 80px !important;
+        }
+
+        #sidebar.sidebar-collapsed .sidebar-text {
+            display: none !important;
+        }
+
+        #sidebar.sidebar-collapsed .sidebar-label {
+            display: none !important;
+        }
+
+        #sidebar.sidebar-collapsed .sidebar-full-logo {
+            display: none !important;
+        }
+
+        #sidebar.sidebar-collapsed .sidebar-mini-logo {
+            display: block !important;
+            width: 56px !important;
+            height: 56px !important;
+            object-fit: contain;
+            margin: 0 auto;
+        }
+
+        #sidebar.sidebar-collapsed .sidebar-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 16px;
+            height: 16px;
+            font-size: 9px;
+        }
+
+        #sidebar.sidebar-collapsed .sidebar-link {
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        #sidebar.sidebar-collapsed nav>div {
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+
+        #sidebar.sidebar-collapsed nav>div:last-child {
+            border-bottom: none;
+        }
+
+        /* Tooltip on hover for collapsed sidebar */
+        #sidebar.sidebar-collapsed .sidebar-link {
+            position: relative;
+        }
+
+        #sidebar.sidebar-collapsed .sidebar-link:hover::after {
+            content: attr(title);
+            position: absolute;
+            left: calc(100% + 12px);
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1e293b;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            z-index: 999;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        #sidebar.sidebar-collapsed .sidebar-link:hover::before {
+            content: '';
+            position: absolute;
+            left: calc(100% + 4px);
+            top: 50%;
+            transform: translateY(-50%);
+            border: 6px solid transparent;
+            border-right-color: #1e293b;
+            z-index: 999;
+            pointer-events: none;
+        }
+
         /* Summernote List Fix */
         .note-editable ul {
             list-style-type: disc !important;
@@ -84,11 +169,11 @@
 
 <body class="bg-[#f8fafc] dark:bg-[#020617] text-slate-900 dark:text-slate-100 group">
     @include('admin.inc.sidebar')
-    
+
     <!-- Structural Wrapper -->
     <div id="content-wrapper" class="main-container sidebar-expanded min-h-screen transition-all duration-300 ease-in-out">
         @include('admin.inc.header')
-        
+
         <main class="flex-grow p-4 md:p-8 lg:p-12">
             @yield('content')
         </main>
