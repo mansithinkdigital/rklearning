@@ -83,7 +83,7 @@
         </div>
         @else
         <p>Your access to this course has been <strong>temporarily suspended</strong> due to pending fee installments. Please clear your outstanding balance to restore access.</p>
-        <p style="font-weight: 700; color: #e11d48;">Action Required: Please contact the institute office for payment.</p>
+        <p style="font-weight: 700; color: #e11d48;">Action Required: Please contact the RK Institute office for payment.</p>
         @endif
 
         <div class="footer">

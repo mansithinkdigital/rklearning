@@ -17,7 +17,12 @@ class ReceiptService
     {
         $enrollment = DB::table('course_user')->where('id', $enrollmentId)->first();
         
-        $receiptNo = 'RK-' . strtoupper(Str::random(4)) . '-' . str_pad($enrollmentId, 5, '0', STR_PAD_LEFT);
+        // Reuse existing receipt number if available, otherwise generate new one based on Registration ID (User ID)
+        if (!empty($enrollment->receipt_no)) {
+            $receiptNo = $enrollment->receipt_no;
+        } else {
+            $receiptNo = 'RK-' . str_pad($user->id, 4, '0', STR_PAD_LEFT) . '-' . str_pad($enrollmentId, 4, '0', STR_PAD_LEFT);
+        }
         $date = date('d / m / Y');
         
         // Use provided amount/balance or fallback to enrollment record

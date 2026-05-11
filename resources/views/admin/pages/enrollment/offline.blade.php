@@ -78,31 +78,31 @@
                     </td>
                     <td class="px-8 py-8">
                         @if($enrollment->next_installment_date)
-                            <div class="flex flex-col">
-                                <span class="text-[10px] font-black text-slate-400 uppercase">Next Date</span>
-                                <span class="text-[12px] font-bold text-slate-900 dark:text-white">{{ \Carbon\Carbon::parse($enrollment->next_installment_date)->format('d M, Y') }}</span>
-                            </div>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-black text-slate-400 uppercase">Next Date</span>
+                            <span class="text-[12px] font-bold text-slate-900 dark:text-white">{{ \Carbon\Carbon::parse($enrollment->next_installment_date)->format('d M, Y') }}</span>
+                        </div>
                         @else
-                            <span class="text-[11px] text-slate-400 italic">No installment set</span>
+                        <span class="text-[11px] text-slate-400 italic">No installment set</span>
                         @endif
                     </td>
                     <td class="px-8 py-8 text-center">
                         @if($enrollment->balance_amount > 0)
-                            <div class="flex flex-col items-center gap-2">
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" value="" class="sr-only peer" 
-                                        {{ $enrollment->status === 'approved' ? 'checked' : '' }}
-                                        onchange="toggleEnrollmentStatus({{ $enrollment->id }}, this)">
-                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                </label>
-                                <span id="status-label-{{ $enrollment->id }}" class="text-[9px] font-black uppercase tracking-widest {{ $enrollment->status === 'approved' ? 'text-emerald-600' : 'text-rose-600' }}">
-                                    {{ $enrollment->status === 'approved' ? 'Active' : 'Inactive' }}
-                                </span>
-                            </div>
-                        @else
-                            <span class="text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest bg-emerald-100 text-emerald-600">
-                                Fully Paid
+                        <div class="flex flex-col items-center gap-2">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" value="" class="sr-only peer"
+                                    {{ $enrollment->status === 'approved' ? 'checked' : '' }}
+                                    onchange="toggleEnrollmentStatus({{ $enrollment->id }}, this)">
+                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                            </label>
+                            <span id="status-label-{{ $enrollment->id }}" class="text-[9px] font-black uppercase tracking-widest {{ $enrollment->status === 'approved' ? 'text-emerald-600' : 'text-rose-600' }}">
+                                {{ $enrollment->status === 'approved' ? 'Active' : 'Inactive' }}
                             </span>
+                        </div>
+                        @else
+                        <span class="text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest bg-emerald-100 text-emerald-600">
+                            Fully Paid
+                        </span>
                         @endif
                     </td>
                     <td class="px-8 py-8 text-right">
@@ -112,14 +112,14 @@
                             </button>
 
                             @if(isset($enrollment->receipts) && count($enrollment->receipts) > 0)
-                                <button onclick='openReceiptHistoryModal(@json($enrollment))' class="p-3 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-all flex items-center gap-1" title="Receipt History">
-                                    <i data-lucide="history" class="w-4 h-4"></i>
-                                    <span class="text-[9px] font-black">{{ count($enrollment->receipts) }}</span>
-                                </button>
+                            <button onclick='openReceiptHistoryModal(@json($enrollment))' class="p-3 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-all flex items-center gap-1" title="Receipt History">
+                                <i data-lucide="history" class="w-4 h-4"></i>
+                                <span class="text-[9px] font-black">{{ count($enrollment->receipts) }}</span>
+                            </button>
                             @elseif($enrollment->receipt_file)
-                                <a href="{{ asset($enrollment->receipt_file) }}" target="_blank" class="p-3 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all" title="View Receipt">
-                                    <i data-lucide="file-text" class="w-4 h-4"></i>
-                                </a>
+                            <a href="{{ asset($enrollment->receipt_file) }}" target="_blank" class="p-3 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all" title="View Receipt">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                            </a>
                             @endif
 
                             @if($enrollment->status === 'pending')
@@ -130,7 +130,7 @@
                                 </button>
                             </form>
                             @endif
-                            
+
                             <form action="{{ route('admin.enrollments.destroy', ['user' => $enrollment->user_id, 'course' => $enrollment->course_id]) }}" method="POST" onsubmit="return confirm('Reject this request?')">
                                 @csrf
                                 @method('DELETE')
@@ -142,7 +142,9 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="5" class="px-8 py-10 text-center text-xs font-bold text-slate-400 italic">No offline records found</td></tr>
+                <tr>
+                    <td colspan="5" class="px-8 py-10 text-center text-xs font-bold text-slate-400 italic">No offline records found</td>
+                </tr>
                 @endforelse
             </tbody>
         </table>
@@ -153,7 +155,7 @@
 <div id="paymentModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
     <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity bg-slate-900/60 backdrop-blur-sm" onclick="closePaymentModal()"></div>
-        
+
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
 
         <div class="inline-block align-bottom bg-white dark:bg-[#0b1120] rounded-[2.5rem] text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-slate-100 dark:border-slate-800">
@@ -224,7 +226,7 @@
 <div id="receiptHistoryModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
     <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity bg-slate-900/60 backdrop-blur-sm" onclick="closeReceiptHistoryModal()"></div>
-        
+
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
 
         <div class="inline-block align-bottom bg-white dark:bg-[#0b1120] rounded-[2.5rem] text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full border border-slate-100 dark:border-slate-800">
@@ -275,7 +277,7 @@
         document.getElementById('discountInput').value = enrollment.discount;
         document.getElementById('paidInput').value = enrollment.paid_amount;
         document.getElementById('installmentDate').value = enrollment.next_installment_date;
- 
+
         const form = document.getElementById('paymentForm');
         form.action = `/admin/payments/offline/${enrollment.id}/update`;
         calculateBalance();
@@ -288,17 +290,17 @@
 
     function openReceiptHistoryModal(enrollment) {
         document.getElementById('historyStudentName').textContent = enrollment.student_name + ' - ' + enrollment.course_name;
-        
+
         const body = document.getElementById('receiptHistoryBody');
         body.innerHTML = '';
-        
+
         enrollment.receipts.forEach(receipt => {
             const date = new Date(receipt.created_at).toLocaleDateString('en-IN', {
                 day: '2-digit',
                 month: 'short',
                 year: 'numeric'
             });
-            
+
             const amount = parseFloat(receipt.amount_paid).toLocaleString('en-IN', {
                 style: 'currency',
                 currency: 'INR'
@@ -325,10 +327,10 @@
             `;
             body.insertAdjacentHTML('beforeend', row);
         });
-        
+
         // Re-initialize lucide icons for new content
         lucide.createIcons();
-        
+
         document.getElementById('receiptHistoryModal').classList.remove('hidden');
     }
 
@@ -340,21 +342,31 @@
         const price = parseFloat(document.getElementById('coursePrice').value) || 0;
         const discountPercent = parseFloat(document.getElementById('discountInput').value) || 0;
         const paid = parseFloat(document.getElementById('paidInput').value) || 0;
-        
+
         // Calculate discount amount based on original course value
         const discountAmount = (price * discountPercent) / 100;
         const totalPayable = price - discountAmount;
         const balance = totalPayable - paid;
-        
+
         // Update displays
-        document.getElementById('discountAmountDisplay').value = '₹' + discountAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        document.getElementById('totalPayableDisplay').value = '₹' + totalPayable.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        document.getElementById('balanceDisplay').value = '₹' + balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('discountAmountDisplay').value = '₹' + discountAmount.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+        document.getElementById('totalPayableDisplay').value = '₹' + totalPayable.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+        document.getElementById('balanceDisplay').value = '₹' + balance.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
     }
+
     function toggleEnrollmentStatus(id, checkbox) {
         const label = document.getElementById(`status-label-${id}`);
         const originalState = !checkbox.checked;
-        
+
         // Optimistic UI update
         if (checkbox.checked) {
             label.innerText = 'Updating...';
@@ -365,32 +377,32 @@
         }
 
         fetch(`/admin/payments/offline/${id}/toggle-status`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                if (data.status === 'approved') {
-                    label.innerText = 'Active';
-                    label.className = 'text-[9px] font-black uppercase tracking-widest text-emerald-600';
-                } else {
-                    label.innerText = 'Inactive';
-                    label.className = 'text-[9px] font-black uppercase tracking-widest text-rose-600';
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
-            } else {
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.status === 'approved') {
+                        label.innerText = 'Active';
+                        label.className = 'text-[9px] font-black uppercase tracking-widest text-emerald-600';
+                    } else {
+                        label.innerText = 'Inactive';
+                        label.className = 'text-[9px] font-black uppercase tracking-widest text-rose-600';
+                    }
+                } else {
+                    checkbox.checked = originalState;
+                    alert('Failed to update status');
+                }
+            })
+            .catch(error => {
                 checkbox.checked = originalState;
-                alert('Failed to update status');
-            }
-        })
-        .catch(error => {
-            checkbox.checked = originalState;
-            alert('An error occurred');
-            console.error(error);
-        });
+                alert('An error occurred');
+                console.error(error);
+            });
     }
 </script>
 @endsection
