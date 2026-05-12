@@ -5,6 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Student Dashboard') - Rk Institute</title>
+    <meta http-equiv="Content-Security-Policy"
+        content="
+    default-src * 'self' data: blob: 'unsafe-inline' 'unsafe-eval';
+    frame-src https://www.youtube.com https://www.youtube-nocookie.com;
+    script-src * 'self' 'unsafe-inline' 'unsafe-eval';
+    style-src * 'self' 'unsafe-inline';
+    img-src * data: blob:;
+">
     <!-- Scripts & Styles -->
     <link rel="icon" type="image/png" href="{{ asset('admin/asset/favicons/favicon.png') }}">
     <script src="https://cdn.tailwindcss.com"></script>

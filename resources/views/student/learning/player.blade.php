@@ -165,6 +165,22 @@
         #custom-toast.show {
             transform: translateX(-50%) translateY(0);
         }
+
+        #video-frame {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 40px;
+            background: #000;
+        }
+
+        #video-frame iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 40px;
+            pointer-events: auto;
+        }
     </style>
 </head>
 
@@ -213,7 +229,6 @@
 
                 <!-- YouTube/Video State -->
                 <div id="video-frame" class="hidden w-full h-full"></div>
-
                 <!-- PDF State -->
                 <object id="pdf-frame" class="hidden w-full h-full" data="" type="application/pdf">
                     <div class="flex flex-col items-center justify-center h-full p-20 text-center text-white">
@@ -387,7 +402,6 @@
                                     </div>
                                 </div>
                                 @endforeach
-
                                 @foreach($unit->freePdfs as $pdf)
                                 <div onclick="playPdf('{{ asset('admin/uploads/freepdf/' . $pdf->pdf_file) }}', '{{ $pdf->pdf_name }}', @json($unit), @json($subject)); closeSidebarMobile();"
                                     class="material-link group bg-emerald-50/30 border-emerald-100 text-emerald-600 hover:bg-emerald-50">
@@ -434,7 +448,7 @@
         let seekCheckInterval = null;
         const ALL_VIDEOS = @json($allVideos);
         let COMPLETED_VIDS = @json($completedVideoIds);
-        const COURSE_ID = @json($course -> id);
+        const COURSE_ID = @json($course - > id);
         // ─── YOUTUBE API ─────────────────────────────────────
         function onYouTubeIframeAPIReady() {
             // Player will be initialized when playVideo is called
@@ -455,10 +469,19 @@
                 width: '100%',
                 videoId: youtubeId,
                 playerVars: {
-                    'autoplay': 1,
-                    'rel': 0,
-                    'modestbranding': 1,
-                    'controls': 1 // Keep controls but manage seeking
+                    autoplay: 1,
+                    controls: 1, // keep normal YouTube controls
+                    rel: 0, // no related videos
+                    modestbranding: 1, // minimal branding
+                    fs: 0, // remove fullscreen
+                    disablekb: 1, // disable keyboard shortcuts
+                    iv_load_policy: 3, // hide annotations/cards
+                    cc_load_policy: 0,
+                    playsinline: 1,
+                    showinfo: 0,
+                    modestbranding: 1,
+                    enablejsapi: 1,
+                    origin: window.location.origin
                 },
                 events: {
                     'onReady': onPlayerReady,

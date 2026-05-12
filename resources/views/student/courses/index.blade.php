@@ -29,8 +29,8 @@
     {{-- Approved Courses --}}
     @foreach($enrolledCourses as $course)
     @php
-        $isInactive = $course->pivot->status === 'inactive';
-        $isDisabled = $course->is_expired || $isInactive;
+    $isInactive = $course->pivot->status === 'inactive';
+    $isDisabled = $course->is_expired || $isInactive;
     @endphp
     <div class="group {{ $isDisabled ? 'opacity-75 grayscale' : '' }}">
         <div class="card !p-0 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 {{ $isDisabled ? '' : 'group-hover:-translate-y-1' }}">
@@ -107,7 +107,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
                     @if($course->is_expired)
                     <span class="inline-flex items-center justify-center gap-1 px-4 py-2 text-xs font-bold text-slate-400 bg-slate-100 border border-slate-200 rounded-md cursor-not-allowed">
