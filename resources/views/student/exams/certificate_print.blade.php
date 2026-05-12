@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>Certificate of Completion - {{ $user->name }}</title>
     @php
-    $bgPath = public_path('assets/certificate/RK Learning Certificates.png');
+    $bgPath = public_path('assets/certificate/Certificate-template.jpeg');
     $bgBase64 = '';
     if (file_exists($bgPath)) {
     $bgData = file_get_contents($bgPath);
@@ -99,7 +99,7 @@
             left: 63mm;
             right: 15%;
             text-align: center;
-            font-size: 11pt;
+            font-size: 12pt;
             color: #555;
             line-height: 1.4;
         }

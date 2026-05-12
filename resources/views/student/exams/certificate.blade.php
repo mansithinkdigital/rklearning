@@ -6,12 +6,7 @@
     <title>Certificate - {{ $user->name }}</title>
     @php
     $bgPath = public_path('assets/certificate/Certificate-template.jpeg');
-    if (!file_exists($bgPath)) {
-    $bgPath = public_path('assets/certificate/Certificate Blank.jpeg');
-    }
-    if (!file_exists($bgPath)) {
-    $bgPath = public_path('assets/certificate/bg-sertificate.jpeg');
-    }
+
     $bgBase64 = '';
     if (file_exists($bgPath)) {
     $bgData = file_get_contents($bgPath);
@@ -106,7 +101,7 @@
             left: 15%;
             right: 15%;
             text-align: center;
-            font-size: 11pt;
+            font-size: 12pt;
             color: #555;
             line-height: 1.4;
         }

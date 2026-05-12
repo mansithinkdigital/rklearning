@@ -88,7 +88,6 @@
                             </a>
                         </div>
                     </div>
-
                     <!-- Marksheet Section -->
                     <div class="p-4 border border-slate-100 rounded-3xl bg-slate-50/50">
                         <div class="flex items-center justify-between mb-4 px-2">

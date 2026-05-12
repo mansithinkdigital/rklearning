@@ -87,7 +87,11 @@
                         @endif
                     </td>
                     <td class="px-8 py-8 text-center">
-                        @if($enrollment->balance_amount > 0)
+                        @if($enrollment->status === 'pending')
+                        <span class="text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest bg-amber-100 text-amber-600">
+                            Pending Approval
+                        </span>
+                        @elseif($enrollment->balance_amount > 0)
                         <div class="flex flex-col items-center gap-2">
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" value="" class="sr-only peer"
