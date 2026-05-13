@@ -118,15 +118,15 @@
         .photo-box {
             position: absolute;
             top: 78mm;
-            right: 22mm;
-            width: 35mm;
+            right: 19mm;
+            width: 36mm;
             height: 42mm;
             border: 1px solid #0f2441;
             background: #fff;
         }
 
         .photo-img {
-            width: 105%;
+            width: 100%;
             height: 100%;
             object-fit: cover;
         }
@@ -195,7 +195,7 @@
         </div>
 
         <div class="period-text">
-            {{ $enrollDate }}&nbsp;&nbsp; to &nbsp;&nbsp;{{ date('d/m/Y') }}
+            {{ $completionDate ? $completionDate->format('F Y') : date('F Y') }}
         </div>
 
         <div class="date-text">

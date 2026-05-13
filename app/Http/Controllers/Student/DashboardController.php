@@ -551,9 +551,10 @@ class DashboardController extends Controller
         }
 
         $enrollDate = optional($course->pivot->created_at)->format('d/m/Y') ?? 'N/A';
+        $completionDate = $this->getCompletionDate($user, $course);
         $certificateNo = $this->ensureCertificateNo($user, $course);
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate', 'certificateNo'));
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate', 'certificateNo', 'completionDate'));
         $pdf->setPaper('a4', 'landscape');
         return $pdf->download("Certificate_{$course->name}.pdf");
     }
@@ -602,8 +603,9 @@ class DashboardController extends Controller
             $userPhotoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         }
         $enrollDate = optional($course->pivot->created_at)->format('d/m/Y') ?? 'N/A';
+        $completionDate = $this->getCompletionDate($user, $course);
         $certificateNo = $this->ensureCertificateNo($user, $course);
-        return view('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate', 'certificateNo'));
+        return view('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate', 'certificateNo', 'completionDate'));
     }
 
     public function previewMarksheet($course_id)
@@ -649,14 +651,8 @@ class DashboardController extends Controller
                     ->count();
                 $course->progress_percent = ($totalVideos > 0) ? round(($completedVideos / $totalVideos) * 100) : 100;
 
-                // Get Exam Date (Last passed exam)
-                $examSubjects = \App\Models\CourseSubject::where('course_id', $course->id)->whereHas('mcqs')->get();
-                $lastExam = ExamResult::where('user_id', $user->id)
-                    ->whereIn('course_subject_id', $examSubjects->pluck('id'))
-                    ->where('status', 'pass')
-                    ->latest()
-                    ->first();
-                $course->exam_date = $lastExam ? $lastExam->created_at->format('d M, Y') : 'N/A';
+                $completionDate = $this->getCompletionDate($user, $course);
+                $course->exam_date = $completionDate ? $completionDate->format('M, Y') : 'N/A';
 
                 $completedCourses->push($course);
             }
@@ -707,6 +703,34 @@ class DashboardController extends Controller
     }
 
 
+
+    public function getCompletionDate($user, $course)
+    {
+        // Get all required video IDs
+        $paidVideoIds = \App\Models\PaidVideo::where('course_id', $course->id)->pluck('id')->toArray();
+        $topicVideoIds = \App\Models\Topic::whereHas('unit.subject', function ($q) use ($course) {
+            $q->where('course_id', $course->id);
+        })->whereNotNull('video_id')->pluck('id')->map(fn($id) => $id + 1000000)->toArray();
+        $allRequiredVideoIds = array_merge($paidVideoIds, $topicVideoIds);
+
+        $latestVideoCompletion = \App\Models\VideoCompletion::where('user_id', $user->id)
+            ->whereIn('video_id', $allRequiredVideoIds)
+            ->latest('updated_at')
+            ->first();
+
+        $examSubjects = \App\Models\CourseSubject::where('course_id', $course->id)->whereHas('mcqs')->get();
+        $latestExamResult = \App\Models\ExamResult::where('user_id', $user->id)
+            ->whereIn('course_subject_id', $examSubjects->pluck('id'))
+            ->where('status', 'pass')
+            ->latest('created_at')
+            ->first();
+
+        $dates = collect();
+        if ($latestVideoCompletion) $dates->push($latestVideoCompletion->updated_at);
+        if ($latestExamResult) $dates->push($latestExamResult->created_at);
+
+        return $dates->max();
+    }
 
     private function getSequentialVideos($course_id)
     {

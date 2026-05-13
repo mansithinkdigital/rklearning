@@ -231,11 +231,12 @@ class StudentController extends Controller
 
         $enrollDate = optional($enrollment->pivot->created_at)->format('d/m/Y') ?? 'N/A';
         
-        // Use the StudentDashboardController's logic for generating/ensuring cert no
+        // Use the StudentDashboardController's logic for generating/ensuring cert no and completion date
         $dashboardController = new \App\Http\Controllers\Student\DashboardController();
         $certificateNo = $dashboardController->ensureCertificateNo($user, $course);
+        $completionDate = $dashboardController->getCompletionDate($user, $course);
 
-        return view('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate', 'certificateNo'));
+        return view('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate', 'certificateNo', 'completionDate'));
     }
 
     public function previewMarksheet($user_id, $course_id)

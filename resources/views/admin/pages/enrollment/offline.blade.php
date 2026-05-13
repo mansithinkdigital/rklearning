@@ -1,13 +1,10 @@
 @extends('admin.layouts.main')
-
 @section('title', 'Offline Payments')
-
 @section('content')
 <div class="mb-12 text-center lg:text-left">
     <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-none mb-3">OFFLINE PAYMENTS</h1>
     <p class="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Manage offline fees, discounts, and installments</p>
 </div>
-
 @if(session('success'))
 <div class="mb-8 p-5 rounded-[1.5rem] bg-emerald-50 border border-emerald-100 flex items-center justify-between animate-reveal">
     <div class="flex items-center gap-4">
@@ -21,7 +18,6 @@
     </div>
 </div>
 @endif
-
 @if(session('error'))
 <div class="mb-8 p-5 rounded-[1.5rem] bg-red-50 border border-red-100 flex items-center justify-between animate-reveal">
     <div class="flex items-center gap-4">
@@ -35,7 +31,6 @@
     </div>
 </div>
 @endif
-
 <div class="bg-white dark:bg-[#0b1120] rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
     <div class="p-8 lg:p-10 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -46,7 +41,6 @@
             Count: {{ $offlineEnrollments->count() }}
         </div>
     </div>
-
     <div class="overflow-x-auto">
         <table class="w-full text-left">
             <thead>
@@ -114,12 +108,10 @@
                             <button onclick="openPaymentModal({{ json_encode($enrollment) }})" class="p-3 bg-amber-100 text-amber-600 rounded-xl hover:bg-amber-600 hover:text-white transition-all" title="Update Payment">
                                 <i data-lucide="plus-circle" class="w-4 h-4"></i>
                             </button>
-
                             <button onclick='openReceiptHistoryModal(@json($enrollment))' class="p-3 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-all flex items-center gap-1" title="Installment History">
                                 <i data-lucide="history" class="w-4 h-4"></i>
                                 <span class="text-[9px] font-black">{{ count($enrollment->receipts) }}</span>
                             </button>
-
                             @if($enrollment->status === 'pending')
                             <form action="{{ route('admin.enrollments.approve', ['user' => $enrollment->user_id, 'course' => $enrollment->course_id]) }}" method="POST">
                                 @csrf
@@ -128,7 +120,6 @@
                                 </button>
                             </form>
                             @endif
-
                             <form action="{{ route('admin.enrollments.destroy', ['user' => $enrollment->user_id, 'course' => $enrollment->course_id]) }}" method="POST" onsubmit="return confirm('Reject this request?')">
                                 @csrf
                                 @method('DELETE')
@@ -229,9 +220,7 @@
 <div id="receiptHistoryModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
     <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity bg-slate-900/60 backdrop-blur-sm" onclick="closeReceiptHistoryModal()"></div>
-
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-
         <div class="inline-block align-bottom bg-white dark:bg-[#0b1120] rounded-[2.5rem] text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full border border-slate-100 dark:border-slate-800">
             <div class="p-8 lg:p-10">
                 <div class="flex items-center justify-between mb-8">
@@ -243,7 +232,6 @@
                         <i data-lucide="x" class="w-5 h-5"></i>
                     </button>
                 </div>
-
                 <div class="overflow-hidden rounded-2xl border border-slate-100 dark:border-slate-800">
                     <table class="w-full text-left">
                         <thead>
@@ -260,7 +248,6 @@
                     </table>
                 </div>
             </div>
-
             <div class="p-8 lg:p-10 bg-slate-50 dark:bg-slate-800/40">
                 <button type="button" onclick="closeReceiptHistoryModal()" class="w-full px-8 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all">
                     Close
@@ -269,7 +256,6 @@
         </div>
     </div>
 </div>
-
 @endsection
 
 @section('scripts')
