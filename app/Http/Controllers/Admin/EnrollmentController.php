@@ -76,27 +76,36 @@ class EnrollmentController extends Controller
 
         $discountPercent = $request->discount ?? 0;
         $discountAmount = ($enrollment->course_price * $discountPercent) / 100;
-        $totalPayable = $enrollment->course_price - $discountAmount;
-        $paidAmount = $request->paid_amount;
-        $balanceAmount = $totalPayable - $paidAmount;
+        
+        // ROUNDING LOGIC for institute payment system: Ensure all calculations use integers
+        $totalPayable = round($enrollment->course_price - $discountAmount);
+        
+        $alreadyPaid = round($enrollment->paid_amount);
+        $newTotalPaid = round($request->paid_amount);
+        
+        $installment = $newTotalPaid - $alreadyPaid;
+        $balanceAmount = $totalPayable - $newTotalPaid;
 
         DB::table('course_user')
             ->where('id', $id)
             ->update([
                 'discount' => $discountPercent,
                 'total_payable' => $totalPayable,
-                'paid_amount' => $paidAmount,
+                'paid_amount' => $newTotalPaid,
                 'balance_amount' => $balanceAmount,
                 'next_installment_date' => $request->next_installment_date,
-                'amount' => $paidAmount, // Keep sync with existing 'amount' field
+                'amount' => $newTotalPaid, // Keep sync with existing 'amount' field
                 'updated_at' => now()
             ]);
 
-        // Generate and send receipt for this update
+        // Generate and send receipt for this update (showing the installment amount)
         $user = \App\Models\User::find($enrollment->user_id);
         $course = \App\Models\Course::find($enrollment->course_id);
         $receiptService = app(\App\Services\ReceiptService::class);
-        $receiptService->generateAndSend($user, $course, $id, $paidAmount, $balanceAmount);
+        
+        // Pass the installment amount if positive, otherwise pass the total paid
+        $receiptAmount = $installment > 0 ? $installment : $newTotalPaid;
+        $receiptService->generateAndSend($user, $course, $id, $receiptAmount, $balanceAmount);
 
         return back()->with('success', 'Payment details updated successfully and receipt sent.');
     }

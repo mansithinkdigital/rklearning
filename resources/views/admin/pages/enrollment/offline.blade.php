@@ -70,10 +70,10 @@
                     </td>
                     <td class="px-8 py-8">
                         <div class="space-y-1">
-                            <p class="text-[11px] font-bold text-slate-500">Price: <span class="text-slate-900 dark:text-white">₹{{ number_format($enrollment->original_price, 2) }}</span></p>
-                            <p class="text-[11px] font-bold text-emerald-600">Discount: <span class="font-black">{{ $enrollment->discount }}%</span></p>
-                            <p class="text-[11px] font-bold text-indigo-600">Paid: <span class="font-black">₹{{ number_format($enrollment->paid_amount, 2) }}</span></p>
-                            <p class="text-[11px] font-bold text-rose-600">Balance: <span class="font-black">₹{{ number_format($enrollment->balance_amount, 2) }}</span></p>
+                            <p class="text-[11px] font-bold text-slate-500">Price: <span class="text-slate-900 dark:text-white">₹{{ number_format($enrollment->original_price, 0) }}</span></p>
+                            <p class="text-[11px] font-bold text-emerald-600">Discount: <span class="font-black">{{ round($enrollment->discount) }}%</span></p>
+                            <p class="text-[11px] font-bold text-indigo-600">Paid: <span class="font-black">₹{{ number_format($enrollment->paid_amount, 0) }}</span></p>
+                            <p class="text-[11px] font-bold text-rose-600">Balance: <span class="font-black">₹{{ number_format($enrollment->balance_amount, 0) }}</span></p>
                         </div>
                     </td>
                     <td class="px-8 py-8">
@@ -91,40 +91,34 @@
                         <span class="text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest bg-amber-100 text-amber-600">
                             Pending Approval
                         </span>
-                        @elseif($enrollment->balance_amount > 0)
-                        <div class="flex flex-col items-center gap-2">
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" value="" class="sr-only peer"
-                                    {{ $enrollment->status === 'approved' ? 'checked' : '' }}
-                                    onchange="toggleEnrollmentStatus({{ $enrollment->id }}, this)">
-                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                            </label>
-                            <span id="status-label-{{ $enrollment->id }}" class="text-[9px] font-black uppercase tracking-widest {{ $enrollment->status === 'approved' ? 'text-emerald-600' : 'text-rose-600' }}">
-                                {{ $enrollment->status === 'approved' ? 'Active' : 'Inactive' }}
-                            </span>
-                        </div>
-                        @else
-                        <span class="text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest bg-emerald-100 text-emerald-600">
+                        @elseif(round($enrollment->balance_amount) <= 0)
+                            <span class="text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest bg-emerald-100 text-emerald-600">
                             Fully Paid
-                        </span>
-                        @endif
+                            </span>
+                            @else
+                            <div class="flex flex-col items-center gap-2">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" value="" class="sr-only peer"
+                                        {{ $enrollment->status === 'approved' ? 'checked' : '' }}
+                                        onchange="toggleEnrollmentStatus({{ $enrollment->id }}, this)">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                </label>
+                                <span id="status-label-{{ $enrollment->id }}" class="text-[9px] font-black uppercase tracking-widest {{ $enrollment->status === 'approved' ? 'text-emerald-600' : 'text-rose-600' }}">
+                                    {{ $enrollment->status === 'approved' ? 'Active' : 'Inactive' }}
+                                </span>
+                            </div>
+                            @endif
                     </td>
                     <td class="px-8 py-8 text-right">
                         <div class="flex items-center justify-end gap-2">
                             <button onclick="openPaymentModal({{ json_encode($enrollment) }})" class="p-3 bg-amber-100 text-amber-600 rounded-xl hover:bg-amber-600 hover:text-white transition-all" title="Update Payment">
-                                <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                <i data-lucide="plus-circle" class="w-4 h-4"></i>
                             </button>
 
-                            @if(isset($enrollment->receipts) && count($enrollment->receipts) > 0)
-                            <button onclick='openReceiptHistoryModal(@json($enrollment))' class="p-3 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-all flex items-center gap-1" title="Receipt History">
+                            <button onclick='openReceiptHistoryModal(@json($enrollment))' class="p-3 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-all flex items-center gap-1" title="Installment History">
                                 <i data-lucide="history" class="w-4 h-4"></i>
                                 <span class="text-[9px] font-black">{{ count($enrollment->receipts) }}</span>
                             </button>
-                            @elseif($enrollment->receipt_file)
-                            <a href="{{ asset($enrollment->receipt_file) }}" target="_blank" class="p-3 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all" title="View Receipt">
-                                <i data-lucide="file-text" class="w-4 h-4"></i>
-                            </a>
-                            @endif
 
                             @if($enrollment->status === 'pending')
                             <form action="{{ route('admin.enrollments.approve', ['user' => $enrollment->user_id, 'course' => $enrollment->course_id]) }}" method="POST">
@@ -159,9 +153,7 @@
 <div id="paymentModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
     <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity bg-slate-900/60 backdrop-blur-sm" onclick="closePaymentModal()"></div>
-
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-
         <div class="inline-block align-bottom bg-white dark:bg-[#0b1120] rounded-[2.5rem] text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-slate-100 dark:border-slate-800">
             <form id="paymentForm" method="POST">
                 @csrf
@@ -175,7 +167,6 @@
                             <i data-lucide="x" class="w-5 h-5"></i>
                         </button>
                     </div>
-
                     <div class="space-y-6">
                         <div>
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Course Original Price</label>
@@ -191,28 +182,37 @@
                                 <input type="text" id="discountAmountDisplay" disabled class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-slate-400">
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Total Payable (₹)</label>
-                            <input type="text" id="totalPayableDisplay" disabled class="w-full px-5 py-4 bg-emerald-50 dark:bg-emerald-900/10 border-none rounded-2xl text-sm font-black text-emerald-600">
-                        </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Amount Paid (₹)</label>
-                                <input type="number" name="paid_amount" id="paidInput" oninput="calculateBalance()" required class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500/20 transition-all">
+                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Already Paid (₹)</label>
+                                <input type="text" id="alreadyPaidDisplay" disabled class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-slate-400">
+                                <input type="hidden" id="alreadyPaidValue">
                             </div>
                             <div>
-                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Balance Due (₹)</label>
-                                <input type="text" id="balanceDisplay" disabled class="w-full px-5 py-4 bg-rose-50 dark:bg-rose-900/10 border-none rounded-2xl text-sm font-black text-rose-600">
+                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Total Payable (₹)</label>
+                                <input type="text" id="totalPayableDisplay" disabled class="w-full px-5 py-4 bg-emerald-50 dark:bg-emerald-900/10 border-none rounded-2xl text-sm font-black text-emerald-600">
                             </div>
                         </div>
-
+                        <div class="p-6 bg-amber-50/50 dark:bg-amber-900/10 rounded-3xl border border-amber-100 dark:border-amber-900/20">
+                            <label class="block text-[11px] font-black text-amber-600 uppercase tracking-widest mb-3">Add New Installment</label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[9px] font-black text-slate-400 uppercase mb-2">Payment Amount (₹)</label>
+                                    <input type="number" id="installmentInput" oninput="calculateBalance()" required placeholder="0.00" class="w-full px-5 py-4 bg-white dark:bg-slate-800 border-2 border-amber-200 dark:border-amber-900/40 rounded-2xl text-sm font-black text-slate-900 dark:text-white focus:border-amber-500 focus:ring-0 transition-all">
+                                    <input type="hidden" name="paid_amount" id="paidInput">
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] font-black text-slate-400 uppercase mb-2">Remaining Balance (₹)</label>
+                                    <input type="text" id="balanceDisplay" disabled class="w-full px-5 py-4 bg-rose-50 dark:bg-rose-900/10 border-none rounded-2xl text-sm font-black text-rose-600">
+                                </div>
+                            </div>
+                        </div>
                         <div>
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Next Installment Date</label>
                             <input type="date" name="next_installment_date" id="installmentDate" class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500/20 transition-all">
                         </div>
                     </div>
                 </div>
-
                 <div class="p-8 lg:p-10 bg-slate-50 dark:bg-slate-800/40 flex gap-4">
                     <button type="button" onclick="closePaymentModal()" class="flex-1 px-8 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all">
                         Cancel
@@ -225,7 +225,6 @@
         </div>
     </div>
 </div>
-
 <!-- Receipt History Modal -->
 <div id="receiptHistoryModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
     <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
@@ -237,7 +236,7 @@
             <div class="p-8 lg:p-10">
                 <div class="flex items-center justify-between mb-8">
                     <div>
-                        <h3 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">Receipt History</h3>
+                        <h3 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">Installment History</h3>
                         <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1" id="historyStudentName"></p>
                     </div>
                     <button type="button" onclick="closeReceiptHistoryModal()" class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-slate-600 transition-colors flex items-center justify-center">
@@ -279,11 +278,20 @@
         document.getElementById('modalStudentName').textContent = enrollment.student_name + ' - ' + enrollment.course_name;
         document.getElementById('coursePrice').value = enrollment.original_price;
         document.getElementById('discountInput').value = enrollment.discount;
-        document.getElementById('paidInput').value = enrollment.paid_amount;
+
+        // Force rounded integers for calculations to match the displayed values
+        const roundedPaid = Math.round(enrollment.paid_amount);
+        document.getElementById('alreadyPaidValue').value = roundedPaid;
+        document.getElementById('alreadyPaidDisplay').value = '₹' + roundedPaid.toLocaleString();
+
+        document.getElementById('installmentInput').value = '';
+        // Initialize the paidInput with the current rounded paid amount
+        document.getElementById('paidInput').value = roundedPaid;
         document.getElementById('installmentDate').value = enrollment.next_installment_date;
 
         const form = document.getElementById('paymentForm');
         form.action = `/admin/payments/offline/${enrollment.id}/update`;
+
         calculateBalance();
         document.getElementById('paymentModal').classList.remove('hidden');
     }
@@ -294,22 +302,18 @@
 
     function openReceiptHistoryModal(enrollment) {
         document.getElementById('historyStudentName').textContent = enrollment.student_name + ' - ' + enrollment.course_name;
-
         const body = document.getElementById('receiptHistoryBody');
         body.innerHTML = '';
-
         enrollment.receipts.forEach(receipt => {
             const date = new Date(receipt.created_at).toLocaleDateString('en-IN', {
                 day: '2-digit',
                 month: 'short',
                 year: 'numeric'
             });
-
             const amount = parseFloat(receipt.amount_paid).toLocaleString('en-IN', {
                 style: 'currency',
                 currency: 'INR'
             });
-
             const row = `
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
                     <td class="px-6 py-4">
@@ -331,10 +335,8 @@
             `;
             body.insertAdjacentHTML('beforeend', row);
         });
-
         // Re-initialize lucide icons for new content
         lucide.createIcons();
-
         document.getElementById('receiptHistoryModal').classList.remove('hidden');
     }
 
@@ -343,34 +345,29 @@
     }
 
     function calculateBalance() {
-        const price = parseFloat(document.getElementById('coursePrice').value) || 0;
+        const price = Math.round(parseFloat(document.getElementById('coursePrice').value) || 0);
         const discountPercent = parseFloat(document.getElementById('discountInput').value) || 0;
-        const paid = parseFloat(document.getElementById('paidInput').value) || 0;
-
-        // Calculate discount amount based on original course value
-        const discountAmount = (price * discountPercent) / 100;
+        const alreadyPaid = Math.round(parseFloat(document.getElementById('alreadyPaidValue').value) || 0);
+        const currentInstallment = Math.round(parseFloat(document.getElementById('installmentInput').value) || 0);
+        // Calculate discount amount and round it
+        const discountAmount = Math.round((price * discountPercent) / 100);
+        // Final payable should be Original Price - Discount Amount
         const totalPayable = price - discountAmount;
-        const balance = totalPayable - paid;
-
-        // Update displays
-        document.getElementById('discountAmountDisplay').value = '₹' + discountAmount.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-        document.getElementById('totalPayableDisplay').value = '₹' + totalPayable.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-        document.getElementById('balanceDisplay').value = '₹' + balance.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
+        // New total paid is existing paid + new installment
+        const newTotalPaid = alreadyPaid + currentInstallment;
+        // Remaining balance
+        const balance = totalPayable - newTotalPaid;
+        // Update displays with formatted currency
+        document.getElementById('discountAmountDisplay').value = '₹' + discountAmount.toLocaleString();
+        document.getElementById('totalPayableDisplay').value = '₹' + totalPayable.toLocaleString();
+        document.getElementById('balanceDisplay').value = '₹' + balance.toLocaleString();
+        // This is the total amount that will be stored in the 'paid_amount' field in DB
+        document.getElementById('paidInput').value = newTotalPaid;
     }
 
     function toggleEnrollmentStatus(id, checkbox) {
         const label = document.getElementById(`status-label-${id}`);
         const originalState = !checkbox.checked;
-
         // Optimistic UI update
         if (checkbox.checked) {
             label.innerText = 'Updating...';
@@ -379,7 +376,6 @@
             label.innerText = 'Updating...';
             label.className = 'text-[9px] font-black uppercase tracking-widest text-slate-400';
         }
-
         fetch(`/admin/payments/offline/${id}/toggle-status`, {
                 method: 'POST',
                 headers: {
