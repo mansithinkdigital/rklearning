@@ -14,6 +14,7 @@
     img-src * data: blob:;
 ">
     <!-- Scripts & Styles -->
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('admin/asset/favicons/favicon.png') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>

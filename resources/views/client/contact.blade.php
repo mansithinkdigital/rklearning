@@ -187,7 +187,23 @@
                             Fill out the form below and our admissions team
                             will contact you shortly with complete details.
                         </p>
-                        <form action="#" method="POST" class="space-y-6">
+                        @if(session('success'))
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl mb-6">
+                            {{ session('success') }}
+                        </div>
+                        @endif
+
+                        @if($errors->any())
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-6">
+                            <ul class="list-disc list-inside">
+                                @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
+
+                        <form action="{{ route('contact.store') }}" method="POST" class="space-y-6">
                             @csrf
                             <div class="grid md:grid-cols-2 gap-6">
                                 <div>
@@ -195,16 +211,20 @@
                                         Full Name
                                     </label>
                                     <input type="text"
+                                        name="name"
+                                        value="{{ old('name') }}"
                                         class="input-field"
-                                        placeholder="Enter your name">
+                                        placeholder="Enter your name" required>
                                 </div>
                                 <div>
                                     <label class="text-sm font-bold text-slate-900 block mb-3">
                                         Phone Number
                                     </label>
                                     <input type="text"
-                                        class="input-field"
-                                        placeholder="+91 00000 00000">
+                                        name="phone"
+                                        value="{{ old('phone') }}"
+                                        class="input-field" maxlength="10"
+                                        placeholder="Enter the 10digit number" required>
                                 </div>
                             </div>
 
@@ -213,17 +233,48 @@
                                     Email Address
                                 </label>
                                 <input type="email"
+                                    name="email"
+                                    value="{{ old('email') }}"
                                     class="input-field"
-                                    placeholder="Enter your email">
+                                    placeholder="Enter your email" required>
                             </div>
 
                             <div>
                                 <label class="text-sm font-bold text-slate-900 block mb-3">
                                     Message
                                 </label>
-                                <textarea rows="5"
+                                <textarea name="message" rows="5"
                                     class="input-field"
-                                    placeholder="Write your message here..."></textarea>
+                                    placeholder="Write your message here..." required>{{ old('message') }}</textarea>
+                            </div>
+                            <!-- CAPTCHA -->
+                            <div>
+                                <label class="text-sm font-bold text-slate-900 block mb-3">
+                                    Enter Captcha *
+                                </label>
+                                <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
+                                    <!-- CAPTCHA BOX -->
+                                    <div id="captchaBox"
+                                        class="bg-slate-900 text-white px-6 py-3 rounded-xl tracking-[8px] text-xl font-black select-none whitespace-nowrap">
+                                        {{ session('captcha_code') }}
+                                    </div>
+                                    <!-- INPUT -->
+                                    <input type="text"
+                                        name="captcha"
+                                        class="input-field flex-1"
+                                        placeholder="Enter captcha">
+                                    <!-- REFRESH BUTTON -->
+                                    <button type="button"
+                                        id="refreshCaptcha"
+                                        class="px-5 py-3 rounded-xl text-black border-2 border-black font-bold hover:bg-black hover:text-white transition duration-300 whitespace-nowrap">
+                                        Refresh
+                                    </button>
+                                </div>
+                                @if(session('captcha_error'))
+                                <p class="text-red-500 text-sm mt-2">
+                                    {{ session('captcha_error') }}
+                                </p>
+                                @endif
                             </div>
 
                             <div class="pt-4">
@@ -304,4 +355,20 @@
         </div>
     </section>
 </main>
+@endsection
+
+@section('scripts')
+<script>
+    document.getElementById('refreshCaptcha')
+        .addEventListener('click', function() {
+
+            fetch("{{ route('refresh.captcha') }}")
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('captchaBox')
+                        .innerText = data.captcha;
+                });
+
+        });
+</script>
 @endsection

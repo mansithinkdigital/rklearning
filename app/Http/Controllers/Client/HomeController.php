@@ -52,8 +52,4 @@ class HomeController extends Controller
         return view('client.course-detail', compact('course', 'hasPurchased', 'isPending'));
     }
 
-    public function contact()
-    {
-        return view('client.contact');
-    }
 }

@@ -160,9 +160,11 @@
                         <i data-lucide="briefcase" class="w-[18px] h-[18px] flex-shrink-0"></i>
                         <span class="sidebar-text text-[13px] font-bold">Vacancies</span>
                     </a>
-                    <a href="#" class="sidebar-link relative flex items-center gap-3 px-3 py-2.5 text-[#64748b] dark:text-[#94a3b8] rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200" title="Site Settings">
-                        <i data-lucide="settings" class="w-[18px] h-[18px] flex-shrink-0"></i>
-                        <span class="sidebar-text text-[13px] font-bold">Site Settings</span>
+                    <a href="{{ route('admin.contacts.index') }}" 
+                        class="sidebar-link relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
+                        {{ request()->is('admin/contacts*') ? 'bg-[#0062ff] text-white shadow-lg shadow-blue-500/20' : 'text-[#64748b] dark:text-[#94a3b8] hover:bg-slate-50 dark:hover:bg-slate-800' }}" title="Contact Inquiries">
+                        <i data-lucide="mail" class="w-[18px] h-[18px] flex-shrink-0"></i>
+                        <span class="sidebar-text text-[13px] font-bold">Contact Inquiries</span>
                     </a>
 
                 </div>

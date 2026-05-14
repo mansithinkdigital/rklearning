@@ -24,6 +24,8 @@ use  \App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\CourseContentController;
 use App\Http\Controllers\Client\CheckoutController;
 use App\Http\Controllers\Client\CertificateVerificationController;
+use App\Http\Controllers\Client\ContactController;
+use App\Http\Controllers\Admin\ContactController as AdminContactController;
 
 
 
@@ -31,7 +33,11 @@ Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/courses', [HomeController::class, 'courses'])->name('courses');
 Route::get('/courses/{course}', [HomeController::class, 'courseDetail'])->name('courses.show');
-Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('/contact', [ContactController::class, 'contact'])->name('contact');
+Route::post('/contact-store', [ContactController::class, 'store'])
+    ->name('contact.store');
+Route::get('/refresh-captcha', [ContactController::class, 'refreshCaptcha'])
+    ->name('refresh.captcha');
 Route::get('/verify-certificate', [CertificateVerificationController::class, 'index'])->name('certificate.verify');
 Route::post('/verify-certificate', [CertificateVerificationController::class, 'verify'])->name('certificate.verify.submit');
 
@@ -111,6 +117,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('vacancy', VacancyController::class);
         // ------------------TESTIMONIAL------------------------------//
         Route::resource('testimonial', TestimonialController::class);
+        // ------------------CONTACT INQUIRIES------------------------//
+        Route::resource('contacts', AdminContactController::class)->only(['index', 'destroy']);
         // ------------------COURSE SUBJECT & MCQ------------------------//
         Route::resource('course-subject', CourseSubjectController::class);
         Route::get('/get-subjects/{course_id}', [CourseSubjectController::class, 'getSubjects'])->name('course-subject.get-subjects');
@@ -163,7 +171,7 @@ Route::get('/preview/marksheet-demo', function () {
         'id' => 9999,
     ];
     $course = (object)['name' => 'Diploma in Accounting with Taxation', 'id' => 1];
-    
+
     $subjects = collect([
         (object)['id' => 1, 'total_marks' => 100, 'pass_marks' => 40, 'subject' => (object)['name' => 'Financial Accounting']],
         (object)['id' => 2, 'total_marks' => 100, 'pass_marks' => 40, 'subject' => (object)['name' => 'Tally Prime']],
