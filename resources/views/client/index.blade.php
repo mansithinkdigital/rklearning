@@ -427,21 +427,30 @@
 
         <div class="grid lg:grid-cols-2 gap-24 items-center">
 
-            <!-- IMAGES -->
+            <!-- IMAGE -->
             <div class="relative">
-
-                <div class="grid grid-cols-2 gap-6">
-
+                <!-- Decorative Accents -->
+                <div class="absolute -inset-4 bg-gradient-to-tr from-blue-500/10 to-transparent blur-3xl rounded-[40px] -z-10"></div>
+                
+                <div class="hero-image">
                     <img
-                        src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=2070&auto=format&fit=crop"
-                        class="rounded-[32px] h-[520px] object-cover w-full mt-12 shadow-xl">
-
-                    <img
-                        src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop"
-                        class="rounded-[32px] h-[520px] object-cover w-full shadow-xl">
-
+                        src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop"
+                        alt="Students collaborating"
+                        class="h-[600px] object-cover w-full transform hover:scale-105 transition-transform duration-700">
                 </div>
 
+                <!-- Floating Card to match Hero Section -->
+                <div class="floating-card absolute -bottom-10 -right-10 hidden lg:block max-w-[260px]">
+                    <div class="flex items-center gap-5">
+                        <div class="icon-box !w-14 !h-14 !text-xl !rounded-2xl">
+                            <i class="fa fa-award"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-1">Recognition</p>
+                            <p class="font-bold text-slate-900">Practical Career Growth</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- CONTENT -->
