@@ -538,9 +538,25 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
+
+        // Check for GD extension
+        if (!extension_loaded('gd')) {
+            return response()->json([
+                'error' => 'Server Error',
+                'message' => 'PHP GD extension is not enabled. Please enable it in php.ini and RESTART your server.'
+            ], 500);
+        }
+
         if (!$user->checkCourseCompletion($course)) {
+            if (request()->is('api/*') || request()->wantsJson() || request()->header('Authorization')) {
+                return response()->json([
+                    'error' => 'Incomplete Course',
+                    'message' => 'Complete all lessons and subject exams first.'
+                ], 400);
+            }
             return back()->with('error', 'Complete all lessons and subject exams first.');
         }
+
         // Base64 Photo
         $userPhotoBase64 = null;
         if ($user->image && file_exists(public_path($user->image))) {
@@ -552,11 +568,26 @@ class DashboardController extends Controller
 
         $enrollDate = optional($course->pivot->created_at)->format('d/m/Y') ?? 'N/A';
         $completionDate = $this->getCompletionDate($user, $course);
-        $certificateNo = $this->ensureCertificateNo($user, $course);
+        
+        try {
+            $certificateNo = $this->ensureCertificateNo($user, $course);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Database Error',
+                'message' => 'Failed to generate certificate number. Please run: php artisan migrate'
+            ], 500);
+        }
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate', 'certificateNo', 'completionDate'));
-        $pdf->setPaper('a4', 'landscape');
-        return $pdf->download("Certificate_{$course->name}.pdf");
+        try {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate', 'certificateNo', 'completionDate'));
+            $pdf->setPaper('a4', 'landscape');
+            return $pdf->download("Certificate_{$course->name}.pdf");
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'PDF Error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function downloadMarksheet($course_id)
@@ -592,9 +623,16 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
+
+        // Check for GD extension
+        if (!extension_loaded('gd')) {
+            return "Server Error: PHP GD extension is not enabled. Please enable it in php.ini and RESTART your server.";
+        }
+
         if (!$user->checkCourseCompletion($course)) {
             return back()->with('error', 'Complete all lessons and subject exams first.');
         }
+
         $userPhotoBase64 = null;
         if ($user->image && file_exists(public_path($user->image))) {
             $path = public_path($user->image);
@@ -602,9 +640,16 @@ class DashboardController extends Controller
             $data = file_get_contents($path);
             $userPhotoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         }
+
         $enrollDate = optional($course->pivot->created_at)->format('d/m/Y') ?? 'N/A';
         $completionDate = $this->getCompletionDate($user, $course);
-        $certificateNo = $this->ensureCertificateNo($user, $course);
+        
+        try {
+            $certificateNo = $this->ensureCertificateNo($user, $course);
+        } catch (\Exception $e) {
+            return "Database Error: Failed to generate certificate number. Please run: php artisan migrate";
+        }
+
         return view('student.exams.certificate_print', compact('user', 'course', 'userPhotoBase64', 'enrollDate', 'certificateNo', 'completionDate'));
     }
 

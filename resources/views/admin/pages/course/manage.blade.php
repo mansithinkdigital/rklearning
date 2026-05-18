@@ -91,19 +91,33 @@
                                         </div>
                                     </div>
 
-                                    <!-- Topics -->
+                                    <!-- Modules & Resources -->
                                     <div id="children-unit-{{ $unit->id }}" class="hidden mt-2 space-y-1.5">
-                                        @forelse($unit->topics as $topic)
+                                        <!-- Topics/Lessons -->
+                                        @foreach($unit->topics as $topic)
                                             <div class="flex items-center justify-between p-3 pl-5 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/10 group/topic cursor-pointer border border-transparent hover:border-indigo-100 dark:hover:border-indigo-900/30 role-item" onclick="selectTopic({{ $topic->id }})">
                                                 <div class="flex items-center gap-3">
-                                                    <i data-lucide="dot" class="w-4 h-4 text-indigo-400"></i>
+                                                    <i data-lucide="{{ $topic->video_id ? 'play-circle' : 'file-text' }}" class="w-4 h-4 {{ $topic->video_id ? 'text-blue-500' : 'text-indigo-400' }}"></i>
                                                     <span class="text-xs font-bold text-slate-500 dark:text-slate-400 group-hover/topic:text-indigo-600 transition-colors">{{ $topic->name }}</span>
                                                 </div>
                                                 <i data-lucide="chevron-right" class="w-3 h-3 opacity-0 group-hover/topic:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0"></i>
                                             </div>
-                                        @empty
+                                        @endforeach
+                                        
+                                        <!-- Legacy Paid Videos -->
+                                        @foreach($unit->paidVideos as $pvideo)
+                                            <div class="flex items-center justify-between p-3 pl-5 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/10 group/pvideo cursor-pointer border border-transparent hover:border-red-100 dark:hover:border-red-900/30 role-item">
+                                                <div class="flex items-center gap-3">
+                                                    <i data-lucide="youtube" class="w-4 h-4 text-red-500"></i>
+                                                    <span class="text-xs font-bold text-slate-500 dark:text-slate-400 group-hover/pvideo:text-red-600 transition-colors">{{ $pvideo->title }}</span>
+                                                </div>
+                                                <span class="text-[8px] font-black uppercase text-red-400 bg-red-50 px-1.5 py-0.5 rounded">Legacy</span>
+                                            </div>
+                                        @endforeach
+
+                                        @if($unit->topics->isEmpty() && $unit->paidVideos->isEmpty())
                                             <div class="py-2 pl-4 text-[9px] font-black text-slate-300 dark:text-slate-700 uppercase tracking-widest italic">Empty Module</div>
-                                        @endforelse
+                                        @endif
                                     </div>
                                 </div>
                             @empty
@@ -199,6 +213,21 @@
                                     <textarea name="content" id="field-content"></textarea>
                                 </div>
                             </div>
+
+                            <!-- Topic Extra Fields (Video & File) -->
+                            <div id="topic-extras" class="col-span-12 grid grid-cols-12 gap-8 hidden">
+                                <div class="col-span-12 md:col-span-6 space-y-3">
+                                    <label class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">YouTube Video URL</label>
+                                    <input type="url" name="video_url" id="field-video-url" class="w-full bg-slate-50 dark:bg-slate-800 border-2 border-slate-50 dark:border-slate-800 rounded-3xl px-8 py-5 text-sm font-bold text-slate-900 dark:text-white focus:border-blue-500 transition-all" placeholder="https://youtube.com/watch?v=...">
+                                </div>
+                                <div class="col-span-12 md:col-span-6 space-y-3">
+                                    <label class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Study Material (PDF)</label>
+                                    <div class="relative">
+                                        <input type="file" name="study_material" id="field-material" class="w-full bg-slate-50 dark:bg-slate-800 border-2 border-slate-50 dark:border-slate-800 rounded-3xl px-8 py-4 text-sm font-bold text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-blue-600 file:text-white hover:file:bg-blue-700">
+                                        <p id="current-material" class="mt-2 text-[9px] font-bold text-emerald-500 px-4 hidden">Existing file: <span id="material-filename"></span></p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Submit Section -->
@@ -279,6 +308,7 @@
         const icon = document.getElementById('type-icon');
         const orderGroup = document.getElementById('order-group');
         const contentGroup = document.getElementById('content-group');
+        const topicExtras = document.getElementById('topic-extras');
 
         const themes = {
             subject: { color: 'bg-blue-600', shadow: 'shadow-blue-500/30', icon: 'layers' },
@@ -294,6 +324,7 @@
         // Specific fields
         orderGroup.classList.toggle('hidden', type === 'subject');
         contentGroup.classList.toggle('hidden', type !== 'topic');
+        topicExtras.classList.toggle('hidden', type !== 'topic');
 
         // Delete button
         const delBtn = document.getElementById('delete-btn');
@@ -351,6 +382,9 @@
         document.getElementById('form-parent-id').value = unitId;
         document.getElementById('field-name').value = '';
         document.getElementById('field-order').value = 0;
+        document.getElementById('field-video-url').value = '';
+        document.getElementById('field-material').value = '';
+        document.getElementById('current-material').classList.add('hidden');
         $('#field-content').summernote('code', '');
         document.getElementById('field-name').focus();
     }
@@ -366,6 +400,16 @@
             document.getElementById('form-parent-id').value = data.unit_id;
             document.getElementById('field-name').value = data.name;
             document.getElementById('field-order').value = data.order;
+            document.getElementById('field-video-url').value = data.video_id ? `https://www.youtube.com/watch?v=${data.video_id}` : '';
+            
+            const materialIndicator = document.getElementById('current-material');
+            if(data.study_material) {
+                materialIndicator.classList.remove('hidden');
+                document.getElementById('material-filename').innerText = data.study_material;
+            } else {
+                materialIndicator.classList.add('hidden');
+            }
+
             $('#field-content').summernote('code', data.content || '');
             highlightNode('topic', id);
         } finally {
@@ -380,34 +424,48 @@
         const id = document.getElementById('form-id').value;
         const parentId = document.getElementById('form-parent-id').value;
         
-        let url, method, payload;
+        const formData = new FormData();
+        formData.append('id', id);
+        formData.append('type', type);
+        formData.append('name', document.getElementById('field-name').value);
+        formData.append('order', document.getElementById('field-order').value || 0);
         
+        if(id) formData.append('_method', 'PUT');
+
+        let url;
         if(type === 'subject') {
             url = id ? `/admin/subject/${id}` : '/admin/subject';
-            payload = { name: document.getElementById('field-name').value, course_id: {{ $course->id }} };
+            formData.append('course_id', {{ $course->id }});
         } else if(type === 'unit') {
             url = id ? `/admin/unit/${id}` : '/admin/unit';
-            payload = { name: document.getElementById('field-name').value, order: document.getElementById('field-order').value, subject_id: parentId };
+            formData.append('subject_id', parentId);
         } else if(type === 'topic') {
             url = id ? `/admin/topic/${id}` : '/admin/topic';
-            payload = { name: document.getElementById('field-name').value, order: document.getElementById('field-order').value, content: $('#field-content').summernote('code'), unit_id: parentId };
+            formData.append('unit_id', parentId);
+            formData.append('content', $('#field-content').summernote('code'));
+            formData.append('video_url', document.getElementById('field-video-url').value);
+            const materialFile = document.getElementById('field-material').files[0];
+            if(materialFile) formData.append('study_material', materialFile);
         }
 
-        method = id ? 'PUT' : 'POST';
         document.getElementById('loader-overlay').classList.remove('hidden');
 
         try {
             const res = await fetch(url, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                body: JSON.stringify({ ...payload, _method: method })
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: formData
             });
             const result = await res.json();
             if(result.status === 'success') {
                 showToast(result.message);
                 setTimeout(() => window.location.reload(), 1200);
+            } else if(result.errors) {
+                const firstError = Object.values(result.errors)[0][0];
+                alert(firstError);
             }
         } catch (err) {
+            console.error(err);
             alert('Operation failed. Check logs.');
         } finally {
             document.getElementById('loader-overlay').classList.add('hidden');

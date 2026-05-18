@@ -70,13 +70,38 @@ class User extends Authenticatable
 
     public function checkCourseCompletion($course)
     {
-        // 1. Video Completion Check
-        $paidVideoIds = \App\Models\PaidVideo::where('course_id', $course->id)->pluck('id')->toArray();
+        // 1. If a certificate number is already assigned in the pivot table, the course is officially completed.
+        if (isset($course->pivot) && $course->pivot->certificate_no) {
+            return true;
+        }
+
+        // 2. Check if the student has passed at least one subject exam for this course (matching dashboard logic).
+        $hasPassedExam = \App\Models\ExamResult::where('user_id', $this->id)
+            ->where('status', 'pass')
+            ->whereHas('courseSubject', function($q) use ($course) {
+                $q->where('course_id', $course->id);
+            })->exists();
+
+        if ($hasPassedExam) {
+            return true;
+        }
+
+        // 3. Fallback for courses without exams: check video completion.
+        $paidVideoIds = \App\Models\PaidVideo::where('course_id', $course->id)
+            ->whereNotNull('video_id')
+            ->where('video_id', '!=', '')
+            ->pluck('video_id')
+            ->toArray();
+            
         $topicVideoIds = \App\Models\Topic::whereHas('unit.subject', function ($q) use ($course) {
             $q->where('course_id', $course->id);
-        })->whereNotNull('video_id')->pluck('id')->map(fn($id) => $id + 1000000)->toArray();
+        })
+            ->whereNotNull('video_id')
+            ->where('video_id', '!=', '')
+            ->pluck('video_id')
+            ->toArray();
 
-        $allRequiredVideoIds = array_merge($paidVideoIds, $topicVideoIds);
+        $allRequiredVideoIds = array_values(array_unique(array_merge($paidVideoIds, $topicVideoIds)));
 
         if (!empty($allRequiredVideoIds)) {
             $completedCount = \App\Models\VideoCompletion::where('user_id', $this->id)
@@ -84,26 +109,10 @@ class User extends Authenticatable
                 ->where('is_completed', true)
                 ->count();
 
-            if ($completedCount < count($allRequiredVideoIds)) {
-                return false;
-            }
+            return ($completedCount >= count($allRequiredVideoIds));
         }
 
-        // 2. Exam Completion Check (only for subjects that HAVE MCQs)
-        $examSubjects = \App\Models\CourseSubject::where('course_id', $course->id)->whereHas('mcqs')->get();
-        
-        if ($examSubjects->isEmpty()) {
-            return true;
-        }
-
-        $passedCount = \App\Models\ExamResult::where('user_id', $this->id)
-            ->whereIn('course_subject_id', $examSubjects->pluck('id'))
-            ->where('status', 'pass')
-            ->pluck('course_subject_id')
-            ->unique()
-            ->count();
-
-        return ($passedCount >= $examSubjects->count());
+        return true;
     }
 
     public function hasCompletedAnyCourse()

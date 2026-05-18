@@ -141,15 +141,97 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
         return response()->json($user);
     });
 
+    Route::post('/enroll', function (Request $request) {
+        $user = $request->user();
+        $request->validate([
+            'course_id' => 'required|exists:courses,id',
+            'payment_method' => 'string|in:online,offline',
+            'razorpay_payment_id' => 'required_if:payment_method,online|string|nullable',
+            'razorpay_order_id' => 'required_if:payment_method,online|string|nullable',
+        ]);
+
+        $courseId = $request->input('course_id');
+        $paymentMethod = $request->input('payment_method', 'offline');
+        
+        // Check if already enrolled or requested
+        $existingEnrollment = $user->courses()->where('course_id', $courseId)->first();
+        if ($existingEnrollment) {
+            return response()->json([
+                'message' => 'You have already requested enrollment or are already enrolled in this course.',
+                'status' => $existingEnrollment->pivot->status
+            ], 400);
+        }
+
+        $user->courses()->attach($courseId, [
+            'status' => $paymentMethod == 'online' ? 'approved' : 'pending',
+            'payment_method' => $paymentMethod,
+            'amount' => \App\Models\Course::find($courseId)->price ?? 0,
+            'razorpay_payment_id' => $request->input('razorpay_payment_id'),
+            'razorpay_order_id' => $request->input('razorpay_order_id'),
+        ]);
+
+        return response()->json([
+            'message' => 'Enrollment request submitted successfully.',
+            'success' => true
+        ]);
+    });
+
     Route::get('/dashboard', function (Request $request) {
         $user = $request->user();
+        
+        // Basic enrollments
         $enrolledCourses = $user->courses()->wherePivot('status', 'approved')->get();
         $pendingRequests = $user->courses()->wherePivot('status', 'pending')->get();
         
+        // Auto-assign certificates for passed students who don't have one yet
+        foreach ($enrolledCourses as $course) {
+            if (!$course->pivot->certificate_no) {
+                // Check if they have passed at least one subject exam for this course
+                $hasPassed = ExamResult::where('user_id', $user->id)
+                    ->where('status', 'pass')
+                    ->whereHas('courseSubject', function($q) use ($course) {
+                        $q->where('course_id', $course->id);
+                    })->exists();
+
+                if ($hasPassed) {
+                    $certNo = 'RK-' . date('Y') . '-' . str_pad($user->id, 4, '0', STR_PAD_LEFT) . '-' . str_pad($course->id, 3, '0', STR_PAD_LEFT);
+                    $user->courses()->updateExistingPivot($course->id, ['certificate_no' => $certNo]);
+                    // Refresh the course object to include the new pivot data
+                    $course->pivot->certificate_no = $certNo;
+                }
+            }
+        }
+
+        // Identify courses with certificates
+        $certificates = $user->courses()
+            ->wherePivot('status', 'approved')
+            ->wherePivotNotNull('certificate_no')
+            ->get()
+            ->map(function($course) {
+                return [
+                    'id' => $course->id,
+                    'name' => $course->name,
+                    'certificate_no' => $course->pivot->certificate_no,
+                    'download_url' => url("/api/student/certificate/{$course->id}/download"),
+                ];
+            });
+
+        // Calculate pending fees
+        $pendingFees = $user->courses()
+            ->wherePivot('status', 'approved')
+            ->sum('course_user.amount');
+
         return response()->json([
             'user' => $user,
             'enrolled_courses' => $enrolledCourses,
             'pending_requests' => $pendingRequests,
+            'certificates' => $certificates,
+            'stats' => [
+                'active_courses' => $enrolledCourses->count(),
+                'certificates_count' => $certificates->count(),
+                'pending_fees' => $pendingFees,
+                'attendance' => '100%',
+            ]
         ]);
     });
 
@@ -170,7 +252,44 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
             return response()->json(['message' => 'Unauthorized or expired course access.'], 403);
         }
 
-        return response()->json($course);
+        $paidVideoIds = \App\Models\PaidVideo::where('course_id', $course_id)
+            ->whereNotNull('video_id')
+            ->where('video_id', '!=', '')
+            ->pluck('video_id')
+            ->toArray();
+            
+        $topicVideoIds = \App\Models\Topic::whereHas('unit.subject', function ($q) use ($course_id) {
+            $q->where('course_id', $course_id);
+        })
+            ->whereNotNull('video_id')
+            ->where('video_id', '!=', '')
+            ->pluck('video_id')
+            ->toArray();
+
+        $allRequiredVideoIds = array_values(array_unique(array_merge($paidVideoIds, $topicVideoIds)));
+        $totalVideos = count($allRequiredVideoIds);
+
+        $completedCount = 0;
+        if ($totalVideos > 0) {
+            $completedCount = \App\Models\VideoCompletion::where('user_id', $user->id)
+                ->whereIn('video_id', $allRequiredVideoIds)
+                ->where('is_completed', true)
+                ->count();
+        }
+
+        $completedVideos = \App\Models\VideoCompletion::where('user_id', $user->id)
+            ->where('course_id', $course_id)
+            ->where('is_completed', true)
+            ->pluck('video_id')
+            ->toArray();
+
+        $progress = ($totalVideos > 0) ? ($completedCount / $totalVideos) * 100 : 100;
+
+        return response()->json([
+            'course' => $course,
+            'completed_videos' => $completedVideos,
+            'progress' => $progress
+        ]);
     });
 
     Route::get('/study-material', function (Request $request) {
@@ -202,6 +321,34 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
             $cs->result = ExamResult::where('user_id', $user->id)
                 ->where('course_subject_id', $cs->id)
                 ->first();
+
+            $paidVideoIds = \App\Models\PaidVideo::where('course_id', $cs->course_id)
+                ->whereNotNull('video_id')
+                ->where('video_id', '!=', '')
+                ->pluck('video_id')
+                ->toArray();
+                
+            $topicVideoIds = \App\Models\Topic::whereHas('unit.subject', function ($q) use ($cs) {
+                $q->where('course_id', $cs->course_id);
+            })
+                ->whereNotNull('video_id')
+                ->where('video_id', '!=', '')
+                ->pluck('video_id')
+                ->toArray();
+
+            $allRequiredVideoIds = array_values(array_unique(array_merge($paidVideoIds, $topicVideoIds)));
+            $totalVideos = count($allRequiredVideoIds);
+
+            if ($totalVideos === 0) {
+                $cs->setAttribute('is_unlocked', true);
+            } else {
+                $completedCount = \App\Models\VideoCompletion::where('user_id', $user->id)
+                    ->whereIn('video_id', $allRequiredVideoIds)
+                    ->where('is_completed', true)
+                    ->count();
+
+                $cs->setAttribute('is_unlocked', ($completedCount >= $totalVideos));
+            }
         }
 
         return response()->json($courseSubjects);
@@ -220,7 +367,7 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
             ->where('course_subject_id', $course_subject_id)
             ->first();
         
-        if ($previousResult) {
+        if ($previousResult && $previousResult->reattempt_status !== 'allowed') {
             return response()->json(['message' => 'Exam already completed.'], 400);
         }
 
@@ -244,28 +391,207 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
         $totalQuestions = $courseSubject->mcqs->count();
 
         foreach ($courseSubject->mcqs as $mcq) {
-            $studentAnswer = $answers[$mcq->id] ?? null;
-            if ($studentAnswer == $mcq->answer) {
-                $correctCount++;
+            // Robust key matching: handle both int and string keys from Flutter
+            $studentAnswer = $answers[$mcq->id] ?? ($answers[(string)$mcq->id] ?? null);
+            
+            if ($studentAnswer !== null) {
+                $studentAnswerStr = strtoupper(trim((string)$studentAnswer));
+                $dbAnswerStr = trim((string)$mcq->answer);
+
+                $correctLetter = null;
+                
+                // If the DB stored the letter (A, B, C, D)
+                if (strlen($dbAnswerStr) === 1 && ctype_alpha($dbAnswerStr)) {
+                    $correctLetter = strtoupper($dbAnswerStr);
+                } else {
+                    // If the DB stored the actual option text
+                    $options = is_array($mcq->options) ? $mcq->options : json_decode($mcq->options, true) ?? [];
+                    // Case-insensitive search for the answer in options
+                    $index = false;
+                    foreach ($options as $k => $opt) {
+                        if (strtolower(trim($opt)) === strtolower($dbAnswerStr)) {
+                            $index = $k;
+                            break;
+                        }
+                    }
+                    if ($index !== false) {
+                        $correctLetter = chr(65 + $index);
+                    }
+                }
+
+                if ($correctLetter === $studentAnswerStr || strtolower($studentAnswerStr) === strtolower($dbAnswerStr)) {
+                    $correctCount++;
+                }
             }
         }
 
         $score = ($totalQuestions > 0) ? ($correctCount / $totalQuestions) * 100 : 0;
-        $status = ($score >= ($courseSubject->pass_marks / ($courseSubject->total_marks ?: 1) * 100)) ? 'pass' : 'fail';
+        $passThreshold = ($courseSubject->pass_marks / ($courseSubject->total_marks ?: 1) * 100);
+        $status = ($score >= $passThreshold) ? 'pass' : 'fail';
 
-        $result = ExamResult::create([
+        $result = ExamResult::updateOrCreate([
             'user_id'           => $user->id,
             'course_subject_id' => $course_subject_id,
+        ], [
             'total_questions'   => $totalQuestions,
             'correct_answers'   => $correctCount,
             'score'             => $score,
             'status'            => $status,
             'student_answers'   => $answers,
+            'reattempt_status'  => null,
         ]);
+
+        // Automatically issue certificate if passed
+        if ($status === 'pass') {
+            $enrollment = $user->courses()->where('course_id', $courseSubject->course_id)->first();
+            if ($enrollment && !$enrollment->pivot->certificate_no) {
+                // Generate a unique certificate number: RK-YEAR-USERID-COURSEID
+                $certNo = 'RK-' . date('Y') . '-' . str_pad($user->id, 4, '0', STR_PAD_LEFT) . '-' . str_pad($courseSubject->course_id, 3, '0', STR_PAD_LEFT);
+                
+                $user->courses()->updateExistingPivot($courseSubject->course_id, [
+                    'certificate_no' => $certNo
+                ]);
+            }
+        }
 
         return response()->json([
             'success' => true,
             'result' => $result
         ]);
+    });
+
+    Route::post('/exams/{course_subject_id}/request-reattempt', function (Request $request, $course_subject_id) {
+        $user = $request->user();
+        $result = ExamResult::where('user_id', $user->id)
+            ->where('course_subject_id', $course_subject_id)
+            ->where('status', 'fail')
+            ->first();
+
+        if (!$result) {
+            return response()->json(['message' => 'Failed exam result not found.'], 404);
+        }
+
+        $result->update(['reattempt_status' => 'requested']);
+
+        return response()->json(['success' => true, 'message' => 'Reattempt request sent to admin.']);
+    });
+
+
+    Route::get('/exams/{id}/result', function (Request $request, $id) {
+        $user = $request->user();
+        try {
+            // First try finding by ExamResult ID, then by course_subject_id
+            $result = ExamResult::with(['courseSubject.mcqs'])->find($id);
+            if (!$result) {
+                $result = ExamResult::with(['courseSubject.mcqs'])
+                    ->where('user_id', $user->id)
+                    ->where('course_subject_id', $id)
+                    ->latest()
+                    ->first();
+            }
+
+            if (!$result) {
+                return response()->json(['message' => 'Exam result record not found.'], 404);
+            }
+            
+            if ($result->user_id !== $user->id) {
+                return response()->json(['message' => 'Unauthorized access.'], 403);
+            }
+
+            // Process questions for detailed review on frontend
+            $studentAnswers = $result->student_answers ?? [];
+            $reviewQuestions = [];
+
+            foreach ($result->courseSubject->mcqs as $mcq) {
+                $userAns = $studentAnswers[$mcq->id] ?? ($studentAnswers[(string)$mcq->id] ?? null);
+                
+                $dbAnswerStr = trim((string)$mcq->answer);
+                $correctLetter = null;
+                
+                if (strlen($dbAnswerStr) === 1 && ctype_alpha($dbAnswerStr)) {
+                    $correctLetter = strtoupper($dbAnswerStr);
+                } else {
+                    $options = is_array($mcq->options) ? $mcq->options : json_decode($mcq->options, true) ?? [];
+                    $index = false;
+                    foreach ($options as $k => $opt) {
+                        if (strtolower(trim($opt)) === strtolower($dbAnswerStr)) {
+                            $index = $k;
+                            break;
+                        }
+                    }
+                    if ($index !== false) {
+                        $correctLetter = chr(65 + $index);
+                    }
+                }
+                
+                $isCorrect = false;
+                if ($userAns !== null) {
+                    $userAnsStr = strtoupper(trim((string)$userAns));
+                    if ($correctLetter === $userAnsStr || strtolower($userAnsStr) === strtolower($dbAnswerStr)) {
+                        $isCorrect = true;
+                    }
+                }
+                
+                $status = 'unanswered';
+                if ($userAns !== null) {
+                    $status = $isCorrect ? 'correct' : 'incorrect';
+                }
+
+                $reviewQuestions[] = [
+                    'id' => $mcq->id,
+                    'text' => $mcq->question,
+                    'correct_answer' => $mcq->answer,
+                    'user_selection' => $userAns,
+                    'status' => $status,
+                    'options' => collect($mcq->options)->map(function($opt, $index) {
+                        return [
+                            'label' => chr(65 + $index),
+                            'text' => $opt
+                        ];
+                    })
+                ];
+            }
+
+            // Explicitly include course_id for certificate generation
+            $result->course_id = $result->courseSubject->course_id;
+
+            return response()->json([
+                'success' => true,
+                'result' => $result,
+                'questions' => $reviewQuestions,
+                'course_id' => $result->course_id
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
+        }
+    });
+
+    Route::post('/video-completion', function (Request $request) {
+        $user = $request->user();
+        $request->validate([
+            'video_id' => 'required',
+            'course_id' => 'required|exists:courses,id',
+        ]);
+
+        \App\Models\VideoCompletion::updateOrCreate(
+            ['user_id' => $user->id, 'video_id' => $request->video_id],
+            ['course_id' => $request->course_id, 'is_completed' => true]
+        );
+
+        return response()->json(['success' => true]);
+    });
+
+    Route::get('/certificate/{course_id}/download', function($course_id) {
+        $controller = new App\Http\Controllers\Student\DashboardController();
+        $response = $controller->downloadCertificate($course_id);
+        
+        // Add CORS headers for web access
+        if ($response instanceof \Symfony\Component\HttpFoundation\Response) {
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+            $response->headers->set('Access-Control-Allow-Headers', '*');
+        }
+        
+        return $response;
     });
 });
