@@ -49,6 +49,14 @@ Route::prefix('student')->name('student.')->group(function () {
     Route::post('/register', [StudentAuthController::class, 'register'])->name('register.submit');
     Route::get('/login', [StudentAuthController::class, 'loginForm'])->name('login');
     Route::post('/login', [StudentAuthController::class, 'login'])->name('login.submit');
+    
+    // Forgot Password routes
+    Route::get('/forgot-password', [StudentAuthController::class, 'forgotPasswordForm'])->name('password.request');
+    Route::post('/forgot-password', [StudentAuthController::class, 'sendOtp'])->name('password.email');
+    Route::get('/verify-otp', [StudentAuthController::class, 'verifyOtpForm'])->name('password.verify-otp');
+    Route::post('/verify-otp', [StudentAuthController::class, 'verifyOtp'])->name('password.verify-otp.submit');
+    Route::get('/reset-password', [StudentAuthController::class, 'resetPasswordForm'])->name('password.reset');
+    Route::post('/reset-password', [StudentAuthController::class, 'resetPassword'])->name('password.update');
     Route::post('/logout', [StudentAuthController::class, 'logout'])->name('logout');
     Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');

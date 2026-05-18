@@ -256,10 +256,8 @@
     <div class="container-rk mx-auto px-6 pt-28 pb-24">
 
         <div class="grid lg:grid-cols-2 gap-20 items-center">
-
             <!-- LEFT -->
             <div>
-
                 <span class="section-badge mb-8">
                     <span class="w-2 h-2 rounded-full bg-blue-600"></span>
                     Modern Professional Learning
@@ -342,7 +340,7 @@
                 <div class="hero-image">
 
                     <img
-                        src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop"
+                        src="{{ asset('assets/homeimg/hero_students_institute.png') }}"
                         alt="RK Institute">
 
                 </div>
@@ -431,10 +429,10 @@
             <div class="relative">
                 <!-- Decorative Accents -->
                 <div class="absolute -inset-4 bg-gradient-to-tr from-blue-500/10 to-transparent blur-3xl rounded-[40px] -z-10"></div>
-                
+
                 <div class="hero-image">
                     <img
-                        src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop"
+                        src="{{ asset('assets/homeimg/college_virtual_classroom.png') }}"
                         alt="Students collaborating"
                         class="h-[600px] object-cover w-full transform hover:scale-105 transition-transform duration-700">
                 </div>
@@ -656,21 +654,15 @@
 
 <!-- CTA -->
 <section class="section-padding bg-white">
-
     <div class="container-rk mx-auto px-6">
-
         <div class="cta-box p-14 lg:p-24 text-center text-white">
-
             <h2 class="text-5xl font-black leading-tight mb-8 relative z-10">
                 Start Building Your Future Today
             </h2>
-
             <p class="text-slate-300 text-lg max-w-2xl mx-auto mb-12 relative z-10 leading-relaxed">
                 Join RK Institute and gain practical skills designed for real-world success and long-term career growth.
             </p>
-
             <div class="flex justify-center gap-5 flex-wrap relative z-10">
-
                 @guest
                 <a href="{{ route('student.register') }}" class="btn-primary">
                     Create Free Account
@@ -680,13 +672,8 @@
                 <a href="{{ route('courses') }}" class="btn-secondary bg-white">
                     Explore Courses
                 </a>
-
             </div>
-
         </div>
-
     </div>
-
 </section>
-
 @endsection
