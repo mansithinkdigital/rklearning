@@ -66,13 +66,27 @@
     }
 
     @keyframes scaleIn {
-        from { transform: scale(0); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
+        from {
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
     }
 
     @keyframes pulseOut {
-        0% { transform: scale(1); opacity: 0.2; }
-        100% { transform: scale(1.5); opacity: 0; }
+        0% {
+            transform: scale(1);
+            opacity: 0.2;
+        }
+
+        100% {
+            transform: scale(1.5);
+            opacity: 0;
+        }
     }
 
     .info-row {
@@ -114,7 +128,6 @@
 
     <div class="container mx-auto px-6 max-w-2xl">
         <div class="success-card p-10 md:p-16 text-center animate-reveal">
-            
             <div class="status-icon-wrapper">
                 <div class="icon-pulse"></div>
                 <div class="status-icon">
@@ -130,12 +143,12 @@
             <!-- Transaction Receipt -->
             <div class="bg-slate-50/50 rounded-3xl p-8 mb-12 border border-slate-100/50 text-left">
                 <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Enrollment Summary</h3>
-                
+
                 <div class="info-row">
                     <span class="text-sm font-bold text-slate-500">Receipt ID</span>
                     <span class="text-sm font-black text-slate-900">#{{ strtoupper(uniqid('RK')) }}</span>
                 </div>
-                
+
                 <div class="info-row">
                     <span class="text-sm font-bold text-slate-500">Student Name</span>
                     <span class="text-sm font-black text-slate-900">{{ Auth::user()->name }}</span>
@@ -188,22 +201,36 @@
     window.addEventListener('load', () => {
         const duration = 3 * 1000;
         const animationEnd = Date.now() + duration;
-        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+        const defaults = {
+            startVelocity: 30,
+            spread: 360,
+            ticks: 60,
+            zIndex: 0
+        };
 
         function randomInRange(min, max) {
             return Math.random() * (max - min) + min;
         }
-
         const interval = setInterval(function() {
             const timeLeft = animationEnd - Date.now();
-
             if (timeLeft <= 0) {
                 return clearInterval(interval);
             }
-
             const particleCount = 50 * (timeLeft / duration);
-            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            confetti(Object.assign({}, defaults, {
+                particleCount,
+                origin: {
+                    x: randomInRange(0.1, 0.3),
+                    y: Math.random() - 0.2
+                }
+            }));
+            confetti(Object.assign({}, defaults, {
+                particleCount,
+                origin: {
+                    x: randomInRange(0.7, 0.9),
+                    y: Math.random() - 0.2
+                }
+            }));
         }, 250);
     });
 </script>

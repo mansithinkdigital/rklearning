@@ -218,7 +218,7 @@
                             <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm">
                                 <i class="fa fa-map-marker-alt text-indigo-600"></i>
                             </div>
-                            <span class="text-sm">Maharashtra, India</span>
+                            <span class="text-sm leading-relaxed">Near Maharashtra Book House, Lonar Lane, Ashok Stambha, RK, Nashik</span>
                         </div>
                         <div class="flex items-center space-x-4">
                             <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm">
