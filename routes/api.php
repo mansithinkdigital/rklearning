@@ -183,17 +183,10 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
         $enrolledCourses = $user->courses()->wherePivot('status', 'approved')->get();
         $pendingRequests = $user->courses()->wherePivot('status', 'pending')->get();
         
-        // Auto-assign certificates for passed students who don't have one yet
+        // Auto-assign certificates for completed students who don't have one yet
         foreach ($enrolledCourses as $course) {
             if (!$course->pivot->certificate_no) {
-                // Check if they have passed at least one subject exam for this course
-                $hasPassed = ExamResult::where('user_id', $user->id)
-                    ->where('status', 'pass')
-                    ->whereHas('courseSubject', function($q) use ($course) {
-                        $q->where('course_id', $course->id);
-                    })->exists();
-
-                if ($hasPassed) {
+                if ($user->checkCourseCompletion($course)) {
                     $certNo = 'RK-' . date('Y') . '-' . str_pad($user->id, 4, '0', STR_PAD_LEFT) . '-' . str_pad($course->id, 3, '0', STR_PAD_LEFT);
                     $user->courses()->updateExistingPivot($course->id, ['certificate_no' => $certNo]);
                     // Refresh the course object to include the new pivot data
@@ -213,6 +206,7 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
                     'name' => $course->name,
                     'certificate_no' => $course->pivot->certificate_no,
                     'download_url' => url("/api/student/certificate/{$course->id}/download"),
+                    'marksheet_download_url' => url("/api/student/marksheet/{$course->id}/download"),
                 ];
             });
 
@@ -584,6 +578,20 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
     Route::get('/certificate/{course_id}/download', function($course_id) {
         $controller = new App\Http\Controllers\Student\DashboardController();
         $response = $controller->downloadCertificate($course_id);
+        
+        // Add CORS headers for web access
+        if ($response instanceof \Symfony\Component\HttpFoundation\Response) {
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+            $response->headers->set('Access-Control-Allow-Headers', '*');
+        }
+        
+        return $response;
+    });
+
+    Route::get('/marksheet/{course_id}/download', function($course_id) {
+        $controller = new App\Http\Controllers\Student\DashboardController();
+        $response = $controller->downloadMarksheet($course_id);
         
         // Add CORS headers for web access
         if ($response instanceof \Symfony\Component\HttpFoundation\Response) {

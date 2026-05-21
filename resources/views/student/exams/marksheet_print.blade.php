@@ -10,9 +10,13 @@ return null;
 $background = getBase64('assets/certificate/marksheet.jpeg');
 
 // For student photo
-$userPhotoBase64 = null;
-if (isset($user->profile_photo_path)) {
-$userPhotoBase64 = getBase64('storage/' . $user->profile_photo_path);
+if (!isset($userPhotoBase64) || !$userPhotoBase64) {
+    $userPhotoBase64 = null;
+    if (isset($user->profile_photo_path)) {
+        $userPhotoBase64 = getBase64('storage/' . $user->profile_photo_path);
+    } elseif (isset($user->image)) {
+        $userPhotoBase64 = getBase64($user->image);
+    }
 }
 @endphp
 
@@ -187,7 +191,15 @@ $userPhotoBase64 = getBase64('storage/' . $user->profile_photo_path);
 
             <!-- Student Photo -->
             <div class="photo-area">
-                <img src="{{ asset($user->image) }}" class="student-photo" alt="Student Photo">
+                @if($userPhotoBase64)
+                    <img src="{{ $userPhotoBase64 }}" class="student-photo" alt="Student Photo">
+                @elseif($user->image && file_exists(public_path($user->image)))
+                    <img src="{{ getBase64($user->image) }}" class="student-photo" alt="Student Photo">
+                @else
+                    <div style="width: 100%; height: 100%; border: 1px solid #000; background: #eee; display: flex; align-items: center; justify-content: center; text-align: center;">
+                        <span style="font-size: 8pt; color: #555; font-weight: bold; display: block; margin-top: 15px;">NO<br>PHOTO</span>
+                    </div>
+                @endif
             </div>
 
             <!-- Marks Table -->

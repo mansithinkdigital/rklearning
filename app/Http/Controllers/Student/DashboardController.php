@@ -595,6 +595,12 @@ class DashboardController extends Controller
         $user = Auth::user();
         $course = $user->courses()->where('courses.id', $course_id)->firstOrFail();
         if (!$user->checkCourseCompletion($course)) {
+            if (request()->is('api/*') || request()->wantsJson() || request()->header('Authorization')) {
+                return response()->json([
+                    'error' => 'Incomplete Course',
+                    'message' => 'Complete all lessons and subject exams first.'
+                ], 400);
+            }
             return back()->with('error', 'Complete all lessons and subject exams first.');
         }
         // Get ALL subjects linked to this course
