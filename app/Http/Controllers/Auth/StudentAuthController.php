@@ -123,4 +123,86 @@ class StudentAuthController extends Controller
 
         return redirect()->route('home');
     }
+
+    public function forgotPasswordForm()
+    {
+        return view('student.auth.forgot-password');
+    }
+
+    public function sendOtp(Request $request)
+    {
+        $request->validate(['email' => 'required|email|exists:users,email']);
+        
+        $otp = rand(100000, 999999);
+        
+        \Illuminate\Support\Facades\DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $request->email],
+            [
+                'token' => $otp,
+                'created_at' => now()
+            ]
+        );
+        
+        \Illuminate\Support\Facades\Mail::to($request->email)->send(new \App\Mail\StudentOtpMail($otp));
+        
+        $request->session()->put('reset_email', $request->email);
+        
+        return redirect()->route('student.password.verify-otp')->with('success', 'OTP has been sent to your email.');
+    }
+
+    public function verifyOtpForm(Request $request)
+    {
+        if (!$request->session()->has('reset_email')) {
+            return redirect()->route('student.password.request');
+        }
+        return view('student.auth.verify-otp');
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate(['otp' => 'required|numeric']);
+        $email = $request->session()->get('reset_email');
+        
+        $record = \Illuminate\Support\Facades\DB::table('password_reset_tokens')
+            ->where('email', $email)
+            ->where('token', $request->otp)
+            ->first();
+            
+        if (!$record) {
+            return back()->withErrors(['otp' => 'Invalid OTP entered.']);
+        }
+        
+        $request->session()->put('otp_verified', true);
+        return redirect()->route('student.password.reset')->with('success', 'OTP verified successfully.');
+    }
+
+    public function resetPasswordForm(Request $request)
+    {
+        if (!$request->session()->get('otp_verified')) {
+            return redirect()->route('student.password.request');
+        }
+        return view('student.auth.reset-password');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+        
+        $email = $request->session()->get('reset_email');
+        
+        if (!$email || !$request->session()->get('otp_verified')) {
+            return redirect()->route('student.password.request');
+        }
+        
+        $user = User::where('email', $email)->first();
+        $user->password = Hash::make($request->password);
+        $user->save();
+        
+        \Illuminate\Support\Facades\DB::table('password_reset_tokens')->where('email', $email)->delete();
+        $request->session()->forget(['reset_email', 'otp_verified']);
+        
+        return redirect()->route('student.login')->with('success', 'Password has been reset successfully. You can now login.');
+    }
 }

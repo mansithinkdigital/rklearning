@@ -256,10 +256,8 @@
     <div class="container-rk mx-auto px-6 pt-28 pb-24">
 
         <div class="grid lg:grid-cols-2 gap-20 items-center">
-
             <!-- LEFT -->
             <div>
-
                 <span class="section-badge mb-8">
                     <span class="w-2 h-2 rounded-full bg-blue-600"></span>
                     Modern Professional Learning
@@ -342,7 +340,7 @@
                 <div class="hero-image">
 
                     <img
-                        src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop"
+                        src="{{ asset('assets/homeimg/hero_students_institute.png') }}"
                         alt="RK Institute">
 
                 </div>
@@ -427,21 +425,30 @@
 
         <div class="grid lg:grid-cols-2 gap-24 items-center">
 
-            <!-- IMAGES -->
+            <!-- IMAGE -->
             <div class="relative">
+                <!-- Decorative Accents -->
+                <div class="absolute -inset-4 bg-gradient-to-tr from-blue-500/10 to-transparent blur-3xl rounded-[40px] -z-10"></div>
 
-                <div class="grid grid-cols-2 gap-6">
-
+                <div class="hero-image">
                     <img
-                        src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=2070&auto=format&fit=crop"
-                        class="rounded-[32px] h-[520px] object-cover w-full mt-12 shadow-xl">
-
-                    <img
-                        src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop"
-                        class="rounded-[32px] h-[520px] object-cover w-full shadow-xl">
-
+                        src="{{ asset('assets/homeimg/college_virtual_classroom.png') }}"
+                        alt="Students collaborating"
+                        class="h-[600px] object-cover w-full transform hover:scale-105 transition-transform duration-700">
                 </div>
 
+                <!-- Floating Card to match Hero Section -->
+                <div class="floating-card absolute -bottom-10 -right-10 hidden lg:block max-w-[260px]">
+                    <div class="flex items-center gap-5">
+                        <div class="icon-box !w-14 !h-14 !text-xl !rounded-2xl">
+                            <i class="fa fa-award"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-1">Recognition</p>
+                            <p class="font-bold text-slate-900">Practical Career Growth</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- CONTENT -->
@@ -647,21 +654,15 @@
 
 <!-- CTA -->
 <section class="section-padding bg-white">
-
     <div class="container-rk mx-auto px-6">
-
         <div class="cta-box p-14 lg:p-24 text-center text-white">
-
             <h2 class="text-5xl font-black leading-tight mb-8 relative z-10">
                 Start Building Your Future Today
             </h2>
-
             <p class="text-slate-300 text-lg max-w-2xl mx-auto mb-12 relative z-10 leading-relaxed">
                 Join RK Institute and gain practical skills designed for real-world success and long-term career growth.
             </p>
-
             <div class="flex justify-center gap-5 flex-wrap relative z-10">
-
                 @guest
                 <a href="{{ route('student.register') }}" class="btn-primary">
                     Create Free Account
@@ -671,13 +672,8 @@
                 <a href="{{ route('courses') }}" class="btn-secondary bg-white">
                     Explore Courses
                 </a>
-
             </div>
-
         </div>
-
     </div>
-
 </section>
-
 @endsection
