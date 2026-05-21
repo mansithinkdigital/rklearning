@@ -95,7 +95,7 @@
                             If you have reason to believe that your account is no longer secure,
                             then you should immediately notify Ramesh Kolhe's Learning Hub at
                             <span class="font-semibold text-blue-700">
-                                rkinstitute1.o@gmail.com
+                                Rkinstitute2026@gmail.com
                             </span>.
                         </p>
                         <p><b>Modification of the Terms</b></p>
