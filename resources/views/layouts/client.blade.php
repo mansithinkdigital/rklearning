@@ -187,11 +187,11 @@
                         <span class="absolute -bottom-2 left-0 w-8 h-1 bg-indigo-600 rounded-full"></span>
                     </h4>
                     <ul class="space-y-4">
-                        <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">About Us</a></li>
+                        <li><a href="{{ route('about') }}" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">About Us</a></li>
                         <li><a href="{{ route('courses') }}" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">All Courses</a></li>
                         <li><a href="{{ route('certificate.verify') }}" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Verify Certificate</a></li>
-                        <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Instructors</a></li>
-                        <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Latest News</a></li>
+                        <li><a href="{{ route('contact') }}" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Contact</a></li>
+                        <!-- <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Latest News</a></li> -->
                     </ul>
                 </div>
 
@@ -218,11 +218,11 @@
                             <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm">
                                 <i class="fa fa-map-marker-alt text-indigo-600"></i>
                             </div>
-                            <span class="text-sm">Maharashtra, India</span>
+                            <span class="text-sm leading-relaxed">Near Maharashtra Book House, Lonar Lane, Ashok Stambha, RK, Nashik</span>
                         </div>
                         <div class="flex items-center space-x-4">
                             <div class="w-10 h-10 shrink-0 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                                <i class="fa fa-phone-alt text-indigo-600"></i>
+                                <i class="fa fa-phone-alt text-indigo-600" style="transform: scaleX(-1);"></i>
                             </div>
                             <span class="text-sm font-medium">+91 8888937680</span>
                         </div>

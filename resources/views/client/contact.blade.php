@@ -159,11 +159,13 @@
                     <h3 class="text-2xl font-black text-slate-900 mb-4">
                         Visit Institute
                     </h3>
-                    <p class="text-slate-500 mb-6 font-medium">
+                    <p class="text-slate-500 mb-4 font-medium">
                         RK Institute of Commerce
                     </p>
-                    <p class="text-lg font-bold text-slate-900 leading-relaxed">
-                        Maharashtra, India
+                    <p class="text-base font-bold text-slate-900 leading-relaxed max-w-[260px] mx-auto">
+                        Near Maharashtra Book House,<br>
+                        Lonar Lane, Ashok Stambha,<br>
+                        RK, Nashik
                     </p>
                 </div>
             </div>
