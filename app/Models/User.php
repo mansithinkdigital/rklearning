@@ -75,24 +75,13 @@ class User extends Authenticatable
             return true;
         }
 
-        // 2. Check if the student has passed at least one subject exam for this course (matching dashboard logic).
-        $hasPassedExam = \App\Models\ExamResult::where('user_id', $this->id)
-            ->where('status', 'pass')
-            ->whereHas('courseSubject', function($q) use ($course) {
-                $q->where('course_id', $course->id);
-            })->exists();
-
-        if ($hasPassedExam) {
-            return true;
-        }
-
-        // 3. Fallback for courses without exams: check video completion.
+        // 2. Check video completion first. If videos are required, they MUST be completed.
         $paidVideoIds = \App\Models\PaidVideo::where('course_id', $course->id)
             ->whereNotNull('video_id')
             ->where('video_id', '!=', '')
             ->pluck('video_id')
             ->toArray();
-            
+
         $topicVideoIds = \App\Models\Topic::whereHas('unit.subject', function ($q) use ($course) {
             $q->where('course_id', $course->id);
         })
@@ -109,9 +98,30 @@ class User extends Authenticatable
                 ->where('is_completed', true)
                 ->count();
 
-            return ($completedCount >= count($allRequiredVideoIds));
+            if ($completedCount < count($allRequiredVideoIds)) {
+                return false; // Videos not fully completed
+            }
         }
 
+        // 3. Check exams. If the course has exams, ALL of them must be passed.
+        $courseSubjectsWithExams = \App\Models\CourseSubject::where('course_id', $course->id)
+            ->whereHas('mcqs')
+            ->get();
+
+        if ($courseSubjectsWithExams->isNotEmpty()) {
+            foreach ($courseSubjectsWithExams as $cs) {
+                $hasPassed = \App\Models\ExamResult::where('user_id', $this->id)
+                    ->where('course_subject_id', $cs->id)
+                    ->where('status', 'pass')
+                    ->exists();
+
+                if (!$hasPassed) {
+                    return false; // At least one exam is not passed yet
+                }
+            }
+        }
+
+        // If videos are completed (or none exist) and all exams are passed (or none exist), the course is fully completed!
         return true;
     }
 
