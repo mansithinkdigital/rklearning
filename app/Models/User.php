@@ -70,16 +70,11 @@ class User extends Authenticatable
 
     public function checkCourseCompletion($course)
     {
-        // 1. If a certificate number is already assigned in the pivot table, the course is officially completed.
-        if (isset($course->pivot) && $course->pivot->certificate_no) {
-            return true;
-        }
-
-        // 2. Check video completion first. If videos are required, they MUST be completed.
+        // 1. Check video completion first. If videos are required, they MUST be completed.
         $paidVideoIds = \App\Models\PaidVideo::where('course_id', $course->id)
             ->whereNotNull('video_id')
             ->where('video_id', '!=', '')
-            ->pluck('video_id')
+            ->pluck('id')
             ->toArray();
 
         $topicVideoIds = \App\Models\Topic::whereHas('unit.subject', function ($q) use ($course) {
@@ -87,7 +82,8 @@ class User extends Authenticatable
         })
             ->whereNotNull('video_id')
             ->where('video_id', '!=', '')
-            ->pluck('video_id')
+            ->pluck('id')
+            ->map(fn($id) => $id + 1000000)
             ->toArray();
 
         $allRequiredVideoIds = array_values(array_unique(array_merge($paidVideoIds, $topicVideoIds)));
@@ -103,13 +99,13 @@ class User extends Authenticatable
             }
         }
 
-        // 3. Check exams. If the course has exams, ALL of them must be passed.
-        $courseSubjectsWithExams = \App\Models\CourseSubject::where('course_id', $course->id)
+        // 2. Check exams. ALL subjects for this course that have MCQs must be passed.
+        $courseSubjects = \App\Models\CourseSubject::where('course_id', $course->id)
             ->whereHas('mcqs')
             ->get();
 
-        if ($courseSubjectsWithExams->isNotEmpty()) {
-            foreach ($courseSubjectsWithExams as $cs) {
+        if ($courseSubjects->isNotEmpty()) {
+            foreach ($courseSubjects as $cs) {
                 $hasPassed = \App\Models\ExamResult::where('user_id', $this->id)
                     ->where('course_subject_id', $cs->id)
                     ->where('status', 'pass')
