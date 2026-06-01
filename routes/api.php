@@ -135,9 +135,30 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:15',
             'address' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048'
         ]);
         
-        $user->update($request->only('name', 'phone', 'address'));
+        $imagePath = $user->image;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . uniqid() . '.' . $image->extension();
+            $path = public_path('student/uploads/registerimg');
+
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            $image->move($path, $imageName);
+            $imagePath = 'student/uploads/registerimg/' . $imageName;
+        }
+
+        $user->update([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'image' => $imagePath,
+        ]);
+        
         return response()->json($user);
     });
 
@@ -200,6 +221,9 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
             ->wherePivot('status', 'approved')
             ->wherePivotNotNull('certificate_no')
             ->get()
+            ->filter(function($course) use ($user) {
+                return $user->checkCourseCompletion($course);
+            })
             ->map(function($course) {
                 return [
                     'id' => $course->id,
@@ -208,7 +232,8 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
                     'download_url' => url("/api/student/certificate/{$course->id}/download"),
                     'marksheet_download_url' => url("/api/student/marksheet/{$course->id}/download"),
                 ];
-            });
+            })
+            ->values();
 
         // Calculate pending fees
         $pendingFees = $user->courses()
@@ -435,16 +460,19 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
             'reattempt_status'  => null,
         ]);
 
-        // Automatically issue certificate if passed
+        // Automatically issue certificate if passed and course is completely finished
         if ($status === 'pass') {
-            $enrollment = $user->courses()->where('course_id', $courseSubject->course_id)->first();
-            if ($enrollment && !$enrollment->pivot->certificate_no) {
-                // Generate a unique certificate number: RK-YEAR-USERID-COURSEID
-                $certNo = 'RK-' . date('Y') . '-' . str_pad($user->id, 4, '0', STR_PAD_LEFT) . '-' . str_pad($courseSubject->course_id, 3, '0', STR_PAD_LEFT);
-                
-                $user->courses()->updateExistingPivot($courseSubject->course_id, [
-                    'certificate_no' => $certNo
-                ]);
+            $course = \App\Models\Course::find($courseSubject->course_id);
+            if ($course && $user->checkCourseCompletion($course)) {
+                $enrollment = $user->courses()->where('course_id', $courseSubject->course_id)->first();
+                if ($enrollment && !$enrollment->pivot->certificate_no) {
+                    // Generate a unique certificate number: RK-YEAR-USERID-COURSEID
+                    $certNo = 'RK-' . date('Y') . '-' . str_pad($user->id, 4, '0', STR_PAD_LEFT) . '-' . str_pad($courseSubject->course_id, 3, '0', STR_PAD_LEFT);
+                    
+                    $user->courses()->updateExistingPivot($courseSubject->course_id, [
+                        'certificate_no' => $certNo
+                    ]);
+                }
             }
         }
 
