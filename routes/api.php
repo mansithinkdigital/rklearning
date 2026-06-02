@@ -118,6 +118,26 @@ Route::post('/student/login', function (Request $request) {
 | Protected Student Routes (Requires Sanctum Token)
 |--------------------------------------------------------------------------
 */
+if (!function_exists('apiCalculateExpiryDate')) {
+    function apiCalculateExpiryDate($startDate, $duration)
+    {
+        if (!$startDate) return null;
+        $date = \Carbon\Carbon::parse($startDate);
+        if (!$duration) return $date->addYears(1);
+        $durationLower = strtolower($duration);
+        $amount = (int) filter_var($duration, FILTER_SANITIZE_NUMBER_INT);
+        if ($amount <= 0) $amount = 1;
+        if (str_contains($durationLower, 'month')) {
+            return $date->addMonths($amount);
+        } elseif (str_contains($durationLower, 'year')) {
+            return $date->addYears($amount);
+        } elseif (str_contains($durationLower, 'day')) {
+            return $date->addDays($amount);
+        }
+        return $date->addYears(1);
+    }
+}
+
 Route::middleware('auth:sanctum')->prefix('student')->group(function () {
 
     Route::post('/logout', function (Request $request) {
@@ -255,7 +275,13 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
     });
 
     Route::get('/my-courses', function (Request $request) {
-        return response()->json($request->user()->courses()->wherePivot('status', 'approved')->get());
+        $courses = $request->user()->courses()->wherePivot('status', 'approved')->get()->map(function($course) {
+            $startDate = $course->pivot->updated_at ?? $course->pivot->created_at;
+            $expiryDate = apiCalculateExpiryDate($startDate, $course->duration);
+            $course->is_expired = $expiryDate && $expiryDate->isPast();
+            return $course;
+        });
+        return response()->json($courses);
     });
 
     Route::get('/my-courses/{course_id}', function (Request $request, $course_id) {
@@ -269,6 +295,12 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
         $enrollment = $user->courses()->where('course_id', $course_id)->first();
         if (!$enrollment || $enrollment->pivot->status !== 'approved') {
             return response()->json(['message' => 'Unauthorized or expired course access.'], 403);
+        }
+
+        $startDate = $enrollment->pivot->updated_at ?? $enrollment->pivot->created_at;
+        $expiryDate = apiCalculateExpiryDate($startDate, $enrollment->duration ?? $course->duration);
+        if ($expiryDate && $expiryDate->isPast()) {
+            return response()->json(['message' => 'Your access to this course has expired.'], 403);
         }
 
         $paidVideoIds = \App\Models\PaidVideo::where('course_id', $course_id)
@@ -377,9 +409,16 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
         $user = $request->user();
         $courseSubject = CourseSubject::with(['course', 'subject', 'mcqs'])->findOrFail($course_subject_id);
 
-        $isEnrolled = $user->courses()->where('courses.id', $courseSubject->course_id)->exists();
-        if (!$isEnrolled) {
+        $enrollment = $user->courses()->where('courses.id', $courseSubject->course_id)->first();
+        if (!$enrollment || $enrollment->pivot->status !== 'approved') {
             return response()->json(['message' => 'Unauthorized access.'], 403);
+        }
+
+        $startDate = $enrollment->pivot->updated_at ?? $enrollment->pivot->created_at;
+        $course = \App\Models\Course::find($courseSubject->course_id);
+        $expiryDate = apiCalculateExpiryDate($startDate, $enrollment->duration ?? ($course ? $course->duration : null));
+        if ($expiryDate && $expiryDate->isPast()) {
+            return response()->json(['message' => 'Your access to this course has expired.'], 403);
         }
 
         $previousResult = ExamResult::where('user_id', $user->id)
@@ -594,6 +633,18 @@ Route::middleware('auth:sanctum')->prefix('student')->group(function () {
             'video_id' => 'required',
             'course_id' => 'required|exists:courses,id',
         ]);
+
+        $enrollment = $user->courses()->where('courses.id', $request->course_id)->first();
+        if (!$enrollment || $enrollment->pivot->status !== 'approved') {
+            return response()->json(['message' => 'Unauthorized access.'], 403);
+        }
+
+        $startDate = $enrollment->pivot->updated_at ?? $enrollment->pivot->created_at;
+        $course = \App\Models\Course::find($request->course_id);
+        $expiryDate = apiCalculateExpiryDate($startDate, $enrollment->duration ?? ($course ? $course->duration : null));
+        if ($expiryDate && $expiryDate->isPast()) {
+            return response()->json(['message' => 'Your access to this course has expired.'], 403);
+        }
 
         \App\Models\VideoCompletion::updateOrCreate(
             ['user_id' => $user->id, 'video_id' => $request->video_id],
