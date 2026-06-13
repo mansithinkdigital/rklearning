@@ -35,6 +35,12 @@ Route::get('/media/{path}', function ($path) {
 | Public Routes
 |--------------------------------------------------------------------------
 */
+Route::get('/razorpay-key', function () {
+    return response()->json([
+        'key' => env('RAZORPAY_KEY')
+    ]);
+});
+
 Route::get('/branches', function () {
     return response()->json(Branch::all());
 });
