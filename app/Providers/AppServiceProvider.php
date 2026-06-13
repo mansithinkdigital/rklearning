@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        view()->composer(['admin.inc.sidebar', 'admin.pages.dashboard'], function ($view) {
+            $view->with('reattemptRequestsCount', \App\Models\ExamResult::where('reattempt_status', 'requested')->count());
+        });
     }
 }
