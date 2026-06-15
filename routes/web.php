@@ -40,7 +40,10 @@ Route::get('/refresh-captcha', [ContactController::class, 'refreshCaptcha'])
     ->name('refresh.captcha');
 Route::get('/verify-certificate', [CertificateVerificationController::class, 'index'])->name('certificate.verify');
 Route::post('/verify-certificate', [CertificateVerificationController::class, 'verify'])->name('certificate.verify.submit');
-
+route::get('/help', [HomeController::class, 'help'])->name('help');
+route::get('/privacy-policy', [HomeController::class, 'privacy'])->name('privacy');
+route::get('/terms-of-service', [HomeController::class, 'terms'])->name('terms');
+route::get('/refund-and-cancellation', [HomeController::class, 'refund'])->name('refund');
 
 Route::get('/login', [StudentAuthController::class, 'loginForm'])->name('login');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
