@@ -52,4 +52,24 @@ class HomeController extends Controller
         return view('client.course-detail', compact('course', 'hasPurchased', 'isPending'));
     }
 
+    public function help()
+    {
+        return view('client.help');
+    }
+
+    public function privacy()
+    {
+        return view('client.privacy');
+    }
+
+    public function terms()
+    {
+        return view('client.terms');
+    }
+
+    public function refund()
+    {
+        return view('client.refund');
+    }
+
 }

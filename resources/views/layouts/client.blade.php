@@ -142,12 +142,43 @@
                 </a>
                 @endauth
                 <!-- Mobile toggle -->
-                <button class="lg:hidden text-slate-900">
+                <button id="mobile-menu-btn" class="lg:hidden text-slate-900">
                     <i class="fa fa-bars text-2xl"></i>
                 </button>
             </div>
         </div>
     </header>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="fixed inset-0 z-50 lg:hidden hidden">
+        <div id="mobile-backdrop" class="fixed inset-0 bg-slate-900/50 transition-opacity duration-300"></div>
+        <div class="fixed top-0 right-0 h-full w-72 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out">
+            <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+                <span class="font-bold text-lg text-slate-900">Menu</span>
+                <button id="mobile-menu-close" class="text-slate-400 hover:text-slate-900 transition-colors">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <nav class="px-6 py-6 space-y-1">
+                <a href="{{ route('home') }}" class="block px-4 py-3 rounded-lg text-slate-700 font-medium hover:bg-indigo-50 hover:text-indigo-600 transition-colors">Home</a>
+                <a href="{{ route('about') }}" class="block px-4 py-3 rounded-lg text-slate-700 font-medium hover:bg-indigo-50 hover:text-indigo-600 transition-colors">About</a>
+                <a href="{{ route('courses') }}" class="block px-4 py-3 rounded-lg text-slate-700 font-medium hover:bg-indigo-50 hover:text-indigo-600 transition-colors">Courses</a>
+                <a href="{{ route('contact') }}" class="block px-4 py-3 rounded-lg text-slate-700 font-medium hover:bg-indigo-50 hover:text-indigo-600 transition-colors">Contact</a>
+                <a href="{{ route('certificate.verify') }}" class="block px-4 py-3 rounded-lg text-slate-700 font-medium hover:bg-indigo-50 hover:text-indigo-600 transition-colors">Verify Certificate</a>
+            </nav>
+            <div class="px-6 py-6 border-t border-slate-100">
+                @auth
+                <a href="{{ route('student.dashboard') }}" class="block w-full text-center btn-join">
+                    <i class="fa fa-th-large mr-2"></i> Dashboard
+                </a>
+                @else
+                <a href="{{ route('student.login') }}" class="block w-full text-center btn-join">
+                    <i class="fa fa-sign-in-alt mr-2"></i> Student Login
+                </a>
+                @endauth
+            </div>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <main>
@@ -201,10 +232,12 @@
                         <span class="absolute -bottom-2 left-0 w-8 h-1 bg-indigo-600 rounded-full"></span>
                     </h4>
                     <ul class="space-y-4">
-                        <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Help Center</a></li>
-                        <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Terms of Service</a></li>
-                        <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Community</a></li>
+                        <li><a href="{{ route('help') }}" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Help Center</a></li>
+                        <li><a href="{{ route('terms') }}" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Terms of Service</a></li>
+                        <li><a href="{{ route('privacy') }}" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Privacy Policy</a></li>
+                        <li><a href="{{ route('refund') }}" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Refund and Cancellation</a></li>
+                        <!-- <li><a href="#" class="hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">Community</a></li> -->
+                        <li><a href="{{ asset('Rk_Institute_Android.apk') }}" download><img src="{{ asset('android-apk.png') }}" alt="Download Android APK" class="h-12 w-auto hover:opacity-80 transition-opacity"></a></li>
                     </ul>
                 </div>
 
@@ -252,6 +285,43 @@
         </div>
     </footer>
 
+    <script>
+        (function() {
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const menu = document.getElementById('mobile-menu');
+            const drawer = menu?.querySelector('.fixed.top-0.right-0');
+            const backdrop = document.getElementById('mobile-backdrop');
+            const closeBtn = document.getElementById('mobile-menu-close');
+
+            function openMenu() {
+                menu.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    drawer.classList.remove('translate-x-full');
+                    drawer.classList.add('translate-x-0');
+                    backdrop.classList.add('opacity-100');
+                });
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMenu() {
+                drawer.classList.remove('translate-x-0');
+                drawer.classList.add('translate-x-full');
+                backdrop.classList.remove('opacity-100');
+                setTimeout(() => {
+                    menu.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+
+            menuBtn?.addEventListener('click', openMenu);
+            closeBtn?.addEventListener('click', closeMenu);
+            backdrop?.addEventListener('click', closeMenu);
+
+            document.querySelectorAll('#mobile-menu nav a').forEach(link => {
+                link.addEventListener('click', closeMenu);
+            });
+        })();
+    </script>
     @yield('scripts')
 </body>
 
