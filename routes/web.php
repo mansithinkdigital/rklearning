@@ -50,6 +50,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 Route::prefix('student')->name('student.')->group(function () {
     Route::get('/register', [StudentAuthController::class, 'registerForm'])->name('register');
     Route::post('/register', [StudentAuthController::class, 'register'])->name('register.submit');
+    Route::post('/send-registration-otp', [StudentAuthController::class, 'sendRegistrationOtp'])->name('register.send-otp');
+    Route::post('/verify-registration-otp', [StudentAuthController::class, 'verifyRegistrationOtp'])->name('register.verify-otp');
     Route::get('/login', [StudentAuthController::class, 'loginForm'])->name('login');
     Route::post('/login', [StudentAuthController::class, 'login'])->name('login.submit');
     

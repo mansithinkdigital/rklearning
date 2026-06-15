@@ -103,14 +103,12 @@ class User extends Authenticatable
         $courseSubjects = \App\Models\CourseSubject::where('course_id', $course->id)
             ->whereHas('mcqs')
             ->get();
-
         if ($courseSubjects->isNotEmpty()) {
             foreach ($courseSubjects as $cs) {
                 $hasPassed = \App\Models\ExamResult::where('user_id', $this->id)
                     ->where('course_subject_id', $cs->id)
                     ->where('status', 'pass')
                     ->exists();
-
                 if (!$hasPassed) {
                     return false; // At least one exam is not passed yet
                 }
